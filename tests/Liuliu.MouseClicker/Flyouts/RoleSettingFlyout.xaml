@@ -1,0 +1,80 @@
+﻿<mah:Flyout x:Class="Liuliu.MouseClicker.Flyouts.RoleSettingFlyout"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    mc:Ignorable="d"
+    d:DesignHeight="360" d:DesignWidth="640"
+    Position="Bottom" Theme="Accent"
+             DataContext="{Binding Source={StaticResource Locator}, Path=RoleSetting}">
+    <Grid>
+        <StackPanel>
+            
+      
+        <!--<GroupBox Header="设置" Margin="3,3,0,3">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
+                        <Label Content="大漠路径："/>
+                        <TextBox Width="250" Text="{Binding DmFile}" Margin="0 0 5 0"/>
+                        <Button Content="浏览" Command="{Binding DmFileBrowseCommand}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding DmVersionShow, Converter={StaticResource VisibilityConverter}}">
+                        <Label Content="版本号："/>
+                        <Label Content="{Binding DmVersion}" FontSize="18" Foreground="Red" Padding="0" FontWeight="Bold"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 5" Visibility="{Binding DmRegCodeShow, Converter={StaticResource VisibilityConverter}}">
+                    <Label Content="大漠注册码："/>
+                    <TextBox Width="350" Text="{Binding DmRegCode}"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>-->
+        <GroupBox Header="活动设置" Height="181">
+                <WrapPanel>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked木牛流马,UpdateSourceTrigger=PropertyChanged}">木牛流马</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked武将犒赏}">武将犒赏</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked古城探宝}">古城探宝</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked讨伐董卓}">讨伐董卓</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked青梅煮酒}">青梅煮酒</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked大宴群雄}">大宴群雄</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked矿山开采}">矿山开采</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked神锤宝石}">神锤宝石</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked攻城宝箱}">攻城宝箱</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked陨铁放送}">陨铁放送</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked七擒孟获}">七擒孟获</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked万邦来朝}">万邦来朝</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked宝石矿脉}">宝石矿脉</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked以酒论友}">以酒论友</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked海盗寻宝}">海盗寻宝</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked天降神剑}">天降神剑</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked宝石转盘}">宝石转盘</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked长版突围}">长版突围</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked天灯许愿}">天灯许愿</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked广结名士}">广结名士</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked神锤陨铁}">神锤陨铁</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked草船借箭}">草船借箭</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked杏花酒宴}">杏花酒宴</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked丝绸酬宾}">丝绸酬宾</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked钢铁酬宾}">钢铁酬宾</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked铁甲冲锋}">铁甲冲锋</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked镇守襄阳}">镇守襄阳</CheckBox>
+                </WrapPanel>
+        </GroupBox>
+            <GroupBox Header="其他设置" Height="181">
+                <WrapPanel>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked领取礼包,UpdateSourceTrigger=PropertyChanged}">领取礼包</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked领取军资,UpdateSourceTrigger=PropertyChanged}">领取军资</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked登录奖励,UpdateSourceTrigger=PropertyChanged}">登录奖励</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked祭祀资源,UpdateSourceTrigger=PropertyChanged}">祭祀资源</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked铁匠铺,UpdateSourceTrigger=PropertyChanged}">铁匠铺</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked宝石商人,UpdateSourceTrigger=PropertyChanged}">宝石商人</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked领取俸禄,UpdateSourceTrigger=PropertyChanged}">领取俸禄</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked集市购买,UpdateSourceTrigger=PropertyChanged}">集市购买</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked军需处,UpdateSourceTrigger=PropertyChanged}">军需处</CheckBox>
+                </WrapPanel>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</mah:Flyout>
