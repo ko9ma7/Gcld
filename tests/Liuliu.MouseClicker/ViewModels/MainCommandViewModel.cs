@@ -14,6 +14,9 @@ using GalaSoft.MvvmLight.Messaging;
 
 using Liuliu.MouseClicker.Mvvm;
 using System.Diagnostics;
+using Liuliu.ScriptEngine.Tasks;
+using Liuliu.MouseClicker.Tasks;
+using Liuliu.ScriptEngine.Models;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -37,7 +40,12 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
-
+                    TaskEngine engine = new TaskEngine();
+                    IRole role = new Role();
+                    Function func = new Function();
+                    
+                    TaskContext context = new TaskContext(role,func);
+                    engine.Start(new CaochuanjiejianTask(context));
                 });
             }
         }
