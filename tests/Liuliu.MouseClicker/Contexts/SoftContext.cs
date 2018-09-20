@@ -49,6 +49,7 @@ namespace Liuliu.MouseClicker
             var result = OperationHelper.GetDmSystem(dmPath);
             if (result.Successed)
             {
+                //给SoftContext DmSystem赋值
                 DmSystem = result.Data;
                 settings.DmVersion = DmSystem.Dm.Ver();
             }

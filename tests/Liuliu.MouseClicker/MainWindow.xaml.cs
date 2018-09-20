@@ -18,6 +18,9 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Practices.ServiceLocation;
 using OSharp.Utility.Data;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace Liuliu.MouseClicker
 {
@@ -45,6 +48,7 @@ namespace Liuliu.MouseClicker
 
         private async Task MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            //初始化大漠对象,注册,新建一个大漠对象
             OperationResult initResult = SoftContext.Initialize();
 
             if (!initResult.Successed)
@@ -58,7 +62,28 @@ namespace Liuliu.MouseClicker
 
                 return;
             }
-            Locator.Main.StatusBar = "准备就绪";
+            else
+            {
+                DmPlugin dm = SoftContext.DmSystem.Dm;
+                string hwnds=dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
+                if(hwnds==null)
+                {
+                    Debug.WriteLine("获取句柄失败!");
+                    return;
+                }
+                List <int> mainHwnds = hwnds.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
+                Dictionary<int,int> parentHwnds = new Dictionary<int, int>();
+                foreach (var item in mainHwnds)
+                {
+                    parentHwnds.Add(item,dm.GetWindow(item, 7));
+                    //dm.SetWindowText(dm.GetWindow(item, 7),"");
+                }
+
+                Locator.Main.StatusBar = "准备就绪";
+                return;
+            }
+          
+            
         }
 
         private void Button_Initialized(object sender, System.EventArgs e)

@@ -107,10 +107,10 @@ namespace Liuliu.ScriptEngine.Tasks
         {
             OnStopping(TaskContext);
             IRole role = TaskContext.Role;
-            if (!role.IsAlive && role.IsMoving())
-            {
-                role.Window.Dm.MoveToClick(400, 300);
-            }
+            //if (!role.IsAlive && role.IsMoving())
+            //{
+            //    role.Window.Dm.MoveToClick(400, 300);
+            //}
             //role.Window.LockInput(InputLockType.None);
         }
     }

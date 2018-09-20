@@ -13,7 +13,6 @@ using System.IO;
 using OSharp.Utility.Extensions;
 using OSharp.Utility.Reflection;
 
-
 namespace Liuliu.MouseClicker.Contexts
 {
     /// <summary>
@@ -55,28 +54,29 @@ namespace Liuliu.MouseClicker.Contexts
             {
                 return null;
             }
-            return null;
-                //SyncLocker.MutexLock(fileName,
-                //() =>
-                //{
-                //    string json = File.ReadAllText(fileName);
-                //    if (json.IsMissing() || !json.StartsWith("{"))
-                //    {
-                //        return null;
-                //    }
-                //    IDictionary<string, string> dict = json.FromJsonString<IDictionary<string, string>>();
-                //    return dict;
-                //});
+          
+        return  SyncLocker.MutexLock(fileName,
+            () =>
+            {
+                string json = File.ReadAllText(fileName);
+                if (json.IsMissing() || !json.StartsWith("{"))
+                {
+                    return null;
+                }
+                IDictionary<string, string> dict = json.FromJsonString<IDictionary<string, string>>();
+                return dict;
+            });
+    
         }
 
         private static void SetDataDict(string fileName, IDictionary<string, string> dict)
         {
             string json = dict.ToJsonString();
-            //SyncLocker.MutexLock(fileName,
-            //    () =>
-            //    {
-            //        File.WriteAllText(fileName, json);
-            //    });
+            SyncLocker.MutexLock(fileName,
+                () =>
+                {
+                    File.WriteAllText(fileName, json);
+                });
         }
     }
 }

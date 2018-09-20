@@ -11,6 +11,7 @@ using System;
 
 using Liuliu.ScriptEngine.Damo;
 
+
 using OSharp.Utility.Reflection;
 
 
@@ -82,7 +83,9 @@ namespace Liuliu.ScriptEngine
                 _dm.SetDictPwd(dictPwd);
             }
         }
-        
+        /// <summary>
+        /// 是否是免费版
+        /// </summary>
         public bool IsFree
         {
             get { return new Version(Ver()) <= new Version("3.1233"); }
@@ -553,7 +556,8 @@ namespace Liuliu.ScriptEngine
         /// </summary>
         public int GetClientRect(int hwnd, out int x1, out int y1, out int x2, out int y2)
         {
-            int result = _dm.GetClientRect(hwnd, out object X1, out object Y1, out object X2, out object Y2);
+            object X1, Y1, X2, Y2;
+            int result = _dm.GetClientRect(hwnd, out X1, out Y1, out X2, out Y2);
             x1 = (int)X1;
             y1 = (int)Y1;
             x2 = (int)X2;
@@ -570,7 +574,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>1成功，0失败。</returns>
         public int GetClientSize(int hwnd, out int width, out int height)
         {
-            int result = _dm.GetClientSize(hwnd, out object w, out object h);
+            object w, h;
+            int result = _dm.GetClientSize(hwnd, out w, out h);
             width = (int)w;
             height = (int)h;
             return result;
@@ -692,7 +697,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool GetWindowRect(int hwnd, out int x1, out int y1, out int x2, out int y2)
         {
-            int result = _dm.GetWindowRect(hwnd, out object a, out object b, out object c, out object d);
+            object a, b, c, d;
+            int result = _dm.GetWindowRect(hwnd, out a, out b, out c, out d);
             x1 = (int)a;
             y1 = (int)b;
             x2 = (int)c;
@@ -909,7 +915,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool GetCursorPos(out int x, out int y)
         {
-            bool result = _dm.GetCursorPos(out object a, out object b) == 1;
+            object a, b;
+            bool result = _dm.GetCursorPos(out a, out b) == 1;
             x = (int)a;
             y = (int)b;
             return result;
@@ -1398,7 +1405,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回字符串的索引 没找到返回-1, 比如"长安|洛阳",若找到长安，则返回0</returns>
         public int FindStr(int x1, int y1, int x2, int y2, string str, string color, double sim, out int intX, out int intY)
         {
-            int result = _dm.FindStr(x1, y1, x2, y2, str, color, sim, out object x, out object y);
+            object x, y;
+            int result = _dm.FindStr(x1, y1, x2, y2, str, color, sim, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -1478,7 +1486,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回字符串的索引 没找到返回-1, 比如"长安|洛阳",若找到长安，则返回0</returns>
         public int FindStrFast(int x1, int y1, int x2, int y2, string str, string color, double sim, out int intX, out int intY)
         {
-            int result = _dm.FindStrFast(x1, y1, x2, y2, str, color, sim, out object x, out object y);
+            object x, y;
+            int result = _dm.FindStrFast(x1, y1, x2, y2, str, color, sim, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -1571,7 +1580,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回找到的字符串. 没找到的话返回长度为0的字符串.</returns>
         public string FindStrFastS(int x1, int y1, int x2, int y2, string str, string color, double sim, out int intX, out int intY)
         {
-            string result = _dm.FindStrFastS(x1, y1, x2, y2, str, color, sim, out object x, out object y);
+            object x, y;
+            string result = _dm.FindStrFastS(x1, y1, x2, y2, str, color, sim, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -1592,7 +1602,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回找到的字符串. 没找到的话返回长度为0的字符串.</returns>
         public string FindStrS(int x1, int y1, int x2, int y2, string str, string color, double sim, out int intX, out int intY)
         {
-            string result = _dm.FindStrS(x1, y1, x2, y2, str, color, sim, out object x, out object y);
+            object x, y;
+            string result = _dm.FindStrS(x1, y1, x2, y2, str, color, sim, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -1628,7 +1639,8 @@ namespace Liuliu.ScriptEngine
             out int intX,
             out int intY)
         {
-            int result = _dm.FindStrWithFont(x1, y1, x2, y2, str, color, sim, fontName, fontSize, flag, out object x, out object y);
+            object x, y;
+            int result = _dm.FindStrWithFont(x1, y1, x2, y2, str, color, sim, fontName, fontSize, flag, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -1739,7 +1751,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool GetResultPos(string str, int index, out int intX, out int intY)
         {
-            bool result = _dm.GetResultPos(str, index, out object x, out object y) == 1;
+            object x, y;
+            bool result = _dm.GetResultPos(str, index, out x, out y) == 1;
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -1765,7 +1778,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool GetWordResultPos(string str, int index, out int intX, out int intY)
         {
-            bool result = _dm.GetWordResultPos(str, index, out object x, out object y) == 1;
+            object x, y;
+            bool result = _dm.GetWordResultPos(str, index, out x, out y) == 1;
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2177,7 +2191,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool FindColor(int x1, int y1, int x2, int y2, string color, double sim, int dir, out int intX, out int intY)
         {
-            bool result = _dm.FindColor(x1, y1, x2, y2, color, sim, dir, out object x, out object y) == 1;
+            object x, y;
+            bool result = _dm.FindColor(x1, y1, x2, y2, color, sim, dir, out x, out y) == 1;
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2210,7 +2225,8 @@ namespace Liuliu.ScriptEngine
             out int intX,
             out int intY)
         {
-            bool result = _dm.FindColorBlock(x1, y1, x2, y2, color, sim, count, width, height, out object x, out object y) == 1;
+            object x, y;
+            bool result = _dm.FindColorBlock(x1, y1, x2, y2, color, sim, count, width, height, out x, out y) == 1;
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2338,7 +2354,8 @@ namespace Liuliu.ScriptEngine
             out int intX,
             out int intY)
         {
-            bool result = _dm.FindMultiColor(x1, y1, x2, y2, firstColor, offsetColor, sim, dir, out object x, out object y) == 1;
+            object x, y;
+            bool result = _dm.FindMultiColor(x1, y1, x2, y2, firstColor, offsetColor, sim, dir, out x, out y) == 1;
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2432,7 +2449,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回找到的图片的序号,从0开始索引.如果没找到返回-1</returns>
         public int FindPic(int x1, int y1, int x2, int y2, string picName, string deltaColor, double sim, int dir, out int intX, out int intY)
         {
-            int result = _dm.FindPic(x1, y1, x2, y2, picName, deltaColor, sim, dir, out object x, out object y);
+            object x, y;
+            int result = _dm.FindPic(x1, y1, x2, y2, picName, deltaColor, sim, dir, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2548,7 +2566,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回找到的图片的序号,从0开始索引.如果没找到返回-1</returns>
         public int FindPicMem(int x1, int y1, int x2, int y2, string picInfo, string deltaColor, double sim, int dir, out int intX, out int intY)
         {
-            int result = _dm.FindPicMem(x1, y1, x2, y2, picInfo, deltaColor, sim, dir, out object x, out object y);
+            object x, y;
+            int result = _dm.FindPicMem(x1, y1, x2, y2, picInfo, deltaColor, sim, dir, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2622,7 +2641,9 @@ namespace Liuliu.ScriptEngine
         /// <param name="picName">图片名,可以是多个图片,比如"test.bmp|test2.bmp|test3.bmp"</param>
         /// <param name="deltaColor">颜色色偏比如"203040" 表示RGB的色偏分别是20 30 40 (这里是16进制表示)</param>
         /// <param name="sim">相似度,取值范围0.1-1.0</param>
-        /// <param name="dir">查找方向：
+        /// <param name="dir">查找方向：</param>
+        /// <param name="intX">找到坐标x</param>
+        /// <param name="intY">找到坐标y：</param>
         /// 0.从左到右,从上到下 
         /// 1.从左到右,从下到上 
         /// 2.从右到左,从上到下 
@@ -2635,7 +2656,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>返回找到的图片的文件名. 没找到返回长度为0的字符串.</returns>
         public string FindPicS(int x1, int y1, int x2, int y2, string picName, string deltaColor, double sim, int dir, out int intX, out int intY)
         {
-            string result = _dm.FindPicS(x1, y1, x2, y2, picName, deltaColor, sim, dir, out var x, out var y);
+            object x, y;
+            string result = _dm.FindPicS(x1, y1, x2, y2, picName, deltaColor, sim, dir, out x, out y);
             intX = (int)x;
             intY = (int)y;
             return result;
@@ -2666,7 +2688,8 @@ namespace Liuliu.ScriptEngine
         /// <returns>是否找到</returns>
         public bool FindShape(int x1, int y1, int x2, int y2, string offsetColor, double sim, int dir, out int intX, out int intY)
         {
-            bool result = _dm.FindShape(x1, y1, x2, y2, offsetColor, sim, dir, out object x, out object y) == 1;
+            object x, y;
+            bool result = _dm.FindShape(x1, y1, x2, y2, offsetColor, sim, dir, out x, out y) == 1;
             intX = (int)x;
             intY = (int)y;
             return result;

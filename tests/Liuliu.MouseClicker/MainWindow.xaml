@@ -57,6 +57,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
+                        
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
@@ -76,15 +77,15 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
-            <Grid Background="AliceBlue">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <Grid  Background="Bisque">
-                    <uc:ClickSettingsView Margin="0 3 3 3" Loaded="ClickSettingsView_Loaded"/>
+                <Grid>
+                    <!--<uc:ClickSettingsView Margin="0 3 3 3" Loaded="ClickSettingsView_Loaded"/>-->
                 </Grid>
-                <Grid Grid.Column="1" Background="BurlyWood"/>
+             
             </Grid>
             <StatusBar Grid.Row="1">
                 <StackPanel Orientation="Horizontal">

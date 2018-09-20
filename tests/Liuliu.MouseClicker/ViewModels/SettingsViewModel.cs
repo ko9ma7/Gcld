@@ -46,7 +46,7 @@ namespace Liuliu.MouseClicker.ViewModels
             set
             {
                 SetProperty(ref _dmVersion, value, () => DmVersion);
-                SoftContext.Locator.Main.Title = $"柳柳鼠标助手 大漠({value})";
+                SoftContext.Locator.Main.Title = $"攻城掠地助手 大漠({value})";
             }
         }
 

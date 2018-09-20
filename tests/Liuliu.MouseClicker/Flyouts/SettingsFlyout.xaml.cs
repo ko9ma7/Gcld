@@ -21,7 +21,6 @@ namespace Liuliu.MouseClicker.Flyouts
         {
             InitializeComponent();
             RegisterMessengers();
-            Debug.WriteLine("1111233");
             IsOpenChanged += async (sender, e) => await SettingsFlyout_IsOpenChanged(sender, e);
         }
 
@@ -30,8 +29,6 @@ namespace Liuliu.MouseClicker.Flyouts
             Messenger.Default.Register<string>(this, "SettingsFlyout",
                 async msg =>
                 {
-                    Debug.WriteLine("2232423");
-                    Debug.WriteLine(msg);
                     switch (msg)
                     {
                         case "OpenSettingsFlyout":
@@ -92,6 +89,7 @@ namespace Liuliu.MouseClicker.Flyouts
             try
             {
                 DmPlugin dm = new DmPlugin(model.DmFile);
+              
                 Version ver = new Version(dm.Ver());
                 model.DmVersion = ver.ToString();
                 model.DmVersionShow = true;

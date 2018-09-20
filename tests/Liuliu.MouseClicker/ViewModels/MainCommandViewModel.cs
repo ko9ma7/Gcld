@@ -43,8 +43,11 @@ namespace Liuliu.MouseClicker.ViewModels
                     TaskEngine engine = new TaskEngine();
                     IRole role = new Role();
                     Function func = new Function();
+                    func.Name = "草船借箭";
                     
                     TaskContext context = new TaskContext(role,func);
+                    engine.OutMessage = (str) => { Debug.WriteLine(str); };
+                    engine.Window = role.Window;
                     engine.Start(new CaochuanjiejianTask(context));
                 });
             }
