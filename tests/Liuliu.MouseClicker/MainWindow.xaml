@@ -57,7 +57,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
-                        
+
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
@@ -70,28 +70,47 @@
         </mah:FlyoutsControl>
 
     </mah:MetroWindow.Flyouts>
-    
+
     <mah:MetroContentControl>
-        <Grid Background="AntiqueWhite">
+        <Grid Background="AntiqueWhite" Margin="0,10,0,-10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
+            <ScrollViewer HorizontalAlignment="Left" Height="232" Margin="0,37,0,0" VerticalAlignment="Top" Width="624">
                 <Grid>
-                    <!--<uc:ClickSettingsView Margin="0 3 3 3" Loaded="ClickSettingsView_Loaded"/>-->
+                
+                    <ListView ItemsSource="{Binding Roles}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="角色列表" Width="500">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <Label Content="{Binding Name}"></Label>
+                                                <Label Content="bb"></Label>
+                                                <Label Content="cc"></Label>
+                                                <Label Content="dd"></Label>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                       
+                    </ListView>
+  
                 </Grid>
-             
-            </Grid>
+
+            </ScrollViewer>
+            <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding BeginCommand}" Width="50" Height="30" Content="开始" Margin="563,274,21,27" Grid.RowSpan="2"></Button>
             <StatusBar Grid.Row="1">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{Binding StatusBar}" Padding="0" Width="300" Foreground="White"/>
                 </StackPanel>
             </StatusBar>
+           
         </Grid>
     </mah:MetroContentControl>
 </mah:MetroWindow> 

@@ -12,9 +12,13 @@ namespace Liuliu.MouseClicker
 {
     public class Role : IRole
     {
-        public Role()
+        /// <summary>
+        /// 创建一个角色
+        /// </summary>
+        /// <param name="hwnd">角色所在窗口句柄</param>
+        public Role(int hwnd)
         {
-            _window = new DmWindow(new DmPlugin(), 68276);
+            _window = new DmWindow(new DmPlugin(), hwnd);
             Debug.WriteLine(_window.Dm.Ver());
         }
         private DmWindow _window;

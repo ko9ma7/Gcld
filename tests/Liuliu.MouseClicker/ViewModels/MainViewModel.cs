@@ -17,11 +17,19 @@ using Liuliu.ScriptEngine;
 using Liuliu.ScriptEngine.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Liuliu.ScriptEngine.Tasks;
+using System.Diagnostics;
+using Liuliu.MouseClicker.Tasks;
+using System;
+using System.Linq;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
     public class MainViewModel : ViewModelExBase
     {
+        public MainViewModel()
+        { 
+        }
         private string _title = "柳柳鼠标助手";
         public string Title
         {
@@ -36,8 +44,13 @@ namespace Liuliu.MouseClicker.ViewModels
             set { SetProperty(ref _statusBar, value, () => StatusBar); }
         }
 
-        ICollection<Role> roles = new List<Role>();
+        private List<Role> _roles;
 
+        public List<Role> Roles
+        {
+            get { return _roles; }
+            set { SetProperty(ref _roles, value, () => Roles); }
+        }
 
     }
 }

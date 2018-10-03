@@ -64,21 +64,7 @@ namespace Liuliu.MouseClicker
             }
             else
             {
-                DmPlugin dm = SoftContext.DmSystem.Dm;
-                string hwnds=dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
-                if(hwnds==null)
-                {
-                    Debug.WriteLine("获取句柄失败!");
-                    return;
-                }
-                List <int> mainHwnds = hwnds.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
-                Dictionary<int,int> parentHwnds = new Dictionary<int, int>();
-                foreach (var item in mainHwnds)
-                {
-                    parentHwnds.Add(item,dm.GetWindow(item, 7));
-                    //dm.SetWindowText(dm.GetWindow(item, 7),"");
-                }
-
+                
                 Locator.Main.StatusBar = "准备就绪";
                 return;
             }

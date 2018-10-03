@@ -17,6 +17,10 @@ using System.Diagnostics;
 using Liuliu.ScriptEngine.Tasks;
 using Liuliu.MouseClicker.Tasks;
 using Liuliu.ScriptEngine.Models;
+using System.Collections.Generic;
+using Liuliu.ScriptEngine;
+using System;
+using System.Linq;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -40,15 +44,52 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
-                    TaskEngine engine = new TaskEngine();
-                    IRole role = new Role();
-                    Function func = new Function();
-                    func.Name = "草船借箭";
                     
-                    TaskContext context = new TaskContext(role,func);
-                    engine.OutMessage = (str) => { Debug.WriteLine(str); };
-                    engine.Window = role.Window;
-                    engine.Start(new CaochuanjiejianTask(context));
+                });
+            }
+        }
+        public ICommand BeginCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    DmPlugin dm = SoftContext.DmSystem.Dm;
+                    string hwnds = dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
+                    if (hwnds == null)
+                    {
+                        Debug.WriteLine("获取句柄失败!");
+                        return;
+                    }
+                    List<int> mainHwnds = hwnds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
+                    Dictionary<int, int> parentHwnds = new Dictionary<int, int>();
+                    foreach (var item in mainHwnds)
+                    {
+                        parentHwnds.Add(item, dm.GetWindow(item, 7));
+                        //dm.SetWindowText(dm.GetWindow(item, 7),"");
+                    }
+                    Debug.WriteLine(mainHwnds.Count);
+                    foreach (var item in mainHwnds)
+                    {
+                        TaskEngine engine = new TaskEngine();
+                        IRole role = new Role(item);
+                        SoftContext.Locator.Main.Roles.Add((Role)role);
+                        Function func = new Function();
+                        func.Name = "草船借箭";
+
+                        TaskContext context = new TaskContext(role, func);
+                        engine.OutMessage = (str) => { Debug.WriteLine(str); };
+                        engine.Window = role.Window;
+                        List<TaskBase> tasks = new List<TaskBase>();
+                        tasks.Add(new CaochuanjiejianTask(context));
+                        tasks.Add(new CaochuanjiejianTask(context));
+                        tasks.Add(new CaochuanjiejianTask(context));
+                        tasks.Add(new CaochuanjiejianTask(context));
+                        tasks.Add(new CaochuanjiejianTask(context));
+
+                        engine.Start(tasks.ToArray());
+                    }
+
                 });
             }
         }
