@@ -3,6 +3,7 @@ using Liuliu.ScriptEngine.Models;
 using Liuliu.ScriptEngine.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace Liuliu.MouseClicker.Tasks
             IRole role = context.Role;
             DmPlugin dm = role.Window.Dm;
             role.OutMessage("打开活动界面");
-
+            Debug.WriteLine("打开活动界面1111");
             return TaskResult.Success;
         }
     }

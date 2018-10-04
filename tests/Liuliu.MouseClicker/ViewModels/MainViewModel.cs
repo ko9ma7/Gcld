@@ -28,9 +28,10 @@ namespace Liuliu.MouseClicker.ViewModels
     public class MainViewModel : ViewModelExBase
     {
         public MainViewModel()
-        { 
+        {
+            _roles = new List<Role>();
         }
-        private string _title = "柳柳鼠标助手";
+        private string _title = "攻城掠地助手";
         public string Title
         {
             get { return _title; }

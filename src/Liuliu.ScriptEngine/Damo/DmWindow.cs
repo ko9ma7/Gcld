@@ -241,6 +241,45 @@ namespace Liuliu.ScriptEngine
         }
 
         /// <summary>
+        /// 半后台绑定，不锁定鼠标输入
+        /// </summary>
+        public bool BindHalfBackgroundMoniqi()
+        {
+            bool isMin = IsMin;
+            if (IsBind)
+            {
+                if (BindType == WindowBindType.Half)
+                {
+                    return true;
+                }
+                UnBind();
+            }
+            RestoreAndNotActive();
+            bool dmRet;
+            if (Dm.IsFree)
+            {
+                dmRet = Dm.BindWindow(_hwnd, DmBindDisplay.dx, DmBindMouse.dx2, DmBindKeypad.dx, DmBindMode._0);
+            }
+            else
+            {
+                dmRet = Dm.BindWindowEx(_hwnd, "dx.graphic.opengl", "windows", "windows", "dx.public.graphic.protect|dx.public.anti.api", 0);
+            }
+            if (!dmRet)
+            {
+                IsBind = false;
+                BindType = WindowBindType.None;
+                return false;
+            }
+            BindType = WindowBindType.Half;
+            IsBind = true;
+            if (isMin)
+            {
+                Min();
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 全后台绑定，锁定鼠标输入
         /// </summary>
         public bool BindFullBackground()

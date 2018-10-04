@@ -281,7 +281,7 @@ namespace Liuliu.ScriptEngine.Tasks
                         //窗口绑定
                         DmPlugin dm = Window.Dm;
                         bool flag;
-                        flag = Delegater.WaitTrue(() => Window.BindHalfBackground(), () => dm.Delay(1000), 10);
+                        flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
                         //flag = Delegater.WaitTrue(() => Window.BindNormal(), () => dm.Delay(1000), 10);
                         if (!flag)
                         {
