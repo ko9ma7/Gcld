@@ -98,7 +98,9 @@ namespace Liuliu.ScriptEngine.Tasks
                 TaskContext.StepIndex++;
                 if (TaskContext.StepIndex > TaskContext.TaskSteps.Length)
                 {
-                    TaskContext.StepIndex = 1;
+                    //TaskContext.StepIndex = 1;
+
+                    return new TaskResult(TaskResultType.Finished,"任务执行步骤已经完成");
                 }
             }
         }

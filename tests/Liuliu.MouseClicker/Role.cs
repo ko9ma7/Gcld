@@ -83,7 +83,7 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                throw new NotImplementedException();
+                return (str) => { Debug.WriteLine("角色通知："+str); };
             }
         }
 
@@ -91,7 +91,7 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                throw new NotImplementedException();
+                return (str) => { Debug.WriteLine("角色通知："+str); };
             }
         }
 

@@ -92,11 +92,9 @@ namespace Liuliu.MouseClicker.ViewModels
                         engine.OutMessage = (str) => { Debug.WriteLine(str); };
                         engine.Window = role.Window;
                         List<TaskBase> tasks = new List<TaskBase>();
+                        tasks.Add(new LingqujunziTask(context));
                         tasks.Add(new CaochuanjiejianTask(context));
-                        tasks.Add(new CaochuanjiejianTask(context));
-                        tasks.Add(new CaochuanjiejianTask(context));
-                        tasks.Add(new CaochuanjiejianTask(context));
-                        tasks.Add(new CaochuanjiejianTask(context));
+                        
 
                         engine.Start(tasks.ToArray());
                     }
