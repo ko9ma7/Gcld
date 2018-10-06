@@ -54,36 +54,19 @@ namespace Liuliu.MouseClicker.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    if(SoftContext.DmSystem==null)
-                    {
-                        return;
-                    }
-                    DmPlugin dm = SoftContext.DmSystem.Dm;
 
-                    // string hwnds = dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
-                    string hwnds = dm.EnumWindow(0, "ScreenBoardClassWindow", "Qt5QWindowIcon", 3);
-                   // string hwnds = dm.EnumWindowByProcess("NoxVMHandle.exe", "", "Qt5QWindowIcon", 2);
-                    if (hwnds == null)
-                    {
-                        Debug.WriteLine("获取句柄失败!");
-                        return;
-                    }
-                    else
-                    {
-                        Debug.WriteLine(hwnds);
-                    }
-                    List<int> mainHwnds = hwnds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
-                    Dictionary<int, int> parentHwnds = new Dictionary<int, int>();
-                    foreach (var item in mainHwnds)
-                    {
-                        parentHwnds.Add(item, dm.GetWindow(item, 7));
-                        //dm.SetWindowText(dm.GetWindow(item, 7),"");
-                    }
-                    Debug.WriteLine(mainHwnds.Count);
-                    foreach (var item in mainHwnds)
+                    SoftContext.UpdateHwnd();
+                  
+                    foreach (var item in SoftContext.Hwnds)
                     {
                         TaskEngine engine = new TaskEngine();
                         IRole role = new Role(item);
+                   
+                        if(SoftContext.Locator.Main.Roles.Where(x=>x.Window.Hwnd==item).Count()>0)
+                        {
+                            Debug.WriteLine("该句柄已经存在！");
+                            continue;
+                        }
                         SoftContext.Locator.Main.Roles.Add((Role)role);
                         Function func = new Function();
                         func.Name = "草船借箭";

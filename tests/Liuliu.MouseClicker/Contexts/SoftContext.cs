@@ -24,6 +24,7 @@ namespace Liuliu.MouseClicker
         static SoftContext()
         {
             Version = GetVersion();
+            Hwnds = new List<int>();
         }
 
         public static MainWindow MainWindow { get; set; }
@@ -90,6 +91,34 @@ namespace Liuliu.MouseClicker
                 await Progress.CloseAsync();
             }
             return await MainWindow.ShowMessageAsync(title, message);
+        }
+
+        /// <summary>
+        /// 模拟器窗口句柄组
+        /// </summary>
+        public static List<int> Hwnds { get; set; }
+
+        public static void UpdateHwnd()
+        {
+            if (DmSystem == null)
+            {
+                return; ;
+            }
+            DmPlugin dm = DmSystem.Dm;
+
+            // string hwnds = dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
+            string hwnds = dm.EnumWindow(0, "ScreenBoardClassWindow", "Qt5QWindowIcon", 3);
+            if(hwnds=="")
+            {
+                Debug.WriteLine("获取句柄失败!");
+                return;
+            }
+            else
+            {
+                Debug.WriteLine(hwnds);
+            }
+            Hwnds=hwnds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
+            Debug.WriteLine("当前打开的模拟器："+Hwnds.Count);
         }
 
         /// <summary>
