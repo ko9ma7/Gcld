@@ -61,23 +61,28 @@ namespace Liuliu.MouseClicker.ViewModels
                     {
                         TaskEngine engine = new TaskEngine();
                         IRole role = new Role(item);
-                   
-                        if(SoftContext.Locator.Main.Roles.Where(x=>x.Window.Hwnd==item).Count()>0)
+                        DmPlugin dm = role.Window.Dm;
+                        dm.SetPath(AppDomain.CurrentDomain.BaseDirectory);
+                        dm.SetDict(0, "dict.txt");
+                        dm.UseDict(0);
+                        if (SoftContext.Locator.Main.Roles.Where(x=>x.Window.Hwnd==item).Count()>0)
                         {
                             Debug.WriteLine("该句柄已经存在！");
-                            continue;
                         }
-                        SoftContext.Locator.Main.Roles.Add((Role)role);
+                        else
+                        {
+                            SoftContext.Locator.Main.Roles.Add((Role)role);
+                        }
                         Function func = new Function();
-                        func.Name = "草船借箭";
+                        func.Name = "日常任务";
 
                         TaskContext context = new TaskContext(role, func);
                         engine.OutMessage = (str) => { Debug.WriteLine(str); };
                         engine.Window = role.Window;
+
+                        Role r = (Role)role;
                         List<TaskBase> tasks = new List<TaskBase>();
-                        tasks.Add(new LingqujunziTask(context));
-                        tasks.Add(new CaochuanjiejianTask(context));
-                        
+                        tasks.Add(new RichangTask(context));
 
                         engine.Start(tasks.ToArray());
                     }

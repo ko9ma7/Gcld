@@ -272,6 +272,7 @@ namespace Liuliu.ScriptEngine.Tasks
         {
             return new Thread(() =>
             {
+
                 foreach (TaskBase task in tasks)
                 {
                     _task = task;
@@ -280,7 +281,6 @@ namespace Liuliu.ScriptEngine.Tasks
                     {
                         //窗口绑定
                         DmPlugin dm = Window.Dm;
-                        OutMessage(Thread.CurrentThread.ManagedThreadId.ToString());
                         bool flag;
                         flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
                         //flag = Delegater.WaitTrue(() => Window.BindNormal(), () => dm.Delay(1000), 10);
@@ -296,6 +296,7 @@ namespace Liuliu.ScriptEngine.Tasks
                         TaskStart();
                         TaskStop();
                         Window.FlashWindow();
+
                     }
                     catch (ThreadAbortException)
                     {

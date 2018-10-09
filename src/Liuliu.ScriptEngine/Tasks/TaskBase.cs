@@ -8,7 +8,7 @@
 // -----------------------------------------------------------------------
 
 using Liuliu.ScriptEngine.Models;
-
+using System.Diagnostics;
 
 namespace Liuliu.ScriptEngine.Tasks
 {
@@ -20,7 +20,12 @@ namespace Liuliu.ScriptEngine.Tasks
         protected TaskBase(TaskContext context)
         {
             TaskContext = context;
+            Role = context.Role;
+            Dm = context.Role.Window.Dm;
         }
+
+        public IRole Role { get; }
+        public DmPlugin Dm { get; }
 
         public TaskContext TaskContext { get; }
 
@@ -76,7 +81,9 @@ namespace Liuliu.ScriptEngine.Tasks
                 return result;
             }
             //_context.Role.Window.LockInput(InputLockType.Mouse);
+            //任务启动前的任务
             OnStarting(TaskContext);
+            //初始化任务步骤,获取执行到哪一步
             TaskContext.TaskSteps = StepsInitialize();
             TaskContext.StepIndex = GetStepIndex(TaskContext);
             if (TaskContext.StepIndex == 0)
@@ -86,6 +93,8 @@ namespace Liuliu.ScriptEngine.Tasks
             while (true)
             {
                 TaskStep step = TaskContext.TaskSteps[TaskContext.StepIndex - 1];
+                Debug.WriteLine("执行步骤" + TaskContext.StepIndex + ":" + step.Name);
+                //执行任务步骤
                 result = step.RunFunc(TaskContext);
                 if (result.Stopping)
                 {
@@ -99,14 +108,16 @@ namespace Liuliu.ScriptEngine.Tasks
                 if (TaskContext.StepIndex > TaskContext.TaskSteps.Length)
                 {
                     //TaskContext.StepIndex = 1;
-
                     return new TaskResult(TaskResultType.Finished,"任务执行步骤已经完成");
                 }
             }
+         
+
         }
 
         public void Stop()
         {
+            //任务结束后要做的任务
             OnStopping(TaskContext);
             IRole role = TaskContext.Role;
             //if (!role.IsAlive && role.IsMoving())

@@ -115,6 +115,7 @@ namespace Liuliu.ScriptEngine.Models
         /// </summary>
         string CurrentMap { get; }
 
+
         ///// <summary>
         /////     获取 当前Ｘ坐标
         ///// </summary>
