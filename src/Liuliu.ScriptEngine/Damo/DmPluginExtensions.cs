@@ -79,6 +79,29 @@ namespace Liuliu.ScriptEngine.Damo
             Debug.WriteLine("找字[" + str + "]失败!");
             return false;
         }
+        /// <summary>
+        /// 滑动操作
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="mousedelay">鼠标每步延时</param>
+        /// <param name="mousestep">鼠标步长</param>
+        public static void Swipe(this DmPlugin _dm,int x1,int y1,int x2,int y2,int mousedelay=50,int mousestep=10)
+        {
+            _dm.EnableRealMouse(1, mousedelay, mousestep);
+            _dm.MoveTo(x1, y1);
+            _dm.Delay(50);
+            _dm.LeftDown();
+            _dm.Delay(50);
+            _dm.MoveTo(x2, y2);
+            _dm.Delay(50);
+            _dm.LeftUp();
+            _dm.Delay(50);
+            _dm.EnableRealMouse(0, mousedelay, mousestep);
+        }
 
     }
 }

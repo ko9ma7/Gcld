@@ -22,11 +22,15 @@ namespace Liuliu.ScriptEngine.Tasks
             TaskContext = context;
             Role = context.Role;
             Dm = context.Role.Window.Dm;
+            Repetitions =0;
         }
 
         public IRole Role { get; }
         public DmPlugin Dm { get; }
-
+        /// <summary>
+        /// 重复次数
+        /// </summary>
+        public int Repetitions { get; set; }
         public TaskContext TaskContext { get; }
 
         public string Name
@@ -96,8 +100,10 @@ namespace Liuliu.ScriptEngine.Tasks
                 Debug.WriteLine("执行步骤" + TaskContext.StepIndex + ":" + step.Name);
                 //执行任务步骤
                 result = step.RunFunc(TaskContext);
+                //如果返回结果为Fail或者Finished则结束返回
                 if (result.Stopping)
                 {
+                    Repetitions=0;
                     return result;
                 }
                 if (result.ResultType == TaskResultType.Jump)
@@ -107,8 +113,8 @@ namespace Liuliu.ScriptEngine.Tasks
                 TaskContext.StepIndex++;
                 if (TaskContext.StepIndex > TaskContext.TaskSteps.Length)
                 {
-                    //TaskContext.StepIndex = 1;
-                    return new TaskResult(TaskResultType.Finished,"任务执行步骤已经完成");
+                    TaskContext.StepIndex = 1;
+                    Repetitions++;
                 }
             }
          

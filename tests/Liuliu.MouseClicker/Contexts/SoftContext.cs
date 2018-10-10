@@ -107,7 +107,7 @@ namespace Liuliu.MouseClicker
             DmPlugin dm = DmSystem.Dm;
 
             string hwnds = dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
-           // string hwnds = dm.EnumWindow(0, "ScreenBoardClassWindow", "Qt5QWindowIcon", 3);
+
             if(hwnds=="")
             {
                 Debug.WriteLine("获取句柄失败!");
@@ -117,7 +117,10 @@ namespace Liuliu.MouseClicker
             {
                 Debug.WriteLine(hwnds);
             }
+            
+
             Hwnds=hwnds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
+     
             Debug.WriteLine("当前打开的模拟器："+Hwnds.Count);
         }
 

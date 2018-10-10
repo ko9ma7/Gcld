@@ -25,11 +25,18 @@ namespace Liuliu.ScriptEngine.Tasks
         public TaskResultType ResultType { get; private set; }
 
         public string Message { get; private set; }
-
+        /// <summary>
+        /// 执行成功
+        /// </summary>
         public static TaskResult Success { get; } = new TaskResult(TaskResultType.Success);
-
+        /// <summary>
+        /// 执行跳过
+        /// </summary>
         public static TaskResult Jump { get; } = new TaskResult(TaskResultType.Jump);
-
+        /// <summary>
+        /// 执行结束
+        /// </summary>
+        public static TaskResult Finished { get; } = new TaskResult(TaskResultType.Finished);
         /// <summary>
         /// 获取 任务是否即将停止
         /// </summary>

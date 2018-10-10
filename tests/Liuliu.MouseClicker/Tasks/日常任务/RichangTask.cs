@@ -22,11 +22,12 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 4;
+            return 1;
         }
         protected override void OnStopping(TaskContext context)
         {
             ((Role)Role).ChangeRole();
+            Dm.Delay(5000);
         }
 
         protected override TaskStep[] StepsInitialize()
@@ -41,9 +42,9 @@ namespace Liuliu.MouseClicker.Tasks
             return steps;
         }
 
+      
         private TaskResult RunStep4(TaskContext arg)
         {
-            return TaskResult.Success;
             Role role = (Role)Role;
             role.OpenTixing();
             if (Dm.FindPicAndClick(102, 132, 836, 494, @"\bmp\领取俸禄.bmp"))
@@ -53,7 +54,7 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(2000);
             }
             role.CloseWindow();
-            return TaskResult.Success;
+            return Repetitions==9?TaskResult.Success:TaskResult.Finished;
         }
 
         private TaskResult RunStep3(TaskContext arg)
