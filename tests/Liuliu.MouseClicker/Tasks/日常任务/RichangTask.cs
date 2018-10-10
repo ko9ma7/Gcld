@@ -46,7 +46,7 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep4(TaskContext arg)
         {
             Role role = (Role)Role;
-            role.OpenTixing();
+            role.OpenRemind();
             if (Dm.FindPicAndClick(102, 132, 836, 494, @"\bmp\领取俸禄.bmp"))
             {
                 Dm.Delay(1000);
@@ -77,7 +77,7 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep2(TaskContext arg)
         {
             Role role = (Role)Role;
-            role.OpenTixing();
+            role.OpenRemind();
             if (Dm.FindPicAndClick(108, 126, 831, 493, @"\bmp\每日登陆.bmp"))
             {
                 Dm.Delay(1000);
@@ -97,31 +97,32 @@ namespace Liuliu.MouseClicker.Tasks
         {
             IRole role = context.Role;
             DmPlugin dm = role.Window.Dm;
-            dm.MoveToClick(947, 69);
+            dm.MoveToClick(920, 69);
             dm.Delay(1000);
 
             int intX, intY;
-            for (int i = 0; i < 100; i++)
+            while(true)
             {
               
-                dm.FindStr(70, 232, 216, 291, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
+                dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
                 if (intX > 0 && intY > 0)
                 {
-                    dm.MoveToClick(152, 432);
+                    dm.MoveToClick(156, 420);
                     dm.Delay(50);
-                    if(dm.GetColorNum(160, 249, 231, 300, "f60000-101010",0.9)>5)
+                    if(dm.GetColorNum(157, 242, 227, 293, "f60000-101010",0.9)>5)
                     {
                         role.OutSubMessage("军资已经领取完成,正在冷却!");
                         break;
                     }
-
+                    dm.Delay(300);
                 }else
                 {
                     role.OutMessage("找不到军资奖励");
+                    break;
                 }
             }
             role.OutSubMessage("关闭地图中...");
-            dm.MoveToClick(947, 69);
+            dm.MoveToClick(920, 69);
             dm.Delay(1000);
 
 

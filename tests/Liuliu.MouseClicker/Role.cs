@@ -158,10 +158,9 @@ namespace Liuliu.MouseClicker
             return true;
         }
 
-        public bool OpenTixing()
+        public bool OpenRemind()
         {
             OutSubMessage("打开提醒...");
-            int intX, intY;
             if (_dm.FindPicAndClick(283, 33, 906, 301,@"\bmp\提醒.bmp"))
             {
                 _dm.Delay(1000);

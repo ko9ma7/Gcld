@@ -21,9 +21,13 @@ namespace Liuliu.ScriptEngine.Tasks
             ResultType = type;
             Message = message;
         }
-
+        /// <summary>
+        /// 结果类型
+        /// </summary>
         public TaskResultType ResultType { get; private set; }
-
+        /// <summary>
+        /// 结果消息
+        /// </summary>
         public string Message { get; private set; }
         /// <summary>
         /// 执行成功
