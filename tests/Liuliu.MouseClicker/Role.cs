@@ -140,16 +140,20 @@ namespace Liuliu.MouseClicker
             if(OpenWindowMenu("角色"))
             {
                 _dm.Delay(1000);
-                //_dm.MoveToClick(533, 466);
-                _dm.MoveToClick(438, 383);
+                _dm.MoveToClick(516, 455);
 
                 _dm.Delay(1000);
-                _dm.Swipe(494, 317, 494, 208);
+                _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(500);
-                _dm.Swipe(494, 317, 494, 208);
+                _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(500);
-                _dm.Swipe(494, 317, 494, 208);
+                _dm.Swipe(490, 337, 490, 128);
+                _dm.Delay(500);
+                _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(1000);
+                _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\等级.bmp");
+                _dm.Delay(500);
+                _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
             }
             else
             {

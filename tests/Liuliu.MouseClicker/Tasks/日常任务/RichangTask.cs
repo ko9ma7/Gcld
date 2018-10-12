@@ -26,8 +26,7 @@ namespace Liuliu.MouseClicker.Tasks
         }
         protected override void OnStopping(TaskContext context)
         {
-            ((Role)Role).ChangeRole();
-            Dm.Delay(5000);
+          
         }
 
         protected override TaskStep[] StepsInitialize()
@@ -36,14 +35,43 @@ namespace Liuliu.MouseClicker.Tasks
              {
                 new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep3 },
-                new TaskStep() {Name="领取俸禄",Order=4,RunFunc=RunStep4 }
+                new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
+                new TaskStep() {Name="领取恭贺奖励",Order=4,RunFunc=RunStep4 }
              };
             return steps;
         }
 
       
         private TaskResult RunStep4(TaskContext arg)
+        {
+            Role role = (Role)Role;
+            role.OpenTeshushijian();
+            if (Dm.FindPicAndClick(114, 142, 827, 489, @"\bmp\恭贺奖励.bmp", 30, 0))
+            {
+                Dm.Delay(1000);
+                while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp"))
+                {
+                    Dm.MoveToClick(478, 477);
+                    Dm.Delay(300);
+                }
+            }
+            role.CloseWindow();
+            if (Repetitions == 9)
+            {
+               return TaskResult.Finished;
+            }
+            else
+            {
+                role.ChangeRole();
+                Dm.Delay(5000);
+                Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp");
+                Dm.Delay(2000);
+                return TaskResult.Success;
+            }
+          
+        }
+
+        private TaskResult RunStep3(TaskContext arg)
         {
             Role role = (Role)Role;
             role.OpenRemind();
@@ -54,23 +82,6 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(2000);
             }
             role.CloseWindow();
-            return Repetitions==9?TaskResult.Success:TaskResult.Finished;
-        }
-
-        private TaskResult RunStep3(TaskContext arg)
-        {
-            Role role = (Role)Role;
-            role.OpenTeshushijian();
-            if (Dm.FindPicAndClick(114, 142, 827, 489, @"\bmp\恭贺奖励.bmp", 30, 0))
-            {
-                Dm.Delay(1000);
-                while(Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp"))
-                {
-                    Dm.MoveToClick(492, 487);
-                    Dm.Delay(300);
-                }
-            }
-            role.CloseWindow();
             return TaskResult.Success;
         }
 
@@ -78,10 +89,10 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)Role;
             role.OpenRemind();
-            if (Dm.FindPicAndClick(108, 126, 831, 493, @"\bmp\每日登陆.bmp"))
+            if (Dm.FindPicAndClick(98, 133, 868, 516, @"\bmp\每日登陆.bmp"))
             {
                 Dm.Delay(1000);
-                Dm.MoveToClick(523,411);
+                Dm.MoveToClick(513,402);
                 Dm.Delay(3000);
             }
             else
@@ -97,6 +108,10 @@ namespace Liuliu.MouseClicker.Tasks
         {
             IRole role = context.Role;
             DmPlugin dm = role.Window.Dm;
+
+            Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp");
+            Dm.Delay(2000);
+
             dm.MoveToClick(920, 69);
             dm.Delay(1000);
 

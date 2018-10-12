@@ -89,7 +89,7 @@ namespace Liuliu.ScriptEngine.Damo
         /// <param name="y2"></param>
         /// <param name="mousedelay">鼠标每步延时</param>
         /// <param name="mousestep">鼠标步长</param>
-        public static void Swipe(this DmPlugin _dm,int x1,int y1,int x2,int y2,int mousedelay=50,int mousestep=10)
+        public static void Swipe(this DmPlugin _dm,int x1,int y1,int x2,int y2,int mousedelay=30,int mousestep=10)
         {
             _dm.EnableRealMouse(1, mousedelay, mousestep);
             _dm.MoveTo(x1, y1);
