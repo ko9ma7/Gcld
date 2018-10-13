@@ -208,7 +208,31 @@ namespace Liuliu.MouseClicker
 
         }
 
-        
+        public bool OpenHuodong(string huodong)
+        {
+           string points=_dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.9, 0);
+            Debug.WriteLine(points);
+
+            if (points == "")
+            {
+                CloseWindow();
+                return false;
+            }
+            string[] t= points.Split('|');
+
+            foreach (var item in t)
+            {
+                string[] p = item.Split(',');
+                _dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                _dm.Delay(1000);
+                if (_dm.FindStrAndClick(75, 2, 909, 70, huodong, "45.34.60-5.5.20|60.18.75-5.5.25"))
+                {
+                    return true;
+                }
+            }
+            CloseWindow();
+            return false;
+        }
 
     }
 }

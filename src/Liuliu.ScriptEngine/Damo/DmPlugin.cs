@@ -14,6 +14,7 @@ using Liuliu.ScriptEngine.Damo;
 
 using OSharp.Utility.Reflection;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Liuliu.ScriptEngine
 {
@@ -3642,7 +3643,9 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool Delay(int mis)
         {
-            return _dm.delay(mis) == 1;
+            Thread.Sleep(mis);
+            return true;
+           // return _dm.delay(mis) == 1;
         }
 
         /// <summary>
