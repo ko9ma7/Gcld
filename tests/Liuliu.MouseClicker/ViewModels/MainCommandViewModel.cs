@@ -92,8 +92,8 @@ namespace Liuliu.MouseClicker.ViewModels
 
                         Role r = (Role)role;
                         List<TaskBase> tasks = new List<TaskBase>();
-                        tasks.Add(new RichangTask(context));
-
+                       // tasks.Add(new RichangTask(context));
+                        tasks.Add(new HuodongTask(context));
                         engine.Start(tasks.ToArray());
                     }
 
