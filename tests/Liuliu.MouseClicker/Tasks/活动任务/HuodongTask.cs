@@ -37,23 +37,34 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
             role.OutMessage("打开活动界面");
-            role.OpenHuodong("大宴群雄");
-   
+
             Delegater.WaitTrue(() =>
             {
-                Dm.FindStrAndClick(494, 445, 702, 515, "免费", "DAD8D3-25272C",100,10);
+                return role.OpenActivityBoard("大宴群雄");
+            },()=> {
+                return Dm.IsExistPic(266, 83, 692, 160, @"\bmp\大宴群雄.bmp");
+            },()=>Dm.Delay(1000));
+ 
+
+
+            Delegater.WaitTrue(() =>
+            {
+                Dm.FindStrAndClick(494, 445, 702, 515, "免费", "DAD8D3-25272C", 100, 10);
                 Dm.Delay(300);
-                Dm.FindPicAndClick(258, 452, 447, 518, @"\bmp\免费盛宴.bmp",100,10);
+                Dm.FindPicAndClick(494, 445, 702, 515, @"\bmp\免费请帖.bmp", 100, 36);
+                Dm.Delay(300);
+                Dm.FindPicAndClick(258, 452, 447, 518, @"\bmp\免费盛宴.bmp", 100, 10);
                 Dm.Delay(300);
                 Dm.FindPicAndClick(258, 452, 447, 518, @"\bmp\随机邀请.bmp");
                 Dm.Delay(300);
-                if (Dm.IsExistPic(494, 445, 702, 515, @"\bmp\金币邀请.bmp")&& Dm.IsExistPic(258, 452, 447, 518, @"\bmp\金币盛宴.bmp"))
+                if (Dm.IsExistPic(494, 445, 702, 515, @"\bmp\金币邀请.bmp") && Dm.IsExistPic(258, 452, 447, 518, @"\bmp\金币盛宴.bmp"))
                 {
                     role.OutSubMessage("大宴已经无免费次数!");
                     return true;
                 }
                 return false;
-            },()=>Dm.Delay(1000));
+            }, () => Dm.Delay(1000));
+
             role.CloseWindow();
 
             if (Repetitions == 9)

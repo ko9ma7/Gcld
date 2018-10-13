@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -36,6 +37,7 @@ namespace Liuliu.ScriptEngine.Tasks
             }
             return count < maxCount;
         }
+
 
         /// <summary>
         /// 重复执行指定代码直到成功，满足指定条件时立即失败
@@ -74,11 +76,39 @@ namespace Liuliu.ScriptEngine.Tasks
         }
 
 
-
-        public static bool WaitTrue(int maxCount,params Action<bool>[] actions)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trueFunc"></param>
+        /// <param name="trueFlag"></param>
+        /// <param name="failAction"></param>
+        /// <returns></returns>
+        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction)
         {
-          
-            return true;
+            while (!trueFunc())
+            {
+                failAction();
+            }
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            
+            while(sw.ElapsedMilliseconds<=5000)
+            {
+                Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
+                if (trueFlag())
+                {
+                    Debug.WriteLine("已经成功了");
+                    sw.Stop();
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine("我失败了");
+                }
+                Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
+            }
+            sw.Stop();
+            return false;
         }
     }
 }

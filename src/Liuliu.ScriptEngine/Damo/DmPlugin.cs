@@ -3644,13 +3644,9 @@ namespace Liuliu.ScriptEngine
         public bool Delay(int mis)
         {
             Thread.Sleep(mis);
-<<<<<<< HEAD
+
             // return _dm.delay(mis) == 1;
             return true;
-=======
-            return true;
-           // return _dm.delay(mis) == 1;
->>>>>>> be4d00c6433275f5b8d0f6bf8fcafb64c4e90af0
         }
 
         /// <summary>

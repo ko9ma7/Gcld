@@ -185,16 +185,26 @@ namespace Liuliu.MouseClicker
         {
             OutSubMessage("开始关闭窗口...");
             int intX, intY;
-            _dm.FindMultiColor(539, 0, 916, 298, "f4c792","-11|4|be1a1c,-6|-7|fbd7c5,6|8|d9af79,-7|8|d6ab77,0|14|aa0305,-14|1|aa0305,13|-1|ac0507,1|-12|bb1719", 0.9, 0, out intX, out intY);
-            if (intX > 0 && intY > 0)
-            {
-                _dm.MoveToClick(intX, intY);
-                _dm.Delay(1000);
-                OutSubMessage("关闭窗口成功!");
-                return true;
-            }
-            OutSubMessage("关闭窗口失败!");
-            return false;
+            return Delegater.WaitTrue(() =>
+             {
+                 _dm.FindMultiColor(539, 0, 916, 298, "f4c792", "-11|4|be1a1c,-6|-7|fbd7c5,6|8|d9af79,-7|8|d6ab77,0|14|aa0305,-14|1|aa0305,13|-1|ac0507,1|-12|bb1719", 0.9, 0, out intX, out intY);
+                 if (intX > 0 && intY > 0)
+                 {
+                     _dm.MoveToClick(intX, intY);
+                     _dm.Delay(1000);
+                     _dm.FindMultiColor(539, 0, 916, 298, "f4c792", "-11|4|be1a1c,-6|-7|fbd7c5,6|8|d9af79,-7|8|d6ab77,0|14|aa0305,-14|1|aa0305,13|-1|ac0507,1|-12|bb1719", 0.9, 0, out intX, out intY);
+                     if (intX > 0 && intY > 0)
+                     {
+                         OutSubMessage("关闭窗口失败!");
+                         return false;
+                     }
+                     OutSubMessage("关闭窗口成功!");
+                     return true;
+                 }
+                 OutSubMessage("关闭窗口成功!");
+                 return true;
+             }, () => _dm.Delay(1000),5);
+          
         }
 
         public bool OpenWindowMenu(string menu)
@@ -214,7 +224,6 @@ namespace Liuliu.MouseClicker
 
         }
 
-<<<<<<< HEAD
         public bool OpenMap()
         {
             int intX, intY;
@@ -249,10 +258,10 @@ namespace Liuliu.MouseClicker
             }
         }
         
-=======
-        public bool OpenHuodong(string huodong)
+
+        public bool OpenActivityBoard(string activity)
         {
-           string points=_dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.9, 0);
+           string points=_dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
             Debug.WriteLine(points);
 
             if (points == "")
@@ -267,7 +276,7 @@ namespace Liuliu.MouseClicker
                 string[] p = item.Split(',');
                 _dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
                 _dm.Delay(1000);
-                if (_dm.FindStrAndClick(75, 2, 909, 70, huodong, "45.34.60-5.5.20|60.18.75-5.5.25"))
+                if (_dm.FindStrAndClick(75, 2, 909, 70, activity, "45.34.60-5.5.20|60.18.75-5.5.25"))
                 {
                     return true;
                 }
@@ -275,7 +284,7 @@ namespace Liuliu.MouseClicker
             CloseWindow();
             return false;
         }
->>>>>>> be4d00c6433275f5b8d0f6bf8fcafb64c4e90af0
+
 
     }
 }
