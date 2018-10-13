@@ -64,8 +64,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 role.ChangeRole();
                 Dm.Delay(5000);
-                Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp");
-                Dm.Delay(2000);
+               
                 return TaskResult.Success;
             }
           
@@ -106,14 +105,13 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep1(TaskContext context)
         {
-            IRole role = context.Role;
+            Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
             Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp");
             Dm.Delay(2000);
 
-            dm.MoveToClick(920, 69);
-            dm.Delay(1000);
+            role.OpenMap();
 
             int intX, intY;
             while(true)
@@ -136,10 +134,8 @@ namespace Liuliu.MouseClicker.Tasks
                     break;
                 }
             }
-            role.OutSubMessage("关闭地图中...");
-            dm.MoveToClick(920, 69);
-            dm.Delay(1000);
-
+         
+            role.CloseMap();
 
             return TaskResult.Success;
         }

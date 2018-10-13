@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Liuliu.ScriptEngine.Damo;
 using Liuliu.ScriptEngine;
 using System.Diagnostics;
+using System.Threading;
+using Liuliu.ScriptEngine.Tasks;
 
 namespace Liuliu.MouseClicker
 {
@@ -76,7 +78,7 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                throw new NotImplementedException();
+                return "";
             }
         }
 
@@ -84,7 +86,7 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                return (str) => { Debug.WriteLine("角色通知："+str); };
+                return (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "角色通知："+str); };
             }
         }
 
@@ -92,7 +94,7 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                return (str) => { Debug.WriteLine("角色通知："+str); };
+                return (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "角色通知："+str); };
             }
         }
 
@@ -137,10 +139,15 @@ namespace Liuliu.MouseClicker
         {
             _dm.MoveToClick(29, 34);
             _dm.Delay(1000);
-            if(OpenWindowMenu("角色"))
-            {
+      
                 _dm.Delay(1000);
-                _dm.MoveToClick(516, 455);
+
+                Delegater.WaitTrue(()=>
+                {
+                    OpenWindowMenu("角色");
+                    return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp");
+                
+                },()=>_dm.Delay(1000));
 
                 _dm.Delay(1000);
                 _dm.Swipe(490, 337, 490, 128);
@@ -151,14 +158,13 @@ namespace Liuliu.MouseClicker
                 _dm.Delay(500);
                 _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(1000);
+                 
                 _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\等级.bmp");
                 _dm.Delay(500);
                 _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
-            }
-            else
-            {
-                _dm.Capture(0, 0, 200, 200, "aaa.bmp");
-            }
+
+                CloseWindow();
+    
             return true;
         }
 
@@ -208,6 +214,39 @@ namespace Liuliu.MouseClicker
 
         }
 
+        public bool OpenMap()
+        {
+            int intX, intY;
+            while (true)
+            {
+               
+                _dm.MoveToClick(920, 69);
+                _dm.Delay(1000);
+                _dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
+                if (intX > 0 && intY > 0)
+                {
+                    return true;
+                }
+            } 
+        
+
+        }
+        public bool CloseMap()
+        {
+            int intX, intY;
+            while (true)
+            {
+                _dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
+                if (intX > 0 && intY > 0)
+                {
+                    _dm.MoveToClick(920, 69);
+                    _dm.Delay(1000);
+                }
+                else
+                    return true;
+
+            }
+        }
         
 
     }

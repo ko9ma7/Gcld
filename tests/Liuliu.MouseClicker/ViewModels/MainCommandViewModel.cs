@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using Liuliu.ScriptEngine;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -86,7 +87,7 @@ namespace Liuliu.MouseClicker.ViewModels
 
                         TaskEngine engine = new TaskEngine();
                         TaskContext context = new TaskContext(role, func);
-                        engine.OutMessage = (str) => { Debug.WriteLine(str); };
+                        engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
                         engine.Window = role.Window;
 
                         Role r = (Role)role;

@@ -9,6 +9,7 @@
 
 using Liuliu.ScriptEngine.Models;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Liuliu.ScriptEngine.Tasks
 {
@@ -97,7 +98,7 @@ namespace Liuliu.ScriptEngine.Tasks
             while (true)
             {
                 TaskStep step = TaskContext.TaskSteps[TaskContext.StepIndex - 1];
-                Debug.WriteLine("执行步骤" + TaskContext.StepIndex + ":" + step.Name);
+                Debug.WriteLine("["+ Thread.CurrentThread.ManagedThreadId.ToString() + "]"+"执行步骤" + TaskContext.StepIndex + ":" + step.Name);
                 //执行任务步骤
                 result = step.RunFunc(TaskContext);
                 //如果返回结果为Fail或者Finished则结束返回

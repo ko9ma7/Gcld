@@ -14,6 +14,7 @@ using Liuliu.ScriptEngine.Damo;
 
 using OSharp.Utility.Reflection;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Liuliu.ScriptEngine
 {
@@ -1411,7 +1412,7 @@ namespace Liuliu.ScriptEngine
             intY = (int)y;
             if(intX<0&&intY<0)
             {
-                Debug.WriteLine("找字[" + str + "]失败!");
+                Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找字[" + str + "]失败!");
             }
             
             return result;
@@ -3642,7 +3643,9 @@ namespace Liuliu.ScriptEngine
         /// <returns>操作是否成功</returns>
         public bool Delay(int mis)
         {
-            return _dm.delay(mis) == 1;
+            Thread.Sleep(mis);
+            // return _dm.delay(mis) == 1;
+            return true;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 
 namespace Liuliu.ScriptEngine.Damo
 {
@@ -49,7 +50,7 @@ namespace Liuliu.ScriptEngine.Damo
                 _dm.Delay(50);
                 return true;
             }
-            Debug.WriteLine("找图[" + picname + "]失败!");
+            Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找图[" + picname + "]失败!");
             return false;
         }
         /// <summary>
@@ -76,7 +77,7 @@ namespace Liuliu.ScriptEngine.Damo
                 _dm.Delay(50);
                 return true;
             }
-            Debug.WriteLine("找字[" + str + "]失败!");
+            Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找字[" + str + "]失败!");
             return false;
         }
         /// <summary>

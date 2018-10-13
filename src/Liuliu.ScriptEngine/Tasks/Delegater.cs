@@ -72,5 +72,13 @@ namespace Liuliu.ScriptEngine.Tasks
             }
             return count < maxCount;
         }
+
+
+
+        public static bool WaitTrue(int maxCount,params Action<bool>[] actions)
+        {
+          
+            return true;
+        }
     }
 }

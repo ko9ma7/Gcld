@@ -17,7 +17,7 @@ using Liuliu.ScriptEngine.Damo;
 using OSharp.Utility;
 using OSharp.Utility.Extensions;
 using OSharp.Utility.Logging;
-
+using System.Diagnostics;
 
 namespace Liuliu.ScriptEngine.Tasks
 {
@@ -160,6 +160,7 @@ namespace Liuliu.ScriptEngine.Tasks
             if (_workThread == null)
             {
                 _workThread = GetWorkThread(tasks);
+                Debug.WriteLine("[" + _workThread.ManagedThreadId.ToString() + "]");
             }
             if (!CheckTaskRunState(TaskRunState.Starting))
             {
@@ -316,7 +317,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 }
                 WaitForUnBind();
                 _workThread = null;
-            }) { IsBackground = true };
+            }) { IsBackground = true};
         }
 
         private void TaskStart()
