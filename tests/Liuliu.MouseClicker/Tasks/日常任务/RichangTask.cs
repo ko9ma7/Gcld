@@ -36,12 +36,17 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
-                new TaskStep() {Name="领取恭贺奖励",Order=4,RunFunc=RunStep4 }
+                new TaskStep() {Name="领取恭贺奖励",Order=4,RunFunc=RunStep4 },
+                new TaskStep() {Name="祭祀资源",Order=5,RunFunc=RunStep5 }
              };
             return steps;
         }
 
-      
+        private TaskResult RunStep5(TaskContext arg)
+        {
+            throw new NotImplementedException();
+        }
+
         private TaskResult RunStep4(TaskContext arg)
         {
             Role role = (Role)Role;
@@ -49,10 +54,12 @@ namespace Liuliu.MouseClicker.Tasks
             if (Dm.FindPicAndClick(114, 142, 827, 489, @"\bmp\恭贺奖励.bmp", 30, 0))
             {
                 Dm.Delay(1000);
-                while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp"))
+                int count = 30;
+                while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp")&&count!=0)
                 {
                     Dm.MoveToClick(478, 477);
                     Dm.Delay(300);
+                    count--;
                 }
             }
             role.CloseWindow();
@@ -92,7 +99,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 Dm.Delay(1000);
                 Dm.MoveToClick(513,402);
-                Dm.Delay(3000);
+                Dm.Delay(1000);
             }
             else
             {
@@ -108,15 +115,13 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
-            Delegater.WaitTrue(() => Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp"),
-                             () => !Dm.IsExistPic(799, 328, 965, 520, @"\bmp\世界.bmp"),
-                             () => Dm.Delay(1000));
+            Dm.FindPicAndClickClear(799, 328, 965, 520, @"\bmp\世界.bmp");
+                      
             role.OpenMap();
 
             int intX, intY;
             while(true)
             {
-              
                 dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
                 if (intX > 0 && intY > 0)
                 {

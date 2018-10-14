@@ -77,7 +77,7 @@ namespace Liuliu.ScriptEngine.Tasks
 
 
         /// <summary>
-        /// 重复执行指定代码直到指定条件出现，满足指定条件时立即成功
+        /// 满足指定条件时立即成功,否则重复执行指定代码直到指定条件出现
         /// </summary>
         /// <param name="trueFunc">要执行的返回成功的操作</param>
         /// <param name="trueFlag">要判断已经成功的操作</param>

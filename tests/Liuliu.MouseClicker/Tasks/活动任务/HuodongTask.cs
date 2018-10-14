@@ -16,7 +16,7 @@ namespace Liuliu.MouseClicker.Tasks
         public HuodongTask(TaskContext context) : base(context)
         {
         }
-
+        List<ActivityEnum> activities = new List<ActivityEnum>();
         protected override int GetStepIndex(TaskContext context)
         {
            
@@ -27,9 +27,15 @@ namespace Liuliu.MouseClicker.Tasks
         {
             TaskStep[] steps =
              {
-                new TaskStep() {Name="大宴群雄",Order=1,RunFunc=RunStep1 }
+                new TaskStep() {Name="大宴群雄",Order=1,RunFunc=RunStep1 },
+                new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep2 }
              };
             return steps;
+        }
+
+        private TaskResult RunStep2(TaskContext context)
+        {
+
         }
 
         private TaskResult RunStep1(TaskContext context)
@@ -37,6 +43,8 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
             role.OutMessage("打开活动界面");
+            
+
 
             Delegater.WaitTrue(()=> role.OpenActivityBoard("大宴群雄"),
                                ()=> Dm.IsExistPic(266, 83, 692, 160, @"\bmp\大宴群雄.bmp"),
@@ -73,5 +81,37 @@ namespace Liuliu.MouseClicker.Tasks
                 return TaskResult.Success;
             }
         }
+        protected override void OnStarting(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            string points = Dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
+            Debug.WriteLine(points);
+
+            if (points == "")
+            {
+              role.CloseWindow();
+                return;
+            }
+            string[] t = points.Split('|');
+
+            foreach (var item in t)
+            {
+                string[] p = item.Split(',');
+                Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                Dm.Delay(1000);
+                Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25");
+            }
+            role.CloseWindow();
+            return ;
+        }
+    }
+
+
+
+    enum ActivityEnum
+    {
+        "大宴群雄"=1,
+        "宝石矿脉"=2,
+        "天降神剑"=3,
     }
 }

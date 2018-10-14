@@ -226,36 +226,15 @@ namespace Liuliu.MouseClicker
 
         public bool OpenMap()
         {
-            int intX, intY;
-            while (true)
-            {
-               
-                _dm.MoveToClick(920, 69);
-                _dm.Delay(1000);
-                _dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
-                if (intX > 0 && intY > 0)
-                {
-                    return true;
-                }
-            } 
-        
-
+          return Delegater.WaitTrue(() => _dm.MoveToClick(920, 69),
+                               () => _dm.IsExistStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25"),
+                               ()=>_dm.Delay(1000));
         }
         public bool CloseMap()
         {
-            int intX, intY;
-            while (true)
-            {
-                _dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
-                if (intX > 0 && intY > 0)
-                {
-                    _dm.MoveToClick(920, 69);
-                    _dm.Delay(1000);
-                }
-                else
-                    return true;
-
-            }
+            return Delegater.WaitTrue(() => _dm.MoveToClick(920, 69),
+                                 () => !_dm.IsExistStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25"),
+                                 () => _dm.Delay(1000));
         }
         
 

@@ -28,6 +28,26 @@ namespace Liuliu.ScriptEngine.Damo
                 return false;
         }
         /// <summary>
+        /// 查找区域是否存在指定图片
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="str"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static bool IsExistStr(this DmPlugin _dm, int x1, int y1, int x2, int y2, string str,string color)
+        {
+            int intX, intY;
+            _dm.FindStr(x1, y1, x2, y2, str, color, 0.9, out intX, out intY);
+            if (intX > 0 && intY > 0)
+                return true;
+            else
+                return false;
+        }
+        /// <summary>
         /// 查找指定区域是否存在图片,存在则点击图片,可设置偏移
         /// </summary>
         /// <param name="_dm"></param>
@@ -77,6 +97,7 @@ namespace Liuliu.ScriptEngine.Damo
                 _dm.Delay(50);
                 return true;
             }
+
             Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找字[" + str + "]失败!");
             return false;
         }
@@ -105,7 +126,7 @@ namespace Liuliu.ScriptEngine.Damo
         }
 
         /// <summary>
-        /// 查找指定区域是否存在图片,存在则点击图片,可设置偏移
+        /// 查找指定区域是否存在图片,存在则点击图片,直到图片消失
         /// </summary>
         /// <param name="_dm"></param>
         /// <param name="x1"></param>
@@ -115,37 +136,26 @@ namespace Liuliu.ScriptEngine.Damo
         /// <param name="picname"></param>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        /// <param name="maxCount"></param>
+        /// <param name="delay"></param>
         /// <returns></returns>
-        public static bool FindPicAndClickClear(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname, int a = 0, int b = 0,int maxCount = 0)
+        public static bool FindPicAndClickClear(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname, int a = 0, int b = 0,int delay=1000)
         {
             int intX, intY;
-            if (maxCount == 0)
+            while (true)
             {
-                while (true)
+              _dm.FindPic(x1, y1, x2, y2, picname, "101010", 0.9, 0, out intX, out intY);
+                if (intX > 0 && intY > 0)
                 {
+                    _dm.MoveToClick(intX + a, intY + b);
+                    _dm.Delay(delay);
                     _dm.FindPic(x1, y1, x2, y2, picname, "101010", 0.9, 0, out intX, out intY);
-                    if (intX > 0 && intY > 0)
-                    {
-                        //Debug.WriteLine("找图[" + picname + "]成功!");
-                        _dm.MoveToClick(intX + a, intY + b);
-                        _dm.Delay(50);
+                    if (intX < 0 && intY < 0)
                         return true;
-                    }
                 }
-                return true;
+                else
+                    return false;
+                _dm.Delay(50);
             }
-            int count = 0;
-            while (!trueFunc() && count < maxCount)
-            {
-                failAction();
-                count++;
-            }
-            return count < maxCount;
-
-          
-            Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找图[" + picname + "]失败!");
-            return false;
         }
 
     }
