@@ -116,6 +116,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 {
                     TaskContext.StepIndex = 1;
                     Repetitions++;
+                    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "重复次数" + ":" + Repetitions);
                 }
             }
          

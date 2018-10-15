@@ -47,44 +47,52 @@ namespace Liuliu.ScriptEngine.Tasks
         /// <param name="breakFunc">当此代码执行成功时，立即中断并返回失败</param>
         /// <param name="maxCount">重试的最大次数，0为一直重试</param>
         /// <returns>最终是否成功</returns>
-        public static bool WaitTrue(Func<bool> trueFunc, Action failAction, Func<bool> breakFunc, int maxCount = 0)
-        {
-            failAction = failAction ?? (() => { });
-            if (maxCount == 0)
-            {
-                while (!trueFunc())
-                {
-                    if (breakFunc())
-                    {
-                        return false;
-                    }
-                    failAction();
-                }
-                return true;
-            }
-            int count = 0;
-            while (!trueFunc() && count < maxCount)
-            {
-                if (breakFunc())
-                {
-                    return trueFunc();
-                }
-                failAction();
-                count++;
-            }
-            return count < maxCount;
-        }
+        //public static bool WaitTrue(Func<bool> trueFunc, Action failAction, Func<bool> breakFunc, int maxCount = 0)
+        //{
+        //    failAction = failAction ?? (() => { });
+        //    if (maxCount == 0)
+        //    {
+        //        while (!trueFunc())
+        //        {
+        //            if (breakFunc())
+        //            {
+        //                return false;
+        //            }
+        //            failAction();
+        //        }
+        //        return true;
+        //    }
+        //    int count = 0;
+        //    while (!trueFunc() && count < maxCount)
+        //    {
+        //        if (breakFunc())
+        //        {
+        //            return trueFunc();
+        //        }
+        //        failAction();
+        //        count++;
+        //    }
+        //    return count < maxCount;
+        //}
 
 
         /// <summary>
-        /// 
+        /// 重复执行指定代码直到指定条件出现，满足指定条件时立即成功
         /// </summary>
-        /// <param name="trueFunc"></param>
-        /// <param name="trueFlag"></param>
-        /// <param name="failAction"></param>
+        /// <param name="trueFunc">要执行的返回成功的操作</param>
+        /// <param name="trueFlag">要判断已经成功的操作</param>
+        /// <param name="failAction">每次执行失败时，执行的动作</param>
+        /// <param name="milliseconds">多长时间内出现条件则成功ms</param>
         /// <returns></returns>
-        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction)
+        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction,long milliseconds=5000)
         {
+            failAction = failAction ?? (() => { });
+            //如果trueFlag存在则表示已经在指定画面,或者取的标志存在多个
+            if (trueFlag())
+            {
+                Debug.WriteLine("已经在指定画面,或者取的标志存在多个");
+                return true;
+            }
             while (!trueFunc())
             {
                 failAction();
@@ -92,7 +100,7 @@ namespace Liuliu.ScriptEngine.Tasks
             Stopwatch sw = new Stopwatch();
             sw.Start();
             
-            while(sw.ElapsedMilliseconds<=5000)
+            while(sw.ElapsedMilliseconds<= milliseconds)
             {
                 Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
                 if (trueFlag())
@@ -108,6 +116,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
             }
             sw.Stop();
+            Debug.WriteLine(milliseconds+"ms后还没有出现,操作失败了!");
             return false;
         }
     }

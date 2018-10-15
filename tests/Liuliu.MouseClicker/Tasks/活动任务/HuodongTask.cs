@@ -38,15 +38,9 @@ namespace Liuliu.MouseClicker.Tasks
             DmPlugin dm = role.Window.Dm;
             role.OutMessage("打开活动界面");
 
-            Delegater.WaitTrue(() =>
-            {
-                return role.OpenActivityBoard("大宴群雄");
-            },()=> {
-                return Dm.IsExistPic(266, 83, 692, 160, @"\bmp\大宴群雄.bmp");
-            },()=>Dm.Delay(1000));
- 
-
-
+            Delegater.WaitTrue(()=> role.OpenActivityBoard("大宴群雄"),
+                               ()=> Dm.IsExistPic(266, 83, 692, 160, @"\bmp\大宴群雄.bmp"),
+                               ()=> Dm.Delay(1000));
             Delegater.WaitTrue(() =>
             {
                 Dm.FindStrAndClick(494, 445, 702, 515, "免费", "DAD8D3-25272C", 100, 10);

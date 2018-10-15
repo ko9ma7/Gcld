@@ -108,9 +108,9 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
-            Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp");
-            Dm.Delay(2000);
-
+            Delegater.WaitTrue(() => Dm.FindPicAndClick(799, 328, 965, 520, @"\bmp\世界.bmp"),
+                             () => !Dm.IsExistPic(799, 328, 965, 520, @"\bmp\世界.bmp"),
+                             () => Dm.Delay(1000));
             role.OpenMap();
 
             int intX, intY;
