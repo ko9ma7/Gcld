@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 1;
+            return 4;
         }
         protected override void OnStopping(TaskContext context)
         {
@@ -36,15 +36,50 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
-                new TaskStep() {Name="领取恭贺奖励",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="祭祀资源",Order=5,RunFunc=RunStep5 }
+                new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep5 },
+                new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep4 },
+             
              };
             return steps;
         }
 
         private TaskResult RunStep5(TaskContext arg)
         {
-            throw new NotImplementedException();
+            Role role = (Role)Role;
+            role.OpenMenu("资源");
+            Delegater.WaitTrue(() => role.OpenWindowMenu("祭祀"),
+                               () => Dm.GetColorNum(204, 61, 278, 96, "cba300-303030", 0.9)>10,
+                               () => Dm.Delay(1000));
+
+            Dm.FindPicAndClick(699, 63, 868, 118, @"\bmp\祭祀十次.bmp");
+            Dm.Delay(1000);
+            Delegater.WaitTrue(() =>
+                 {
+                   if(Dm.GetColorNum(738, 500, 761, 522, "79a03b-303030", 0.9)>20)
+                     {
+                         Dm.MoveToClick(783, 512);
+                         Dm.Delay(500);
+                         return false;
+                     }
+                     return true;
+                 }, () => Dm.Delay(50), 10);
+
+            Delegater.WaitTrue(() =>
+            {
+                string t = Dm.Ocr(204, 61, 278, 96, "C59E00-3A2E00", 0.9);
+                if (int.Parse(t) > 0)
+                {
+                    Dm.MoveToClick(322, 451);
+                    Dm.Delay(500);
+                    return false;
+                }
+                else
+                    Debug.WriteLine(t);
+                return true;
+            },()=>Dm.Delay(50),40);
+           
+
+            return TaskResult.Success;
         }
 
         private TaskResult RunStep4(TaskContext arg)

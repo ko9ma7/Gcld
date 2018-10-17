@@ -20,16 +20,34 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 1;
+            return 2;
         }
 
         protected override TaskStep[] StepsInitialize()
         {
             TaskStep[] steps =
              {
-                new TaskStep() {Name="自动兵器",Order=1,RunFunc=RunStep1 }
+                new TaskStep() {Name="自动兵器",Order=1,RunFunc=RunStep1 },
+                new TaskStep() {Name="自动建筑",Order=2,RunFunc=RunStep2 }
              };
             return steps;
+        }
+
+        private TaskResult RunStep2(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            DmPlugin dm = role.Window.Dm;
+
+            Delegater.WaitTrue(() =>
+            {
+                Dm.MoveToClick(681, 281);
+                dm.FindPicAndClick(546, 168, 868, 382, @"\bmp\升级.bmp");
+                dm.Delay(1000);
+                dm.FindPicAndClick(546, 168, 868, 382, @"\bmp\加速锤.bmp");
+                dm.Delay(1000);
+                return false;
+            });
+            return TaskResult.Success;
         }
 
         private TaskResult RunStep1(TaskContext context)
@@ -98,7 +116,7 @@ namespace Liuliu.MouseClicker.Tasks
            
          
            
-            return TaskResult.Finished;
+            return TaskResult.Success;
             
         }
     }

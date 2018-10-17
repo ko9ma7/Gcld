@@ -16,26 +16,88 @@ namespace Liuliu.MouseClicker.Tasks
         public HuodongTask(TaskContext context) : base(context)
         {
         }
-        List<ActivityEnum> activities = new List<ActivityEnum>();
+     
+
         protected override int GetStepIndex(TaskContext context)
         {
            
             return 1;
         }
-
+        private string activities = "";
         protected override TaskStep[] StepsInitialize()
         {
             TaskStep[] steps =
              {
                 new TaskStep() {Name="大宴群雄",Order=1,RunFunc=RunStep1 },
-                new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep2 }
+                new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep2 },
+                new TaskStep() {Name="万邦来朝",Order=2,RunFunc=RunStep3 }
              };
             return steps;
         }
 
+        private TaskResult RunStep3(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            if (!activities.Contains("万邦来朝"))
+            {
+                return TaskResult.Jump;
+            }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("万邦来朝"),
+                             () => Dm.IsExistPic(249, 78, 799, 145, @"\bmp\万邦.bmp"),
+                             () => Dm.Delay(1000));
+
+            for (int i = 0; i < 20; i++)
+            {
+                if(Dm.IsExistPic(668, 466, 756, 516,@"\bmp\万邦_金币.bmp"))
+                {
+                    Dm.MoveToClick(472, 323);
+                    Dm.Delay(1000);
+                    break;
+                }
+                Dm.MoveToClick(780, 493);//点击发出请帖
+                Dm.Delay(1000);
+            }
+            role.CloseWindow();
+            if (Repetitions >= 9)
+            {
+                return TaskResult.Finished;
+            }
+            else
+            {
+                role.ChangeRole();
+                Dm.Delay(5000);
+                activities = "";
+                string points = Dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
+                Debug.WriteLine(points);
+
+                if (points == "")
+                {
+                    role.CloseWindow();
+                    return new TaskResult(TaskResultType.Fail, "无法点击活动!");
+                }
+                string[] t = points.Split('|');
+
+                foreach (var item in t)
+                {
+                    string[] p = item.Split(',');
+                    Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                    Dm.Delay(1000);
+                    string ocr = Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25", 0.9);
+                    Debug.WriteLine(ocr);
+                    activities += ocr;
+                }
+                role.CloseWindow();
+                return TaskResult.Success;
+            }
+        }
+
         private TaskResult RunStep2(TaskContext context)
         {
-
+            if (!activities.Contains("宝石矿脉"))
+            {
+                return TaskResult.Jump;
+            }
+            return TaskResult.Success;
         }
 
         private TaskResult RunStep1(TaskContext context)
@@ -43,9 +105,10 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
             role.OutMessage("打开活动界面");
-            
-
-
+            if (!activities.Contains("大宴群雄"))
+            {
+                return TaskResult.Jump;
+            }
             Delegater.WaitTrue(()=> role.OpenActivityBoard("大宴群雄"),
                                ()=> Dm.IsExistPic(266, 83, 692, 160, @"\bmp\大宴群雄.bmp"),
                                ()=> Dm.Delay(1000));
@@ -68,50 +131,13 @@ namespace Liuliu.MouseClicker.Tasks
             }, () => Dm.Delay(1000));
 
             role.CloseWindow();
-
-            if (Repetitions == 9)
-            {
-                return TaskResult.Finished;
-            }
-            else
-            {
-                role.ChangeRole();
-                Dm.Delay(5000);
-               
-                return TaskResult.Success;
-            }
+            return TaskResult.Success;
+         
         }
-        protected override void OnStarting(TaskContext context)
-        {
-            Role role = (Role)context.Role;
-            string points = Dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
-            Debug.WriteLine(points);
 
-            if (points == "")
-            {
-              role.CloseWindow();
-                return;
-            }
-            string[] t = points.Split('|');
-
-            foreach (var item in t)
-            {
-                string[] p = item.Split(',');
-                Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
-                Dm.Delay(1000);
-                Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25");
-            }
-            role.CloseWindow();
-            return ;
-        }
     }
 
 
 
-    enum ActivityEnum
-    {
-        "大宴群雄"=1,
-        "宝石矿脉"=2,
-        "天降神剑"=3,
-    }
+
 }

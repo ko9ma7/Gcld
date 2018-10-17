@@ -109,7 +109,9 @@ namespace Liuliu.ScriptEngine.Tasks
                 }
                 if (result.ResultType == TaskResultType.Jump)
                 {
-                    continue;
+                    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "步骤" + ":" + TaskContext.StepIndex+"跳过了!");
+                    if (TaskContext.StepIndex == TaskContext.TaskSteps.Length)
+                        return TaskResult.Finished;
                 }
                 TaskContext.StepIndex++;
                 if (TaskContext.StepIndex > TaskContext.TaskSteps.Length)
@@ -118,6 +120,9 @@ namespace Liuliu.ScriptEngine.Tasks
                     Repetitions++;
                     Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "重复次数" + ":" + Repetitions);
                 }
+                
+              
+              
             }
          
 

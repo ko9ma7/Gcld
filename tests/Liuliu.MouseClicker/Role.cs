@@ -264,6 +264,10 @@ namespace Liuliu.MouseClicker
             return false;
         }
 
+        public bool OpenMenu(string menu)
+        {
+            return _dm.FindPicAndClickClear(327, 456, 886, 538, @"\bmp\" + menu + ".bmp", 27, -20);
+        }
 
     }
 }
