@@ -92,22 +92,20 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             get
             {
-                return new RelayCommand<int>((hwnd) =>
+                return new RelayCommand<Role>((role) =>
                 {
-                    IRole role = new Role(hwnd);
+                  
                     Function func = new Function();
                     func.Name = "日常任务";
 
-                    TaskEngine engine = new TaskEngine();
                     TaskContext context = new TaskContext(role, func);
+                    TaskEngine engine = role.TaskEngine;
+                   
                     engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
-                    engine.Window = role.Window;
-
-                    Role r = (Role)role;
                     List<TaskBase> tasks = new List<TaskBase>();
-                    //tasks.Add(new RichangTask(context));
+                    tasks.Add(new RichangTask(context));
                     // tasks.Add(new HuodongTask(context));
-                    tasks.Add(new SmallTool(context));
+                   // tasks.Add(new SmallTool(context));
                     engine.Start(tasks.ToArray());
 
                 });
@@ -117,9 +115,9 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             get
             {
-                return new RelayCommand<int>((hwnd) =>
+                return new RelayCommand<Role>((role) =>
                 {
-                
+                    role.TaskEngine.Stop();
                 });
             }
         }

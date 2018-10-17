@@ -10,11 +10,14 @@
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:flyouts="clr-namespace:Liuliu.MouseClicker.Flyouts"
     xmlns:uc="clr-namespace:Liuliu.MouseClicker.UserControls"
+    xmlns:converter="clr-namespace:Liuliu.MouseClicker.Converters"
     mc:Ignorable="d" ResizeMode="CanMinimize" 
     x:Name="MainWindow1" Title="{Binding Title}" Height="360" Width="640"
     DataContext="{Binding Main, Source={StaticResource Locator}}">
+    
     <mah:MetroWindow.Resources>
         <ResourceDictionary>
+            <converter:ListViewItemToRoleConverter x:Key="listviewitemToRoleConverter"></converter:ListViewItemToRoleConverter>
         </ResourceDictionary>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
@@ -83,14 +86,26 @@
                     <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                         <ListView.View>
                             <GridView>
-                            <GridViewColumn Header="窗口句柄" Width="400" DisplayMemberBinding="{Binding Path=Hwnd,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                            <GridViewColumn Header="窗口句柄" Width="200" DisplayMemberBinding="{Binding Path=Hwnd,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></GridViewColumn>
+                            <GridViewColumn Header="任务配置" Width="200">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox>
+                                            <ComboBoxItem Content="1"></ComboBoxItem>
+                                            <ComboBoxItem Content="2"></ComboBoxItem>
+                                            <ComboBoxItem Content="3"></ComboBoxItem>
+                                            <ComboBoxItem Content="4"></ComboBoxItem>
+                                            <ComboBoxItem Content="5"></ComboBoxItem>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="操作" Width="200">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <WrapPanel>
-                                            <Button Margin="5" Content="开始"  Command="{Binding BeginCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self},ElementName=Hwnd}"></Button>
-                                            <Button Margin="5" Content="停止"  Command="{Binding StopCommand}"></Button>
+                                            <Button Margin="5" Content="开始"  Command="{Binding DataContext.MainCommand.BeginCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListViewItem}}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                         </WrapPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

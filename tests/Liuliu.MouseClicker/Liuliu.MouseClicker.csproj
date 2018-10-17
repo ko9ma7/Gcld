@@ -106,6 +106,7 @@
     <Compile Include="Contexts\SoftContext.cs" />
     <Compile Include="Contexts\SoftRunStatus.cs" />
     <Compile Include="Converters\BitmapToImageSourceConverter.cs" />
+    <Compile Include="Converters\ListViewItemToRoleConverter.cs" />
     <Compile Include="Converters\BooleanToNoConverter.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />

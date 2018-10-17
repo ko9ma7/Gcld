@@ -25,6 +25,8 @@ namespace Liuliu.MouseClicker
             _dm = _window.Dm;
             Debug.WriteLine(_window.Dm.Ver());
             _hwnd = hwnd;
+            TaskEngine = new TaskEngine();
+            TaskEngine.Window = _window;
         }
         private DmWindow _window;
         private DmPlugin _dm;
@@ -94,6 +96,8 @@ namespace Liuliu.MouseClicker
                 SetProperty(ref _name, value, () => Name);
             }
         }
+
+        public TaskEngine TaskEngine { get; set; }
 
         public Action<string> OutMessage
         {

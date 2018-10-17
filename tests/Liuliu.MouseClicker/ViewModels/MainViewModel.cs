@@ -54,42 +54,6 @@ namespace Liuliu.MouseClicker.ViewModels
             set { SetProperty(ref _roles, value, () => Roles); }
         }
 
-
-        public ICommand BeginCommand
-        {
-            get
-            {
-                return new RelayCommand<int>((hwnd) =>
-                {
-                    IRole role = new Role(hwnd);
-                    Function func = new Function();
-                    func.Name = "日常任务";
-
-                    TaskEngine engine = new TaskEngine();
-                    TaskContext context = new TaskContext(role, func);
-                    engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
-                    engine.Window = role.Window;
-
-                    Role r = (Role)role;
-                    List<TaskBase> tasks = new List<TaskBase>();
-                    //tasks.Add(new RichangTask(context));
-                    // tasks.Add(new HuodongTask(context));
-                    tasks.Add(new SmallTool(context));
-                    engine.Start(tasks.ToArray());
-
-                });
-            }
-        }
-        public ICommand StopCommand
-        {
-            get
-            {
-                return new RelayCommand<int>((hwnd) =>
-                {
-
-                });
-            }
-        }
     }
   
 }
