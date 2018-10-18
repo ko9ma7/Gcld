@@ -77,25 +77,24 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
-            <ScrollViewer HorizontalAlignment="Left" Height="232" Margin="0,37,0,0" VerticalAlignment="Top" Width="624">
+           
                 <Grid>
                 
-                    <ListView ItemsSource="{Binding Roles}">
+                    <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="角色列表" Width="500">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel>
-                                                <Label Content="{Binding Name}"></Label>
-                                                <Label Content="bb"></Label>
-                                                <Label Content="cc"></Label>
-                                                <Label Content="dd"></Label>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                    
-                                </GridViewColumn>
+                            <GridViewColumn Header="窗口句柄" Width="400" DisplayMemberBinding="{Binding Path=Hwnd,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                            </GridViewColumn>
+                            <GridViewColumn Header="操作" Width="200">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button Margin="5" Content="开始"  Command="{Binding BeginCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self},ElementName=Hwnd}"></Button>
+                                            <Button Margin="5" Content="停止"  Command="{Binding StopCommand}"></Button>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             </GridView>
                         </ListView.View>
                        
@@ -103,8 +102,8 @@
   
                 </Grid>
 
-            </ScrollViewer>
-            <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding BeginCommand}" Width="50" Height="30" Content="开始" Margin="563,274,21,27" Grid.RowSpan="2"></Button>
+
+            <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding RefreshCommand}" Width="50" Height="30" Content="刷新" Margin="563,274,21,27" Grid.RowSpan="2"></Button>
             <StatusBar Grid.Row="1">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{Binding StatusBar}" Padding="0" Width="300" Foreground="White"/>

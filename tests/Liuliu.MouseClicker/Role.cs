@@ -9,10 +9,11 @@ using Liuliu.ScriptEngine;
 using System.Diagnostics;
 using System.Threading;
 using Liuliu.ScriptEngine.Tasks;
+using Liuliu.MouseClicker.Mvvm;
 
 namespace Liuliu.MouseClicker
 {
-    public class Role : IRole
+    public class Role : ViewModelExBase,IRole
     {
         /// <summary>
         /// 创建一个角色
@@ -23,9 +24,20 @@ namespace Liuliu.MouseClicker
             _window = new DmWindow(new DmPlugin(), hwnd);
             _dm = _window.Dm;
             Debug.WriteLine(_window.Dm.Ver());
+            _hwnd = hwnd;
         }
         private DmWindow _window;
         private DmPlugin _dm;
+
+        private int _hwnd;
+        public int Hwnd
+        {
+            get { return _hwnd; }
+            set
+            {
+                SetProperty(ref _hwnd, value, () => Hwnd);
+            }
+        }
         public string Ac
         {
             get
@@ -73,12 +85,13 @@ namespace Liuliu.MouseClicker
                 throw new NotImplementedException();
             }
         }
-
+        private string _name;
         public string Name
         {
-            get
+            get { return _name; }
+            set
             {
-                return "";
+                SetProperty(ref _name, value, () => Name);
             }
         }
 

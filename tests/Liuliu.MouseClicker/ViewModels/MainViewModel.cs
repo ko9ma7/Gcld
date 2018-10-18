@@ -22,6 +22,7 @@ using System.Diagnostics;
 using Liuliu.MouseClicker.Tasks;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -29,7 +30,7 @@ namespace Liuliu.MouseClicker.ViewModels
     {
         public MainViewModel()
         {
-            _roles = new List<Role>();
+            _roles = new ObservableCollection<Role>();
         }
         private string _title = "攻城掠地助手";
         public string Title
@@ -37,7 +38,7 @@ namespace Liuliu.MouseClicker.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value, () => Title); }
         }
-        
+
         private string _statusBar;
         public string StatusBar
         {
@@ -45,13 +46,50 @@ namespace Liuliu.MouseClicker.ViewModels
             set { SetProperty(ref _statusBar, value, () => StatusBar); }
         }
 
-        private List<Role> _roles;
+        private ObservableCollection<Role> _roles;
 
-        public List<Role> Roles
+        public ObservableCollection<Role> Roles
         {
             get { return _roles; }
             set { SetProperty(ref _roles, value, () => Roles); }
         }
 
+
+        public ICommand BeginCommand
+        {
+            get
+            {
+                return new RelayCommand<int>((hwnd) =>
+                {
+                    IRole role = new Role(hwnd);
+                    Function func = new Function();
+                    func.Name = "日常任务";
+
+                    TaskEngine engine = new TaskEngine();
+                    TaskContext context = new TaskContext(role, func);
+                    engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
+                    engine.Window = role.Window;
+
+                    Role r = (Role)role;
+                    List<TaskBase> tasks = new List<TaskBase>();
+                    //tasks.Add(new RichangTask(context));
+                    // tasks.Add(new HuodongTask(context));
+                    tasks.Add(new SmallTool(context));
+                    engine.Start(tasks.ToArray());
+
+                });
+            }
+        }
+        public ICommand StopCommand
+        {
+            get
+            {
+                return new RelayCommand<int>((hwnd) =>
+                {
+
+                });
+            }
+        }
     }
+  
 }

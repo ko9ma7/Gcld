@@ -49,22 +49,21 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-        public ICommand BeginCommand
+        public ICommand RefreshCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-
                     SoftContext.UpdateHwnd();
-                  
+
                     foreach (var item in SoftContext.Hwnds)
                     {
-                        
+
                         IRole role = new Role(item);
                         DmPlugin dm = role.Window.Dm;
-                
-                        if(role.Window.ClientSize.Item1!=960||role.Window.ClientSize.Item2!=540)
+
+                        if (role.Window.ClientSize.Item1 != 960 || role.Window.ClientSize.Item2 != 540)
                         {
                             Debug.WriteLine("模拟器窗口大小未设置为960*540,请重新设置！");
                             Debug.WriteLine("当前窗口大小：" + role.Window.ClientSize.Item1 + "*" + role.Window.ClientSize.Item2);
@@ -74,7 +73,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         dm.SetDict(0, "dict.txt");
                         dm.UseDict(0);
 
-                        if (SoftContext.Locator.Main.Roles.Where(x=>x.Window.Hwnd==item).Count()>0)
+                        if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item).Count() > 0)
                         {
                             Debug.WriteLine("该句柄已经存在！");
                         }
@@ -82,22 +81,45 @@ namespace Liuliu.MouseClicker.ViewModels
                         {
                             SoftContext.Locator.Main.Roles.Add((Role)role);
                         }
-                        Function func = new Function();
-                        func.Name = "日常任务";
-
-                        TaskEngine engine = new TaskEngine();
-                        TaskContext context = new TaskContext(role, func);
-                        engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
-                        engine.Window = role.Window;
-
-                        Role r = (Role)role;
-                        List<TaskBase> tasks = new List<TaskBase>();
-                         //tasks.Add(new RichangTask(context));
-                        // tasks.Add(new HuodongTask(context));
-                       tasks.Add(new SmallTool(context));
-                        engine.Start(tasks.ToArray());
+                       
                     }
 
+                });
+            }
+        }
+
+             public ICommand BeginCommand
+        {
+            get
+            {
+                return new RelayCommand<int>((hwnd) =>
+                {
+                    IRole role = new Role(hwnd);
+                    Function func = new Function();
+                    func.Name = "日常任务";
+
+                    TaskEngine engine = new TaskEngine();
+                    TaskContext context = new TaskContext(role, func);
+                    engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
+                    engine.Window = role.Window;
+
+                    Role r = (Role)role;
+                    List<TaskBase> tasks = new List<TaskBase>();
+                    //tasks.Add(new RichangTask(context));
+                    // tasks.Add(new HuodongTask(context));
+                    tasks.Add(new SmallTool(context));
+                    engine.Start(tasks.ToArray());
+
+                });
+            }
+        }
+             public ICommand StopCommand
+        {
+            get
+            {
+                return new RelayCommand<int>((hwnd) =>
+                {
+                
                 });
             }
         }

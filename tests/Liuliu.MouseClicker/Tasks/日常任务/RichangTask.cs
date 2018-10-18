@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 4;
+            return 1;
         }
         protected override void OnStopping(TaskContext context)
         {
