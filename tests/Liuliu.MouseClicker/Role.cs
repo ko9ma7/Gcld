@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Threading;
 using Liuliu.ScriptEngine.Tasks;
 using Liuliu.MouseClicker.Mvvm;
+using System.Windows.Controls;
 
 namespace Liuliu.MouseClicker
 {
@@ -48,6 +49,8 @@ namespace Liuliu.MouseClicker
             }
         }
 
+
+
         public string Area
         {
             get
@@ -85,6 +88,17 @@ namespace Liuliu.MouseClicker
             get
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        
+       private ComboBoxItem _selectedItemTask;
+        public ComboBoxItem SelectedItemTask
+        {
+            get { return _selectedItemTask; }
+            set
+            {
+                SetProperty(ref _selectedItemTask, value, () => SelectedItemTask);
             }
         }
         private string _name;

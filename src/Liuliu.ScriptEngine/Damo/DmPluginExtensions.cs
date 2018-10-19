@@ -153,7 +153,7 @@ namespace Liuliu.ScriptEngine.Damo
                         return true;
                 }
                 else
-                    return false;
+                    return true;
                 _dm.Delay(50);
             }
         }

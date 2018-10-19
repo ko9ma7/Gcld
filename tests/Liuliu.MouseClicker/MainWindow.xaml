@@ -90,12 +90,10 @@
                             <GridViewColumn Header="任务配置" Width="200">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ComboBox>
-                                            <ComboBoxItem Content="1"></ComboBoxItem>
-                                            <ComboBoxItem Content="2"></ComboBoxItem>
-                                            <ComboBoxItem Content="3"></ComboBoxItem>
-                                            <ComboBoxItem Content="4"></ComboBoxItem>
-                                            <ComboBoxItem Content="5"></ComboBoxItem>
+                                        <ComboBox SelectedItem="{Binding SelectedItemTask}">
+                                            <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
+                                            <ComboBoxItem Content="活动任务"></ComboBoxItem>
+                                            <ComboBoxItem Content="小工具"></ComboBoxItem>
                                         </ComboBox>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -104,8 +102,8 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <WrapPanel>
-                                            <Button Margin="5" Content="开始"  Command="{Binding DataContext.MainCommand.BeginCommand,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListViewItem}}" CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button Margin="5" Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                         </WrapPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

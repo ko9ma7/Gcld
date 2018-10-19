@@ -22,6 +22,7 @@ using Liuliu.ScriptEngine;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -96,16 +97,27 @@ namespace Liuliu.MouseClicker.ViewModels
                 {
                   
                     Function func = new Function();
-                    func.Name = "日常任务";
+                    func.Name = "任务";
 
                     TaskContext context = new TaskContext(role, func);
                     TaskEngine engine = role.TaskEngine;
                    
                     engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
                     List<TaskBase> tasks = new List<TaskBase>();
-                    tasks.Add(new RichangTask(context));
-                    // tasks.Add(new HuodongTask(context));
-                   // tasks.Add(new SmallTool(context));
+
+                    if (role.SelectedItemTask.Content.ToString() == "日常任务")
+                    {
+                        tasks.Add(new RichangTask(context));
+                    }
+                    if (role.SelectedItemTask.Content.ToString() == "活动任务")
+                    {
+                        tasks.Add(new HuodongTask(context));
+                    }
+                    if (role.SelectedItemTask.Content.ToString() == "小工具")
+                    {
+                        tasks.Add(new SmallTool(context));
+                    }
+
                     engine.Start(tasks.ToArray());
 
                 });

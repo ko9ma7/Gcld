@@ -35,9 +35,9 @@ namespace Liuliu.MouseClicker.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Role role = null;
-            if (value is ContentPresenter)
+            if (value is Role)
             {
-                role = (Role)(value as ContentPresenter).Content;
+                role = value as Role;
                 return role;
             }
             return null;
@@ -55,11 +55,8 @@ namespace Liuliu.MouseClicker.Converters
         /// <param name="culture">要用在转换器中的区域性。</param>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Role)
-            {
-                return value;
-            }
-            return null;
+            
+            return value;
         }
 
         #endregion
