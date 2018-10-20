@@ -70,6 +70,23 @@ namespace Liuliu.ScriptEngine
         }
 
         /// <summary>
+        /// 窗口顶层标题
+        /// </summary>
+        public string TopTitle
+        {
+            get { return Dm.GetWindowTitle(Dm.GetWindow(_hwnd,7)); }
+            set
+            {
+                if (!IsAlive)
+                {
+                    return;
+                }
+                Dm.SetWindowText(Dm.GetWindow(_hwnd, 7), value);
+            }
+        }
+
+
+        /// <summary>
         /// 窗口类型
         /// </summary>
         public string Class { get { return Dm.GetWindowClass(_hwnd); } }

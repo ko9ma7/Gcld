@@ -18,13 +18,22 @@ using OSharp.Utility;
 using OSharp.Utility.Extensions;
 using OSharp.Utility.Logging;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Liuliu.ScriptEngine.Tasks
 {
+    public class ModelBae:INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void RaisePropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
     /// <summary>
     /// 任务执行引擎，任务执行的入口，<see cref="TaskBase"/>的执行者
     /// </summary>
-    public class TaskEngine
+    public class TaskEngine: ModelBae
     {
         private static readonly ILogger Logger = LogManager.GetLogger(typeof(TaskEngine));
         private TaskBase _task;
@@ -47,8 +56,16 @@ namespace Liuliu.ScriptEngine.Tasks
 
         public List<TaskBase> TaskList { get; set; }
 
-        public TaskRunState TaskRunState { get; private set; }
-
+        private TaskRunState _taskRunState;
+        public TaskRunState TaskRunState
+        { get { return _taskRunState; }
+            private set
+            {
+                _taskRunState = value;
+                RaisePropertyChanged("TaskRunState");
+            }
+        }
+        private bool _isWorking;
         public bool IsWorking
         {
             get
@@ -57,6 +74,12 @@ namespace Liuliu.ScriptEngine.Tasks
                     && TaskRunState != TaskRunState.Stopping
                     && TaskRunState != TaskRunState.Stopped;
             }
+            set
+            {
+                _isWorking = value;
+                RaisePropertyChanged("IsWorking");
+            }
+
         }
 
         public Action<string> OutMessage { get; set; }
@@ -162,7 +185,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 _workThread = GetWorkThread(tasks);
                 Debug.WriteLine("[" + _workThread.ManagedThreadId.ToString() + "]");
             }
-            if (!CheckTaskRunState(TaskRunState.Starting))
+            if (!CheckTaskRunState(Tasks.TaskRunState.Starting))
             {
                 return;
             }
@@ -182,7 +205,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 OutMessage("当前任务不处于任务状态，不能暂停。");
                 return;
             }
-            if (!CheckTaskRunState(TaskRunState.Pausing))
+            if (!CheckTaskRunState(Tasks.TaskRunState.Pausing))
             {
                 return;
             }
@@ -209,7 +232,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 OutMessage("当前任务不处于任务状态，不能继续。");
                 return;
             }
-            if (!CheckTaskRunState(TaskRunState.Continuing))
+            if (!CheckTaskRunState(Tasks.TaskRunState.Continuing))
             {
                 return;
             }
@@ -244,7 +267,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 OutMessage("当前角色不处于任务状态，不能停止。");
                 return;
             }
-            if (!CheckTaskRunState(TaskRunState.Stopping))
+            if (!CheckTaskRunState(Tasks.TaskRunState.Stopping))
             {
                 return;
             }
@@ -293,7 +316,7 @@ namespace Liuliu.ScriptEngine.Tasks
                         OnStateChanged(_taskEventArg);
                         OnStarted(_taskEventArg);
                         OutMessage("任务“{0}”启动成功。".FormatWith(_task.Name));
-
+                        IsWorking = true;
                         TaskStart();
                         TaskStop();
                         Window.FlashWindow();
@@ -377,8 +400,10 @@ namespace Liuliu.ScriptEngine.Tasks
 
             Window.FlashWindow();
             TaskRunState = TaskRunState.Stopped;
+
             OnStateChanged(_taskEventArg);
             OnStopped(_taskEventArg);
+            IsWorking = false;
             if (showStop)
             {
                 OutMessage("任务“{0}”已停止".FormatWith(_task.Name)); 
@@ -394,23 +419,23 @@ namespace Liuliu.ScriptEngine.Tasks
         {
             switch (state)
             {
-                case TaskRunState.Initialize:
-                case TaskRunState.Stopped:
-                    if (state != TaskRunState.Starting)
+                case Tasks.TaskRunState.Initialize:
+                case Tasks.TaskRunState.Stopped:
+                    if (state != Tasks.TaskRunState.Starting)
                     {
                         OutMessage("任务尚未启动，不支持暂停/继续/停止操作。");
                         return false;
                     }
                     return true;
-                case TaskRunState.Running:
-                    if (state == TaskRunState.Starting || state == TaskRunState.Continuing)
+                case Tasks.TaskRunState.Running:
+                    if (state == Tasks.TaskRunState.Starting || state == Tasks.TaskRunState.Continuing)
                     {
                         OutMessage("任务正在运行，不支持开始/继续操作。");
                         return false;
                     }
                     return true;
-                case TaskRunState.Paused:
-                    if (state == TaskRunState.Starting)
+                case Tasks.TaskRunState.Paused:
+                    if (state == Tasks.TaskRunState.Starting)
                     {
                         OutMessage("任务已暂停，不支持开始操作。");
                         return false;

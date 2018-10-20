@@ -28,9 +28,20 @@ namespace Liuliu.MouseClicker
             _hwnd = hwnd;
             TaskEngine = new TaskEngine();
             TaskEngine.Window = _window;
+            WindowTitle = _window.TopTitle;
         }
         private DmWindow _window;
         private DmPlugin _dm;
+        private string _windowTitle;
+        public string WindowTitle
+        {
+            get { return _windowTitle; }
+            set
+            {
+                SetProperty(ref _windowTitle, value, () => WindowTitle);
+            }
+        }
+
 
         private int _hwnd;
         public int Hwnd
