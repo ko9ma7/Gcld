@@ -311,5 +311,45 @@ namespace Liuliu.MouseClicker
             return _dm.FindPicAndClickClear(327, 456, 886, 538, @"\bmp\" + menu + ".bmp", 27, -20);
         }
 
+
+
+    }
+
+    enum  当前位置
+    {
+        World,
+        MainCity,
+        InstanceZones,
+        Unknown
+    }
+    enum Activity
+    {
+      天降神剑,
+  武将犒赏,
+                    古城探宝,
+                    讨伐董卓,
+                    青梅煮酒,
+                    大宴群雄,
+                    矿山开采,
+                    神锤宝石,
+                    攻城宝箱,
+                    陨铁放送,
+                    七擒孟获,
+                    万邦来朝,
+                    宝石矿脉,
+                    以酒论友,
+                    海岛寻宝,
+                    宝石转盘,
+                  长版突围,
+                    天灯许愿,
+                    广结名士,
+                  神锤陨铁,
+                   草船借箭,
+                    杏花酒宴,
+                   丝绸酬宾,
+                    钢铁酬宾,
+                   铁甲冲锋,
+                    镇守襄阳,
+
     }
 }
