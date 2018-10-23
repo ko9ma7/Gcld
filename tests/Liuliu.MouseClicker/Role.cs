@@ -155,7 +155,7 @@ namespace Liuliu.MouseClicker
             //int intX, intY;
             //_dm.FindMultiColor(258, 34, 854, 218, "d69f5a", "-8|5|3a3327,5|13|d5c484,21|14|cfbf80,29|6|2f2a1e,-10|1|352d20,-5|-2|c89b60,2|22|1f0201", 0.9, 0, out intX, out intY);
 
-            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp",37,23))
+            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp|\bmp\特殊事件2.bmp",37,23))
             {
                 _dm.Delay(1000);
                 OutSubMessage("打开成功!");
@@ -270,13 +270,13 @@ namespace Liuliu.MouseClicker
         {
           return Delegater.WaitTrue(() => _dm.MoveToClick(920, 69),
                                () => _dm.IsExistStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25"),
-                               ()=>_dm.Delay(1000));
+                               ()=>_dm.Delay(1000),2000);
         }
         public bool CloseMap()
         {
             return Delegater.WaitTrue(() => _dm.MoveToClick(920, 69),
                                  () => !_dm.IsExistStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25"),
-                                 () => _dm.Delay(1000));
+                                 () => _dm.Delay(1000),2000);
         }
         
 
@@ -311,6 +311,48 @@ namespace Liuliu.MouseClicker
             return _dm.FindPicAndClickClear(327, 456, 886, 538, @"\bmp\" + menu + ".bmp", 27, -20);
         }
 
+
+        public bool GoToMap(string map)
+        {
+            switch(map)
+            {
+                case "世界":
+                   if(_dm.IsExistPic(818, 281, 953, 447,@"\bmp\主城.bmp")&&_dm.IsExistPic(818, 281, 953, 447,@"\bmp\副本.bmp"))
+                    {
+                        OutMessage("已经在世界界面!");
+                        break;
+                    }
+                    Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\世界.bmp"),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                               () => _dm.Delay(1000));
+                    break;
+                case "副本":
+                    if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"))
+                    {
+                        OutMessage("已经在副本界面!");
+                        break;
+                    }
+                    Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"),
+                               () => _dm.Delay(1000));
+                    break;
+                case "主城":
+                    if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                    {
+                        OutMessage("已经在主城界面!");
+                        break;
+                    }
+                    Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\主城.bmp"),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                               () => _dm.Delay(1000));
+                    break;
+                default:
+                    OutMessage("输入地图错误,无法打开");
+                    break;
+            }
+            _dm.Delay(2000);
+            return true;
+        }
 
 
     }

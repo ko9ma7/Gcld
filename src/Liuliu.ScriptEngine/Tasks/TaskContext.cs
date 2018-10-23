@@ -47,7 +47,7 @@ namespace Liuliu.ScriptEngine.Tasks
         /// <summary>
         /// 获取 任务设置组信息
         /// </summary>
-        public ExpandoObject Settings { get; private set; }
+        public dynamic Settings { get; private set; }
 
         /// <summary>
         /// 即将或正在执行的任务步骤序号

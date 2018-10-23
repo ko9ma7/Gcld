@@ -57,7 +57,6 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     SoftContext.UpdateHwnd();
-
                     foreach (var item in SoftContext.Hwnds)
                     {
 
@@ -73,7 +72,6 @@ namespace Liuliu.MouseClicker.ViewModels
                         dm.SetPath(AppDomain.CurrentDomain.BaseDirectory);
                         dm.SetDict(0, "dict.txt");
                         dm.UseDict(0);
-
                         if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item).Count() > 0)
                         {
                             Debug.WriteLine("该句柄已经存在！");
@@ -84,6 +82,14 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                        
                     }
+                    foreach (var item in SoftContext.Locator.Main.Roles)
+                    {
+                        if(!item.Window.IsAlive)
+                        {
+                            SoftContext.Locator.Main.Roles.Remove(item);
+                        }
+                    }
+                   
 
                 });
             }
@@ -113,11 +119,16 @@ namespace Liuliu.MouseClicker.ViewModels
                     {
                         tasks.Add(new HuodongTask(context));
                     }
-                    if (role.SelectedItemTask.Content.ToString() == "小工具")
+                    if (role.SelectedItemTask.Content.ToString() == "自动兵器")
                     {
+                        context.Settings.IsAutoWeapon = true;
                         tasks.Add(new SmallTool(context));
                     }
-
+                    if (role.SelectedItemTask.Content.ToString() == "自动洗练")
+                    {
+                        context.Settings.IsAutoClear = true;
+                        tasks.Add(new SmallTool(context));
+                    }
                     engine.Start(tasks.ToArray());
 
                 });

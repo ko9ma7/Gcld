@@ -30,34 +30,18 @@ namespace Liuliu.MouseClicker.Tasks
              {
                 new TaskStep() {Name="大宴群雄",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="万邦来朝",Order=2,RunFunc=RunStep3 }
+                new TaskStep() {Name="万邦来朝",Order=2,RunFunc=RunStep3 },
+                new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep4 }
              };
             return steps;
         }
 
-        private TaskResult RunStep3(TaskContext context)
+        private TaskResult RunStep4(TaskContext context)
         {
             Role role = (Role)context.Role;
-            if (!activities.Contains("万邦来朝"))
-            {
-                return TaskResult.Jump;
-            }
-            Delegater.WaitTrue(() => role.OpenActivityBoard("万邦来朝"),
-                             () => Dm.IsExistPic(249, 78, 799, 145, @"\bmp\万邦.bmp"),
-                             () => Dm.Delay(1000));
 
-            for (int i = 0; i < 20; i++)
-            {
-                if(Dm.IsExistPic(668, 466, 756, 516,@"\bmp\万邦_金币.bmp"))
-                {
-                    Dm.MoveToClick(472, 323);
-                    Dm.Delay(1000);
-                    break;
-                }
-                Dm.MoveToClick(780, 493);//点击发出请帖
-                Dm.Delay(1000);
-            }
-            role.CloseWindow();
+
+
             if (Repetitions >= 9)
             {
                 return TaskResult.Finished;
@@ -89,6 +73,33 @@ namespace Liuliu.MouseClicker.Tasks
                 role.CloseWindow();
                 return TaskResult.Success;
             }
+        }
+
+        private TaskResult RunStep3(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            if (!activities.Contains("万邦来朝"))
+            {
+                return TaskResult.Jump;
+            }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("万邦来朝"),
+                             () => Dm.IsExistPic(249, 78, 799, 145, @"\bmp\万邦.bmp"),
+                             () => Dm.Delay(1000));
+
+            for (int i = 0; i < 20; i++)
+            {
+                if(Dm.IsExistPic(668, 466, 756, 516,@"\bmp\万邦_金币.bmp"))
+                {
+                    Dm.MoveToClick(472, 323);
+                    Dm.Delay(1000);
+                    break;
+                }
+                Dm.MoveToClick(780, 493);//点击发出请帖
+                Dm.Delay(1000);
+            }
+            role.CloseWindow();
+            return TaskResult.Success;
+         
         }
 
         private TaskResult RunStep2(TaskContext context)

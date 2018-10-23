@@ -15,12 +15,28 @@ namespace Liuliu.MouseClicker.Tasks
     {
         public SmallTool(TaskContext context) : base(context)
         {
+        
         }
 
         protected override int GetStepIndex(TaskContext context)
         {
-           
-            return 2;
+            try
+            {
+                if (context.Settings.IsAutoWeapon)
+                {
+                    return 1;
+                }
+            } catch{ }
+            try
+            {
+                if (context.Settings.IsAutoClear)
+                {
+                    return 3;
+                }
+            }
+            catch { }
+        
+            return 1;
         }
 
         protected override TaskStep[] StepsInitialize()
@@ -28,11 +44,56 @@ namespace Liuliu.MouseClicker.Tasks
             TaskStep[] steps =
              {
                 new TaskStep() {Name="自动兵器",Order=1,RunFunc=RunStep1 },
-                new TaskStep() {Name="自动建筑",Order=2,RunFunc=RunStep2 }
+                new TaskStep() {Name="自动建筑",Order=2,RunFunc=RunStep2 },
+                new TaskStep() {Name="自动洗练",Order=3,RunFunc=RunStep3 }
              };
             return steps;
         }
+        private TaskResult RunStep3(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            DmPlugin dm = role.Window.Dm;
 
+            Delegater.WaitTrue(() =>
+            {
+                string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "202020", 0.8, 0);
+                Debug.WriteLine(points);
+                if (points == "")
+                {
+                    return true;
+                }
+                string[] t = points.Split('|');
+
+                foreach (var item in t)
+                {
+                    string[] p = item.Split(',');
+                    Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                    Dm.Delay(1000);
+                    if (Dm.IsExistPic(707, 382, 734, 404, @"\bmp\星星1.bmp"))
+                    {
+                        if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
+                        {
+                            continue;
+                        }
+                        while (true)
+                        {
+
+                            Dm.MoveToClick(631, 448);
+                            Dm.Delay(500);
+                            if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
+                            {
+                                Dm.Delay(1000);
+                                break;
+                            }
+                        }
+                    }  
+                }
+                Dm.Swipe(515, 438, 515, 220, 50);
+
+                return false;
+            });
+            return TaskResult.Finished;
+        }
         private TaskResult RunStep2(TaskContext context)
         {
             Role role = (Role)context.Role;
@@ -47,7 +108,7 @@ namespace Liuliu.MouseClicker.Tasks
                 dm.Delay(1000);
                 return false;
             });
-            return TaskResult.Success;
+            return TaskResult.Finished;
         }
 
         private TaskResult RunStep1(TaskContext context)
@@ -59,6 +120,8 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() =>
             {
                 int a = Dm.GetColorNum(113, 83, 173, 135, "e25858 - 202020", 0.9);
+                if (Dm.GetColorNum(245, 166, 304, 194, "e40201 -202020", 0.9) > 10)
+                    return true;
                 return a > 10;
             }, () =>
             {
@@ -67,6 +130,8 @@ namespace Liuliu.MouseClicker.Tasks
             });
             Delegater.WaitTrue(() =>
             {
+                if (Dm.GetColorNum(245, 166, 304, 194, "e40201 -202020", 0.9) > 10)
+                    return true;
                 int b = Dm.GetColorNum(104, 229, 187, 286, "e25858 - 202020", 0.9);
                 return b > 10;
             }, () =>
@@ -76,6 +141,8 @@ namespace Liuliu.MouseClicker.Tasks
             });
             Delegater.WaitTrue(() =>
             {
+                if (Dm.GetColorNum(245, 166, 304, 194, "e40201 -202020", 0.9) > 10)
+                    return true;
                 int c = Dm.GetColorNum(110, 374, 181, 433, "e25858 - 202020", 0.9);
                 return c > 10;
             }, () =>
@@ -85,6 +152,8 @@ namespace Liuliu.MouseClicker.Tasks
             });
             Delegater.WaitTrue(() =>
             {
+                if (Dm.GetColorNum(245, 166, 304, 194, "e40201 -202020", 0.9) > 10)
+                    return true;
                 int d = Dm.GetColorNum(478, 86, 559, 144, "e25858 - 202020", 0.9);
                 return d > 10;
             }, () =>
@@ -92,10 +161,21 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.MoveToClick(790, 182);
                 Dm.Delay(200);
             });
+            int i = 0;
             Delegater.WaitTrue(() =>
             {
-                int e = Dm.GetColorNum(500, 249, 533, 269, "e25858-202020", 0.9);
-                return e > 10;
+                if (Dm.GetColorNum(245, 166, 304, 194, "e40201 -202020", 0.9) > 10)
+                    return true;
+                int e = Dm.GetColorNum(500, 249, 533, 269, "c2d3af-202020", 0.9);
+                if(e<10)
+                {
+                    Dm.Delay(2000);
+                    if(Dm.GetColorNum(500, 249, 533, 269, "c2d3af-202020", 0.9)<10)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }, () =>
             {
                 Dm.MoveToClick(787, 326);
@@ -103,6 +183,8 @@ namespace Liuliu.MouseClicker.Tasks
             });
             Delegater.WaitTrue(() =>
             {
+                if (Dm.GetColorNum(245, 166, 304, 194, "e40201 -202020", 0.9) > 10)
+                    return true;
                 int f = Dm.GetColorNum(489, 383, 559, 426, "e25858 - 202020", 0.9);
                 return f > 10;
             }, () =>
@@ -111,12 +193,7 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(200);
             });
 
-          
-          
-           
-         
-           
-            return TaskResult.Success;
+            return TaskResult.Finished;
             
         }
     }

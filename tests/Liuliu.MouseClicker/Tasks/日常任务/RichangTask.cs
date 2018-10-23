@@ -77,8 +77,8 @@ namespace Liuliu.MouseClicker.Tasks
                     Debug.WriteLine(t);
                 return true;
             },()=>Dm.Delay(50),40);
-           
 
+            role.CloseWindow();
             return TaskResult.Success;
         }
 
@@ -150,8 +150,8 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
-            Dm.FindPicAndClickClear(799, 328, 965, 520, @"\bmp\世界.bmp");
-                      
+            role.GoToMap("世界");
+      
             role.OpenMap();
 
             int intX, intY;

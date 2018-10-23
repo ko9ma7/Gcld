@@ -84,40 +84,83 @@ namespace Liuliu.ScriptEngine.Tasks
         /// <param name="failAction">每次执行失败时，执行的动作</param>
         /// <param name="milliseconds">多长时间内出现条件则成功ms</param>
         /// <returns></returns>
-        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction,long milliseconds=5000)
+        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction,long milliseconds=4000,int maxCount=0)
         {
             failAction = failAction ?? (() => { });
             //如果trueFlag存在则表示已经在指定画面,或者取的标志存在多个
             if (trueFlag())
             {
-                Debug.WriteLine("已经在指定画面,或者取的标志存在多个");
+                Debug.WriteLine("Err:已经在指定画面,或者取的标志存在多个");
                 return true;
             }
-            while (!trueFunc())
-            {
-                failAction();
-            }
             Stopwatch sw = new Stopwatch();
-            sw.Start();
-            
-            while(sw.ElapsedMilliseconds<= milliseconds)
+            int i = 0;
+            if (maxCount==0)
             {
-                Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
-                if (trueFlag())
-                {
-                    Debug.WriteLine("已经成功了");
+                while(true)
+                {  //一直运行到成功为止
+                    while (!trueFunc()&&i<10)
+                    {
+                        failAction();
+                        i++;
+                    }
+                    if (i >=10)
+                    {
+                        Debug.WriteLine("要返回真的操作,无法返回真!");
+                        return false;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("要返回真的操作,返回成功了!");
+                    }
+                    sw.Start();
+                    while (sw.ElapsedMilliseconds <= milliseconds)
+                    {
+                       
+                        if (trueFlag())
+                        {
+                            Debug.WriteLine("出现成功的标志了,延时:"+sw.ElapsedMilliseconds);
+                            sw.Stop();
+                            sw.Reset();
+                            return true;
+                        }
+                    }
                     sw.Stop();
-                    return true;
+                    sw.Reset();
+                    i = 0;
+                    Debug.WriteLine(milliseconds + "ms后还没有出现,操作失败了,网络延时严重!");
                 }
-                else
-                {
-                    Debug.WriteLine("我失败了");
-                }
-                Debug.WriteLine(sw.ElapsedMilliseconds.ToString());
             }
-            sw.Stop();
-            Debug.WriteLine(milliseconds+"ms后还没有出现,操作失败了!");
-            return false;
+            int count = 0;
+            i = 0;
+            while(count < maxCount)
+            {
+                while (!trueFunc()&&i<10)
+                {
+                    failAction();
+                    i++;
+                }
+                if (i >= 10)
+                {
+                    Debug.WriteLine("要返回真的操作,无法返回真!");
+                    return false;
+                }
+                sw.Start();
+                while (sw.ElapsedMilliseconds <= milliseconds)
+                {
+                    if (trueFlag())
+                    {
+                        sw.Stop();
+                        sw.Reset();
+                        return true;
+                    }
+                }
+                sw.Stop();
+                sw.Reset();
+                i = 0;
+                Debug.WriteLine(milliseconds + "ms后还没有出现,操作失败了,网络延时严重!");
+            }
+            return count < maxCount;
         }
     }
 }
