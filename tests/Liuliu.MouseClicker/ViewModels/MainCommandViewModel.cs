@@ -82,12 +82,11 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                        
                     }
-                    foreach (var item in SoftContext.Locator.Main.Roles)
+                    List<Role> roles=SoftContext.Locator.Main.Roles.Where(x => x.Window.IsAlive == false).ToList<Role>();
+                    foreach (var item in roles)
                     {
-                        if(!item.Window.IsAlive)
-                        {
-                            SoftContext.Locator.Main.Roles.Remove(item);
-                        }
+
+                        SoftContext.Locator.Main.Roles.Remove(item);
                     }
                    
 
@@ -128,6 +127,11 @@ namespace Liuliu.MouseClicker.ViewModels
                     {
                         context.Settings.IsAutoClear = true;
                         tasks.Add(new SmallTool(context));
+                    }
+                    if (role.SelectedItemTask.Content.ToString() == "自动主线")
+                    {
+                      
+                        tasks.Add(new AutoLevel(context));
                     }
                     engine.Start(tasks.ToArray());
 

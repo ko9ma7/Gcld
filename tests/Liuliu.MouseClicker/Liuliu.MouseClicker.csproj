@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Mvvm\ViewModelExBase.cs" />
     <Compile Include="Role.cs" />
+    <Compile Include="Tasks\AutoLevel.cs" />
     <Compile Include="Tasks\SmallTool.cs" />
     <Compile Include="Tasks\日常任务\RichangTask.cs" />
     <Compile Include="Tasks\活动任务\HuodongTask.cs" />
