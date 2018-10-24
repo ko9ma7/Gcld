@@ -75,20 +75,44 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() => role.OpenActivityBoard("天降神剑"),
                  () => Dm.IsExistPic(395, 81, 535, 151, @"\bmp\神剑.bmp"),
                  () => Dm.Delay(1000));
-            while(true)
+            if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
             {
-               if(Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp",30,-20))
+                role.OutSubMessage("神剑正在冷却中!");
+                return TaskResult.Success;
+            }
+                while (true)
+            {
+               if(Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀3.bmp", 30,-20))
                 {
                     Dm.Delay(1000);
                 }
                else
                 {
+                    Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\领取buff.bmp", 3, -70);
                     Dm.Delay(2000);
-                    if (!Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp", 30, -20))
-                        break;   
+                    if (!Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀3.bmp", 30, -20))
+                    {
+                       while(Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\领取buff.bmp",3,-70))
+                        {
+                            Dm.Delay(1000);
+                        }
+                        Dm.Delay(1000);
+                        break;
+                    }
                 }
 
             }
+            Delegater.WaitTrue(()=>
+            {
+                Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\挑战.bmp", 3, -70);
+                if (Dm.CmpColor(426, 300, "9c1912-202020", 0.9))
+                    Dm.MoveToClick(477, 407);
+                Dm.FindColorAndClick(139, 263, 831, 484, "fbd41b-202020");
+                if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
+                    return true;
+                return false;
+            });
+            role.CloseWindow();
             return TaskResult.Success;
         }
 

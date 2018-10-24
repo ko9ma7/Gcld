@@ -166,6 +166,28 @@ namespace Liuliu.ScriptEngine.Damo
                 _dm.Delay(50);
             }
         }
+        /// <summary>
+        /// 找色并点击
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static bool FindColorAndClick(this DmPlugin _dm, int x1, int y1, int x2, int y2, string color)
+        {
+            int intX, intY;
+            _dm.FindColor(x1, y1, x2, y2, color,0.9, 0, out intX, out intY);
+            if (intX > 0 && intY > 0)
+            {
+                _dm.MoveToClick(intX, intY);
+                _dm.Delay(50);
+                return true;
+            }
+            return false;
+        }
 
     }
 }
