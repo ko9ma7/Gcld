@@ -22,10 +22,16 @@ namespace Liuliu.ScriptEngine.Damo
         {
             int intX, intY;
             _dm.FindPic(x1, y1, x2, y2, picname, "101010", 0.9, 0, out intX, out intY);
-            if(intX>0&&intY>0)
+            if (intX > 0 && intY > 0)
+            {
+                Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "存在图片【"+ picname + "】!");
                 return true;
+            }
             else
+            {
+                Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "不存在图片【" + picname + "】!");
                 return false;
+            }
         }
         /// <summary>
         /// 查找区域是否存在指定图片

@@ -23,15 +23,12 @@ namespace Liuliu.ScriptEngine.Tasks
             TaskContext = context;
             Role = context.Role;
             Dm = context.Role.Window.Dm;
-            Repetitions =0;
         }
 
         public IRole Role { get; }
         public DmPlugin Dm { get; }
-        /// <summary>
-        /// 重复次数
-        /// </summary>
-        public int Repetitions { get; set; }
+
+
         public TaskContext TaskContext { get; }
 
         public string Name
@@ -77,6 +74,18 @@ namespace Liuliu.ScriptEngine.Tasks
         /// <param name="context">任务上下文</param>
         protected virtual void OnStopping(TaskContext context)
         { }
+        /// <summary>
+        /// 任务步骤开始前的任务
+        /// </summary>
+        /// <param name="context"></param>
+        protected virtual void OnStepStarting(TaskContext context)
+        { }
+        /// <summary>
+        /// 任务步骤结束后的任务
+        /// </summary>
+        /// <param name="context"></param>
+        protected virtual void OnStepStopping(TaskContext context)
+        { }
 
         public TaskResult Run()
         {
@@ -99,29 +108,25 @@ namespace Liuliu.ScriptEngine.Tasks
             {
                 TaskStep step = TaskContext.TaskSteps[TaskContext.StepIndex - 1];
                 Debug.WriteLine("["+ Thread.CurrentThread.ManagedThreadId.ToString() + "]"+"执行步骤" + TaskContext.StepIndex + ":" + step.Name);
+                OnStepStarting(TaskContext);
                 //执行任务步骤
                 result = step.RunFunc(TaskContext);
+
+                OnStepStopping(TaskContext);
                 //如果返回结果为Fail或者Finished则结束返回
                 if (result.Stopping)
                 {
-                    Repetitions=0;
                     return result;
                 }
                 if (result.ResultType == TaskResultType.Jump)
                 {
-                    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "步骤" + ":" + TaskContext.StepIndex+"跳过了!");
-                    if (TaskContext.StepIndex == TaskContext.TaskSteps.Length)
-                        return TaskResult.Finished;
+                    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "步骤" + ":" + TaskContext.StepIndex+"跳过了!");  
                 }
                 TaskContext.StepIndex++;
-                if (TaskContext.StepIndex > TaskContext.TaskSteps.Length)
+                if (TaskContext.StepIndex >TaskContext.TaskSteps.Length)
                 {
-                    TaskContext.StepIndex = 1;
-                    Repetitions++;
-                    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "重复次数" + ":" + Repetitions);
+                    return TaskResult.Finished;
                 }
-                
-              
               
             }
          

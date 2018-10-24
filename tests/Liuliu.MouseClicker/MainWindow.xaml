@@ -90,13 +90,7 @@
                             <GridViewColumn Header="窗口句柄" Width="70" DisplayMemberBinding="{Binding Path=Hwnd,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></GridViewColumn>
                             <GridViewColumn Header="工作状态" Width="70" DisplayMemberBinding="{Binding Path=TaskEngine.TaskRunState}"></GridViewColumn>
 
-                            <GridViewColumn Header="是否工作" Width="70">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox x:Name="isWork" IsChecked="{Binding TaskEngine.IsWorking,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}">工作中</CheckBox>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
+                            <GridViewColumn Header="剩余循环" Width="70" DisplayMemberBinding="{Binding Path=TaskEngine.Cycle}"></GridViewColumn>
                             <GridViewColumn Header="任务配置" Width="150">
 
                                 <GridViewColumn.CellTemplate>
@@ -130,7 +124,7 @@
 
             </Grid>
 
-
+            <Button Width="50" Height="30" Click="Button_Click" Margin="508,274,73,24" Grid.RowSpan="2" Content="hook"></Button>
             <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding RefreshCommand}" Width="50" Height="30" Content="刷新" Margin="563,274,21,27" Grid.RowSpan="2"></Button>
             <StatusBar Grid.Row="1">
                 <StackPanel Orientation="Horizontal">

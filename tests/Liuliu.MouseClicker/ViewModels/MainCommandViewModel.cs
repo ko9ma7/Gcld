@@ -133,6 +133,8 @@ namespace Liuliu.MouseClicker.ViewModels
                       
                         tasks.Add(new AutoLevel(context));
                     }
+                    engine.Cycle = 10;
+                    engine.OnCycleEnd = () => role.ChangeRole();
                     engine.Start(tasks.ToArray());
 
                 });

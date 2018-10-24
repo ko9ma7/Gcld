@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Liuliu.ScriptEngine.Tasks
 {
@@ -90,7 +91,7 @@ namespace Liuliu.ScriptEngine.Tasks
             //如果trueFlag存在则表示已经在指定画面,或者取的标志存在多个
             if (trueFlag())
             {
-                Debug.WriteLine("Err:已经在指定画面,或者取的标志存在多个");
+                Debug.WriteLine("Err:已经在指定画面,或者取的标志存在多个(需要重新选择标志)");
                 return true;
             }
             Stopwatch sw = new Stopwatch();
@@ -116,7 +117,6 @@ namespace Liuliu.ScriptEngine.Tasks
                     sw.Start();
                     while (sw.ElapsedMilliseconds <= milliseconds)
                     {
-                       
                         if (trueFlag())
                         {
                             Debug.WriteLine("出现成功的标志了,延时:"+sw.ElapsedMilliseconds);
@@ -124,6 +124,7 @@ namespace Liuliu.ScriptEngine.Tasks
                             sw.Reset();
                             return true;
                         }
+                        Thread.Sleep(50);
                     }
                     sw.Stop();
                     sw.Reset();
@@ -154,6 +155,7 @@ namespace Liuliu.ScriptEngine.Tasks
                         sw.Reset();
                         return true;
                     }
+                    Thread.Sleep(50);
                 }
                 sw.Stop();
                 sw.Reset();

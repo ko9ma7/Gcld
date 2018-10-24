@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Liuliu.MouseClicker.Hook;
 
 namespace Liuliu.MouseClicker
 {
@@ -39,8 +40,15 @@ namespace Liuliu.MouseClicker
 
             SoftContext.MainWindow = this;
             Loaded += async (o, args) => await MainWindow_Loaded(o, args);
-        }
 
+            SocketInterFace.logEvent += new SocketInterFace.LogArgsHander(MainSend);
+            if (!EasyHook.RemoteHooking.IsAdministrator)
+                MessageBox.Show("请用管理员方式启动");
+        }
+        public void MainSend(SocketInterFace.BufferStruct buff)
+        {
+            Debug.WriteLine(string.Format("长度:{0} 类型:{2}\r\n 内容:{1}", buff.BufferSize, byteToHexStr(buff.Buffer, buff.BufferSize), buff.ObjectType));
+        }
         public ViewModelLocator Locator
         {
             get { return ServiceLocator.Current.GetInstance<ViewModelLocator>(); }
@@ -86,6 +94,40 @@ namespace Liuliu.MouseClicker
         private void ClickSettingsView_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+        public static string byteToHexStr(byte[] bytes, int byteLen)
+        {
+            string returnStr = "";
+            if (bytes != null)
+            {
+                for (int i = 0; i < byteLen; i++)
+                {
+                    returnStr += bytes[i].ToString("X2");
+                }
+            }
+            return returnStr;
+        }
+        string ChannelName = null;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EasyHook.Config.Register(".net远程注入组建", "socketHook.exe", "sockethookinject.dll");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            int id = Process.GetProcessesByName("SupARC").First().Id;
+            if (id != 0)
+            {
+                EasyHook.RemoteHooking.IpcCreateServer<SocketInterFace>(ref ChannelName, System.Runtime.Remoting.WellKnownObjectMode.SingleCall);
+                EasyHook.RemoteHooking.Inject(id, "sockethookinject.dll", "sockethookinject.dll", ChannelName);
+            }
+            else
+            {
+                MessageBox.Show("ARC没有启动");
+            }
         }
     }
 }

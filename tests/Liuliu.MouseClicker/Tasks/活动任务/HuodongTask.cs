@@ -16,13 +16,40 @@ namespace Liuliu.MouseClicker.Tasks
         public HuodongTask(TaskContext context) : base(context)
         {
         }
-     
 
         protected override int GetStepIndex(TaskContext context)
         {
            
             return 1;
         }
+        protected override void OnStarting(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            activities = "";
+            string points = Dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
+            Debug.WriteLine(points);
+
+            if (points == "")
+            {
+                role.CloseWindow();
+                return;
+            }
+            string[] t = points.Split('|');
+
+            foreach (var item in t)
+            {
+                string[] p = item.Split(',');
+                Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                Dm.Delay(1000);
+                string ocr = Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25", 0.9);
+                Debug.WriteLine(ocr);
+                activities += ocr;
+            }
+            role.OutSubMessage(activities);
+            role.CloseWindow();
+        }
+
+        
         private string activities = "";
         protected override TaskStep[] StepsInitialize()
         {
@@ -30,10 +57,48 @@ namespace Liuliu.MouseClicker.Tasks
              {
                 new TaskStep() {Name="大宴群雄",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="万邦来朝",Order=2,RunFunc=RunStep3 },
-                new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep4 }
+                new TaskStep() {Name="万邦来朝",Order=3,RunFunc=RunStep3 },
+                new TaskStep() {Name="宝石矿脉",Order=4,RunFunc=RunStep4 },
+                new TaskStep() {Name="古城探宝",Order=5,RunFunc=RunStep5 },
+                 new TaskStep() {Name="天降神剑",Order=6,RunFunc=RunStep6 },
              };
             return steps;
+        }
+
+        private TaskResult RunStep6(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            if (!activities.Contains("天降神剑"))
+            {
+                return TaskResult.Jump;
+            }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("天降神剑"),
+                 () => Dm.IsExistPic(395, 81, 535, 151, @"\bmp\神剑.bmp"),
+                 () => Dm.Delay(1000));
+            while(true)
+            {
+               if(Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp",30,-20))
+                {
+                    Dm.Delay(1000);
+                }
+               else
+                {
+                    Dm.Delay(2000);
+                    if (!Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp", 30, -20))
+                        break;   
+                }
+
+            }
+            return TaskResult.Success;
+        }
+
+        private TaskResult RunStep5(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+
+
+            return TaskResult.Success;
+
         }
 
         private TaskResult RunStep4(TaskContext context)
@@ -42,37 +107,9 @@ namespace Liuliu.MouseClicker.Tasks
 
 
 
-            if (Repetitions >= 9)
-            {
-                return TaskResult.Finished;
-            }
-            else
-            {
-                role.ChangeRole();
-                Dm.Delay(5000);
-                activities = "";
-                string points = Dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
-                Debug.WriteLine(points);
-
-                if (points == "")
-                {
-                    role.CloseWindow();
-                    return new TaskResult(TaskResultType.Fail, "无法点击活动!");
-                }
-                string[] t = points.Split('|');
-
-                foreach (var item in t)
-                {
-                    string[] p = item.Split(',');
-                    Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
-                    Dm.Delay(1000);
-                    string ocr = Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25", 0.9);
-                    Debug.WriteLine(ocr);
-                    activities += ocr;
-                }
-                role.CloseWindow();
-                return TaskResult.Success;
-            }
+          
+           return TaskResult.Success;
+            
         }
 
         private TaskResult RunStep3(TaskContext context)

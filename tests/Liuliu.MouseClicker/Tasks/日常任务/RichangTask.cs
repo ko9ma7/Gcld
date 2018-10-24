@@ -24,10 +24,7 @@ namespace Liuliu.MouseClicker.Tasks
            
             return 1;
         }
-        protected override void OnStopping(TaskContext context)
-        {
-          
-        }
+
 
         protected override TaskStep[] StepsInitialize()
         {
@@ -36,14 +33,14 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
-                new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep5 },
-                new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep4 },
+                new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
+                new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
              
              };
             return steps;
         }
 
-        private TaskResult RunStep5(TaskContext arg)
+        private TaskResult RunStep4(TaskContext arg)
         {
             Role role = (Role)Role;
             role.OpenMenu("资源");
@@ -82,7 +79,7 @@ namespace Liuliu.MouseClicker.Tasks
             return TaskResult.Success;
         }
 
-        private TaskResult RunStep4(TaskContext arg)
+        private TaskResult RunStep5(TaskContext arg)
         {
             Role role = (Role)Role;
             role.OpenTeshushijian();
@@ -90,26 +87,23 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 Dm.Delay(1000);
                 int count = 30;
-                while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp")&&count!=0)
+                while (true)
                 {
-                    Dm.MoveToClick(478, 477);
-                    Dm.Delay(300);
-                    count--;
+                    while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp")&&count!=0)
+                    {
+                        Dm.MoveToClick(478, 477);
+                        Dm.Delay(300);
+                        count--;
+                    }
+                    Dm.Delay(2000);
+                    if (!Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp"))
+                        break;
+                    if (count == 0)
+                        break;
                 }
             }
             role.CloseWindow();
-            if (Repetitions == 9)
-            {
-               return TaskResult.Finished;
-            }
-            else
-            {
-                role.ChangeRole();
-                Dm.Delay(5000);
-               
-                return TaskResult.Success;
-            }
-          
+           return TaskResult.Success;
         }
 
         private TaskResult RunStep3(TaskContext arg)

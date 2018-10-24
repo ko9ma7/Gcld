@@ -43,6 +43,7 @@ namespace Liuliu.ScriptEngine.Tasks
         public TaskEngine()
         {
             TaskList = new List<TaskBase>();
+            OnCycleEnd = () => { };
         }
 
         #region 属性
@@ -65,7 +66,6 @@ namespace Liuliu.ScriptEngine.Tasks
                 RaisePropertyChanged("TaskRunState");
             }
         }
-        private bool _isWorking;
         public bool IsWorking
         {
             get
@@ -74,12 +74,6 @@ namespace Liuliu.ScriptEngine.Tasks
                     && TaskRunState != TaskRunState.Stopping
                     && TaskRunState != TaskRunState.Stopped;
             }
-            set
-            {
-                _isWorking = value;
-                RaisePropertyChanged("IsWorking");
-            }
-
         }
 
         public Action<string> OutMessage { get; set; }
@@ -160,6 +154,7 @@ namespace Liuliu.ScriptEngine.Tasks
             DoEventHandler(handler, e);
         }
 
+
         private void DoEventHandler(TaskEventHandler hander, TaskEventArg e)
         {
             if (hander != null)
@@ -171,6 +166,20 @@ namespace Liuliu.ScriptEngine.Tasks
         #endregion
 
         #region 公共方法
+
+        private int _cycle=1;
+        /// <summary>
+        /// 循环次数
+        /// </summary>
+        public int Cycle
+        {
+            get { return _cycle; }
+            set
+            {
+                _cycle = value;
+                RaisePropertyChanged("Cycle");
+            }
+        }
 
         public void Start(params TaskBase[] tasks)
         {
@@ -288,6 +297,10 @@ namespace Liuliu.ScriptEngine.Tasks
             _workThread = null;
         }
 
+        /// <summary>
+        /// 每次循环结束要做的操作
+        /// </summary>
+        public Action OnCycleEnd { get; set; }
         #endregion
 
         #region 私有方法
@@ -296,47 +309,54 @@ namespace Liuliu.ScriptEngine.Tasks
         {
             return new Thread(() =>
             {
-
-                foreach (TaskBase task in tasks)
+                while (Cycle > 0)
                 {
-                    _task = task;
-                    _taskEventArg = new TaskEventArg { Context = _task.TaskContext };
-                    try
+                    //窗口绑定
+                    DmPlugin dm = Window.Dm;
+                    bool flag;
+                    flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
+                    //flag = Delegater.WaitTrue(() => Window.BindNormal(), () => dm.Delay(1000), 10);
+                    if (!flag)
                     {
-                        //窗口绑定
-                        DmPlugin dm = Window.Dm;
-                        bool flag;
-                        flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
-                        //flag = Delegater.WaitTrue(() => Window.BindNormal(), () => dm.Delay(1000), 10);
-                        if (!flag)
-                        {
-                            throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
-                        }
-                        TaskRunState = TaskRunState.Running;
-                        OnStateChanged(_taskEventArg);
-                        OnStarted(_taskEventArg);
-                        OutMessage("任务“{0}”启动成功。".FormatWith(_task.Name));
-                        IsWorking = true;
-                        TaskStart();
-                        TaskStop();
-                        Window.FlashWindow();
+                        throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
+                    }
 
-                    }
-                    catch (ThreadAbortException)
+                    foreach (TaskBase task in tasks)
                     {
-                        TaskStop(true);
-                        WaitForUnBind();
-                        break;
+                        _task = task;
+                        _taskEventArg = new TaskEventArg { Context = _task.TaskContext };
+                        try
+                        {
+                            TaskRunState = TaskRunState.Running;
+                            OnStateChanged(_taskEventArg);
+                            OnStarted(_taskEventArg);
+
+                            OutMessage("任务“{0}”启动成功。".FormatWith(_task.Name));
+                            TaskStart();
+                            TaskStop(true);
+                            Window.FlashWindow();
+
+                        }
+                        catch (ThreadAbortException)
+                        {
+                            TaskStop(true);
+                            WaitForUnBind();
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            TaskStop();
+                            Window.FlashWindow();
+                            Logger.Error("任务执行失败，{0}", ex.FormatMessage());
+                            OutMessage("任务执行失败，{0}".FormatWith(ex.Message));
+                        }
+                        Window.Dm.Delay(1000);
+                        TaskList.Remove(task);
                     }
-                    catch (Exception ex)
-                    {
-                        TaskStop();
-                        Window.FlashWindow();
-                        Logger.Error("任务执行失败，{0}", ex.FormatMessage());
-                        OutMessage("任务执行失败，{0}".FormatWith(ex.Message));
-                    }
-                    Window.Dm.Delay(1000);
-                    TaskList.Remove(task);
+                    Cycle--;
+                    //线程可能不一致？
+                    OnCycleEnd();
+                    Thread.Sleep(5000);
                 }
                 WaitForUnBind();
                 _workThread = null;
@@ -403,7 +423,6 @@ namespace Liuliu.ScriptEngine.Tasks
 
             OnStateChanged(_taskEventArg);
             OnStopped(_taskEventArg);
-            IsWorking = false;
             if (showStop)
             {
                 OutMessage("任务“{0}”已停止".FormatWith(_task.Name)); 
