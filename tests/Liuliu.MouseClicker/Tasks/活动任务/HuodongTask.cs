@@ -165,10 +165,43 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep2(TaskContext context)
         {
+            Role role = (Role)context.Role;
             if (!activities.Contains("宝石矿脉"))
             {
                 return TaskResult.Jump;
             }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("宝石矿脉"),
+                            () => Dm.IsExistPic(357, 100, 595, 169, @"\bmp\宝石.bmp"),
+                            () => Dm.Delay(1000));
+      
+          
+             Delegater.WaitTrue(() =>
+             {
+                 if(Dm.GetColorNum(124, 507, 189, 552, "54.72.99-10.20.10", 0.9)>10)
+                 {
+                     if (Dm.FindPicAndClick(581, 514, 724, 580, @"\bmp\前往下层.bmp"))
+                     {
+                         if (Dm.IsExistPic(305, 230, 655, 458, @"\bmp\进入下层.bmp"))
+                         {
+                             Dm.FindPicAndClick(305, 230, 655, 458, @"\bmp\确定.bmp");
+                         }
+                     }
+                     else
+                         return true;
+                 }
+               if(Dm.GetColorNum(124, 507, 189, 552, "0.0.83-5.5.20", 0.9)>6)
+                 {
+                     Dm.FindPicAndClick(95, 231, 867, 515, @"\bmp\星星1.bmp");
+                     Dm.Delay(1000);
+                     Dm.MoveToClick(120, 253);
+                     Dm.Delay(500);
+                 }
+                 Dm.MoveToClick(120, 253);
+                 Dm.Delay(500);
+                 return false;
+             },() => Dm.Delay(1000));
+
+            role.CloseWindow();
             return TaskResult.Success;
         }
 

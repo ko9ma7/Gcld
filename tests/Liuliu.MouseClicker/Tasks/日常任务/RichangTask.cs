@@ -71,8 +71,14 @@ namespace Liuliu.MouseClicker.Tasks
                     return false;
                 }
                 else
+                {
                     Debug.WriteLine(t);
-                return true;
+                    if(Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
+                    {
+                        Dm.Delay(1000);
+                    }
+                    return true;
+                }
             },()=>Dm.Delay(50),40);
 
             role.CloseWindow();
