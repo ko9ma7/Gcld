@@ -22,6 +22,10 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Liuliu.MouseClicker.Hook;
+using SharpPcap;
+using System.Text;
+using SharpPcap.WinPcap;
+using System.Threading;
 
 namespace Liuliu.MouseClicker
 {
@@ -39,16 +43,9 @@ namespace Liuliu.MouseClicker
             MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
 
             SoftContext.MainWindow = this;
-            Loaded += async (o, args) => await MainWindow_Loaded(o, args);
-
-            SocketInterFace.logEvent += new SocketInterFace.LogArgsHander(MainSend);
-            if (!EasyHook.RemoteHooking.IsAdministrator)
-                MessageBox.Show("请用管理员方式启动");
+            Loaded += async (o, args) => await MainWindow_Loaded(o, args);  
         }
-        public void MainSend(SocketInterFace.BufferStruct buff)
-        {
-            Debug.WriteLine(string.Format("长度:{0} 类型:{2}\r\n 内容:{1}", buff.BufferSize, byteToHexStr(buff.Buffer, buff.BufferSize), buff.ObjectType));
-        }
+      
         public ViewModelLocator Locator
         {
             get { return ServiceLocator.Current.GetInstance<ViewModelLocator>(); }
@@ -95,39 +92,80 @@ namespace Liuliu.MouseClicker
         {
 
         }
-        public static string byteToHexStr(byte[] bytes, int byteLen)
-        {
-            string returnStr = "";
-            if (bytes != null)
-            {
-                for (int i = 0; i < byteLen; i++)
-                {
-                    returnStr += bytes[i].ToString("X2");
-                }
-            }
-            return returnStr;
-        }
-        string ChannelName = null;
+     
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            try
+            Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
+            // Retrieve the device list
+            var devices = CaptureDeviceList.Instance;
+
+            // If no devices were found print an error
+            if (devices.Count < 1)
             {
-                EasyHook.Config.Register(".net远程注入组建", "socketHook.exe", "sockethookinject.dll");
+                Debug.WriteLine("出现错误：电脑未检测到网卡！");
+                return;
             }
-            catch (Exception ex)
+
+            Debug.WriteLine("该电脑有以下网卡:");
+            Debug.WriteLine("----------------------------------------------------");
+            int i = 0;
+            foreach (var dev in devices)
             {
-                MessageBox.Show(ex.Message);
+                Debug.WriteLine("{0}) {1} {2}", i, dev.Name, dev.Description);
+                i++;
             }
-            int id = Process.GetProcessesByName("SupARC").First().Id;
-            if (id != 0)
+            Debug.WriteLine("-- 选择一个网卡抓包: ");
+            i = 1;
+
+            var device = devices[i];
+
+            // Register our handler function to the 'packet arrival' event
+            device.OnPacketArrival +=
+                new PacketArrivalEventHandler(device_OnPacketArrival);
+
+            // Open the device for capturing
+            int readTimeoutMilliseconds = 1000;
+
+            if (device is WinPcapDevice)
             {
-                EasyHook.RemoteHooking.IpcCreateServer<SocketInterFace>(ref ChannelName, System.Runtime.Remoting.WellKnownObjectMode.SingleCall);
-                EasyHook.RemoteHooking.Inject(id, "sockethookinject.dll", "sockethookinject.dll", ChannelName);
+                var winPcap = device as WinPcapDevice;
+                winPcap.Open(OpenFlags.DataTransferUdp | OpenFlags.NoCaptureLocal, readTimeoutMilliseconds);
             }
             else
             {
-                MessageBox.Show("ARC没有启动");
+                throw new InvalidOperationException("未知的设备类型： " + device.GetType().ToString());
             }
+
+
+            Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
+
+            // tcpdump filter to capture only TCP/IP packets
+            string filter = "ip and tcp";
+            device.Filter = filter;
+            device.StartCapture();
+
+            Thread.Sleep(5000);
+
+            device.StopCapture();
+
+            Debug.WriteLine("--捕获结束.");
+            // Print out the device statistics
+            Debug.WriteLine(device.Statistics.ToString());
+
+            // Close the pcap device
+            device.Close();
+
         }
+
+
+        private static void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        {
+            var time = e.Packet.Timeval.Date;
+            var len = e.Packet.Data.Length;
+            Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
+            Debug.WriteLine(Encoding.Default.GetString(e.Packet.Data));
+        }
+
     }
 }

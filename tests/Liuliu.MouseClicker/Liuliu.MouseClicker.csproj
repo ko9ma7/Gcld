@@ -53,10 +53,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EasyHook, Version=2.7.6789.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EasyHook.2.7.6789\lib\net40\EasyHook.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
@@ -77,6 +73,14 @@
     </Reference>
     <Reference Include="OSharp.Utility, Version=4.1.0.0, Culture=neutral, PublicKeyToken=e7429fb96767d50d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSharp.Utility.4.1.32.1\lib\net40\OSharp.Utility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PacketDotNet, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PacketDotNet.0.13.0\lib\net\PacketDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -221,24 +225,6 @@
     </Content>
     <Content Include="dm-7.1807.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook32Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook64Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyLoad32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyLoad64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

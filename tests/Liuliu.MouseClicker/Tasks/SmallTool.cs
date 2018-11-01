@@ -35,7 +35,14 @@ namespace Liuliu.MouseClicker.Tasks
                 }
             }
             catch { }
-        
+            try
+            {
+                if (context.Settings.IsAutoBuilding)
+                {
+                    return 2;
+                }
+            }
+            catch { }
             return 1;
         }
 
@@ -98,14 +105,36 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
-
+            if(dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && 
+               dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp") &&
+               dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"))
+            {
+                role.OutSubMessage("在建筑中...");
+            }
+            else
+            {
+                role.GoToMap("主城");
+                dm.MoveToClick(317, 460);
+                dm.Delay(2000);
+            }
+            string a, b;
             Delegater.WaitTrue(() =>
             {
-                Dm.MoveToClick(681, 281);
-                dm.FindPicAndClick(546, 168, 868, 382, @"\bmp\升级.bmp");
-                dm.Delay(1000);
-                dm.FindPicAndClick(546, 168, 868, 382, @"\bmp\加速锤.bmp");
-                dm.Delay(1000);
+               a=dm.FetchWord(903, 103, 954, 145, "eaeaea-202020", "建筑队列数");
+                //Dm.MoveToClick(681, 281);
+                //dm.FindPicAndClick(546, 168, 868, 382, @"\bmp\升级.bmp");
+                //dm.Delay(1000);
+                if (!dm.FindPicAndClick(102, 48, 857, 468, @"\bmp\加速锤2.bmp"))
+                {
+                    dm.MoveToClick(152, 429);
+                    dm.Delay(5000);
+                }
+                dm.Delay(500);
+                b = dm.FetchWord(903, 103, 954, 145, "eaeaea-202020", "建筑队列数");
+                if(a!=b)
+                {
+                    dm.FindPicAndClick(852, 78, 952, 148, @"\bmp\自动升级.bmp");
+                }
                 return false;
             });
             return TaskResult.Finished;

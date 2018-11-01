@@ -188,6 +188,21 @@ namespace Liuliu.ScriptEngine.Damo
             }
             return false;
         }
+        /// <summary>
+        /// 判断点(a,b)是否在区域(x1,y1,x2,y2)里
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool IsInRect(this DmPlugin _dm,int x1,int y1,int x2,int y2,int a,int b)
+        {
+            return a >= x1 && a <= x2 && b <= y2 && b >= y1;
+        }
 
     }
 }

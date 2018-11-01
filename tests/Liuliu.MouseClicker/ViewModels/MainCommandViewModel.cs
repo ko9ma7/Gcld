@@ -71,6 +71,8 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                         dm.SetPath(AppDomain.CurrentDomain.BaseDirectory);
                         dm.SetDict(0, "dict.txt");
+                        dm.SetDict(1, "number.txt");
+                        dm.SetDict(2, "maintask.txt");
                         dm.UseDict(0);
                         if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item).Count() > 0)
                         {
@@ -128,9 +130,13 @@ namespace Liuliu.MouseClicker.ViewModels
                         context.Settings.IsAutoClear = true;
                         tasks.Add(new SmallTool(context));
                     }
+                    if (role.SelectedItemTask.Content.ToString() == "自动建筑")
+                    {
+                        context.Settings.IsAutoBuilding = true; 
+                        tasks.Add(new SmallTool(context));
+                    }
                     if (role.SelectedItemTask.Content.ToString() == "自动主线")
                     {
-                      
                         tasks.Add(new AutoLevel(context));
                     }
                     engine.Cycle = 10;

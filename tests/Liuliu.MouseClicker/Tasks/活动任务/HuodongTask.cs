@@ -46,7 +46,7 @@ namespace Liuliu.MouseClicker.Tasks
                 activities += ocr;
             }
             role.OutSubMessage(activities);
-            role.CloseWindow();
+           // role.CloseWindow();
         }
 
         
@@ -58,11 +58,83 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="大宴群雄",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="宝石矿脉",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="万邦来朝",Order=3,RunFunc=RunStep3 },
-                new TaskStep() {Name="宝石矿脉",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="古城探宝",Order=5,RunFunc=RunStep5 },
-                 new TaskStep() {Name="天降神剑",Order=6,RunFunc=RunStep6 },
+                new TaskStep() {Name="古城探宝",Order=4,RunFunc=RunStep4 },
+                new TaskStep() {Name="海岛寻宝",Order=5,RunFunc=RunStep5 },
+                new TaskStep() {Name="天降神剑",Order=6,RunFunc=RunStep6 },
+                new TaskStep() {Name="草船借箭",Order=7,RunFunc=RunStep7 },
              };
             return steps;
+        }
+
+        private TaskResult RunStep7(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            if (!activities.Contains("草船借箭"))
+            {
+                return TaskResult.Jump;
+            }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("草船借箭"),
+                             () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\草船.bmp"),
+                             () => Dm.Delay(1000));
+           
+                 Delegater.WaitTrue(() => {
+                     if (Dm.IsExistPic(360, 363, 416, 408, @"\bmp\草船金币再来一次.bmp"))
+                         return true;
+                      if (Dm.IsExistPic(706, 159, 790, 214, @"\bmp\草船金币2.bmp"))
+                         return true;
+                     if (Dm.IsExistPic(718, 157, 838, 235, @"\bmp\草船剩余.bmp")||Dm.IsExistPic(378, 362, 507, 428, @"\bmp\草船再来一次.bmp"))
+                     {
+                         if(Dm.IsExistPic(378, 362, 507, 428, @"\bmp\草船再来一次.bmp"))
+                             Dm.FindPicAndClick(378, 362, 507, 428, @"\bmp\草船再来一次.bmp");
+                         else
+                             Dm.MoveToClick(778, 231);
+                         while (!Dm.IsExistPic(345, 200, 523, 310, @"\bmp\草船中游.bmp"))
+                         {
+                             Dm.Delay(500);
+                         }
+                         while(true)
+                         {
+                             if(Dm.IsExistPic(345, 200, 523, 310, @"\bmp\草船中游.bmp"))
+                             {
+                                 Random rd = new Random();
+                                 switch (rd.Next(1, 4))
+                                 {
+                                     case 1:
+                                         role.OutSubMessage("随机点击:上游!");
+                                         Dm.MoveToClick(673, 231);
+                                         break;
+                                     case 2:
+                                         role.OutSubMessage("随机点击:中游!");
+                                         Dm.MoveToClick(498, 308);
+                                         break;
+                                     case 3:
+                                         role.OutSubMessage("随机点击:下游!");
+                                         Dm.MoveToClick(329, 397);
+                                         break;
+                                     default:
+                                         role.OutSubMessage("随机点击生成错误!");
+                                         break;
+                                 }
+                                 while (!Dm.IsExistPic(378, 362, 507, 428, @"\bmp\草船再来一次.bmp"))
+                                 {
+                                     Dm.Delay(500);
+                                 }
+                             }
+                             if (!Dm.IsExistPic(360, 363, 416, 408, @"\bmp\草船金币再来一次.bmp"))
+                                 Dm.FindPicAndClick(378, 362, 507, 428, @"\bmp\草船再来一次.bmp");
+                             else
+                                 break;
+                             if (Dm.FindPicAndClick(485, 323, 618, 399, @"\bmp\取消.bmp"))
+                                 break;
+                         }
+                         
+                         return true;
+                     }
+                     return false;
+                 }, () => Dm.Delay(1000));
+            Dm.FindPicAndClick(581, 360, 719, 428, @"\bmp\草船返回选船.bmp");
+            role.CloseWindow();
+            return TaskResult.Success;
         }
 
         private TaskResult RunStep6(TaskContext context)
@@ -78,22 +150,37 @@ namespace Liuliu.MouseClicker.Tasks
             if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
             {
                 role.OutSubMessage("神剑正在冷却中!");
+                role.CloseWindow();
                 return TaskResult.Success;
             }
                 while (true)
             {
-               if(Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀3.bmp", 30,-20))
+               if(Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀1.bmp|\bmp\点击斩杀3.bmp", 30,-20))
                 {
-                    Dm.Delay(1000);
+                    Dm.Delay(800);
+                    if (Dm.GetColorNum(180, 443, 312, 480, "66C031 -0B1C06", 0.9) > 20)
+                        Dm.MoveToClick(245, 380);
+                    if (Dm.GetColorNum(417, 449, 547, 478, "66C031 -0B1C06", 0.9) > 20)
+                        Dm.MoveToClick(483, 379);
+                    if (Dm.GetColorNum(643, 452, 795, 478, "66C031 -0B1C06", 0.9) > 20)
+                        Dm.MoveToClick(725, 374);
                 }
                else
                 {
-                    Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\领取buff.bmp", 3, -70);
                     Dm.Delay(2000);
-                    if (!Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀3.bmp", 30, -20))
+                    if (!Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀1.bmp|\bmp\点击斩杀3.bmp", 30, -20))
                     {
-                       while(Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\领取buff.bmp",3,-70))
+                       while(true)
                         {
+                            Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\领取buff.bmp", 3, -70);
+                            if (Dm.GetColorNum(180, 443, 312, 480, "66C031 -0B1C06", 0.9) > 20)
+                                Dm.MoveToClick(245, 380);
+                            if (Dm.GetColorNum(417, 449, 547, 478, "66C031 -0B1C06", 0.9) > 20)
+                                Dm.MoveToClick(483, 379);
+                            if (Dm.GetColorNum(643, 452, 795, 478, "66C031 -0B1C06", 0.9) > 20)
+                                Dm.MoveToClick(725, 374);
+                            if (Dm.GetColorNum(180, 443, 312, 480, "66C031 -0B1C06", 0.9) < 10 && Dm.GetColorNum(417, 449, 547, 478, "66C031 -0B1C06", 0.9) < 10 && Dm.GetColorNum(643, 452, 795, 478, "66C031 -0B1C06", 0.9) < 10)
+                                break;
                             Dm.Delay(1000);
                         }
                         Dm.Delay(1000);
@@ -104,14 +191,24 @@ namespace Liuliu.MouseClicker.Tasks
             }
             Delegater.WaitTrue(()=>
             {
-                Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\挑战.bmp", 3, -70);
-                if (Dm.CmpColor(426, 300, "9c1912-202020", 0.9))
-                    Dm.MoveToClick(477, 407);
-                Dm.FindColorAndClick(139, 263, 831, 484, "fbd41b-202020");
-                if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
-                    return true;
+                if (Dm.FindPicAndClick(370, 454, 583, 536, @"\bmp\挑战.bmp|\bmp\挑战2.bmp"))
+                {
+                    while (Dm.CmpColor(426, 300, "9c1912-202020", 0.9))
+                    {
+                        Dm.MoveToClick(477, 407);
+                        Dm.Delay(500);
+                    }
+                    while (Dm.FindColorAndClick(139, 263, 831, 484, "fbd41b-202020"))
+                    {
+                        Dm.Delay(500);
+                        if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
+                            return true;
+                    }
+                    if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
+                        return true;
+                }
                 return false;
-            });
+            },()=>Dm.Delay(100),5);
             role.CloseWindow();
             return TaskResult.Success;
         }
@@ -119,8 +216,27 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
+            if (!activities.Contains("海岛寻宝"))
+            {
+                return TaskResult.Jump;
+            }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("海岛寻宝"),
+                             () => Dm.IsExistPic(366, 75, 481, 131, @"\bmp\海岛.bmp"),
+                             () => Dm.Delay(1000));
 
+            Delegater.WaitTrue(() => Dm.IsExistPic(259, 360, 411, 433, @"\bmp\海岛免费.bmp")|| Dm.IsExistPic(273, 366, 360, 423, @"\bmp\海岛金币.bmp"),
+                             () => Dm.MoveToClick(147, 83));
+            Delegater.WaitTrue(() => {
+                                if(Dm.FindPicAndClick(259, 360, 411, 433, @"\bmp\海岛免费.bmp"))
+                                {
+                                    Dm.Delay(3000);  
+                                }
+                                if (Dm.IsExistPic(273, 366, 360, 423, @"\bmp\海岛金币.bmp"))
+                                    return true;
+                                return false;
+                                },() => Dm.Delay(1000));
 
+            role.CloseWindow();
             return TaskResult.Success;
 
         }
@@ -128,12 +244,127 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep4(TaskContext context)
         {
             Role role = (Role)context.Role;
+            if (!activities.Contains("探宝寻踪"))
+            {
+                return TaskResult.Jump;
+            }
+            Delegater.WaitTrue(() => role.OpenActivityBoard("探宝寻踪"),
+                             () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
+                             () => Dm.Delay(1000));
+            //图一
+            if(Dm.IsExistPic(142,415,316,496, @"\bmp\古城探索.bmp"))
+            {
+                Delegater.WaitTrue(() => Dm.FindPicAndClick(140, 380, 824, 512, @"\bmp\古城探索.bmp"),
+                                   () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                                   () => Dm.Delay(1000));
+                Delegater.WaitTrue(() =>
+                {
+                    //存在古城金币则没有次数,退出
+                    if (Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp"))
+                    {
+                       return Delegater.WaitTrue(() => Dm.FindPicAndClick(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                                           () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
+                                           () => Dm.Delay(1000));
+                    }
+                    //还可走,已经投掷骰子
+                    if (Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp"))
+                    {
+                        MovePanel("左下");
+                        if(Dm.IsExistPic(0,0,0,0, @"\bmp\古城马位置.bmp"))
+                        {
+                            Debug.WriteLine("古城马在....");
+                            return true;
+                        }
+                    }
+                    //投掷骰子
+                    if (!Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp") && !Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp"))
+                    {
+                        Delegater.WaitTrue(() => Dm.MoveToClick(908, 478),
+                                           () => Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp"),
+                                           () => Dm.Delay(1000), 4000);
+                    }
+                    return false;
+                }, () => Dm.Delay(1000));
+            }
+            //图二
+            if (Dm.IsExistPic(414, 420, 566, 492, @"\bmp\古城探索.bmp"))
+            {
+                Delegater.WaitTrue(() => Dm.FindPicAndClick(140, 380, 824, 512, @"\bmp\古城探索.bmp"),
+                                   () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                                   () => Dm.Delay(1000));
+            }
+            //图三
+            if (Dm.IsExistPic(659, 411, 822, 495, @"\bmp\古城探索.bmp"))
+            {
+                Delegater.WaitTrue(() => Dm.FindPicAndClick(140, 380, 824, 512, @"\bmp\古城探索.bmp"),
+                                   () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                                   () => Dm.Delay(1000));
+            }
+
+            Delegater.WaitTrue(() =>
+            {
+                // //存在古城金币则没有次数,退出
+                // if (Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp"))
+                // {
+                //     Delegater.WaitTrue(() => Dm.FindPicAndClick(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                //            () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
+                //            () => Dm.Delay(1000));
+                // }
+                // //还可走,骰子已经投掷
+                // if (Dm.IsExistPic(320,0,638,90, @"\bmp\古城还可走.bmp"))
+                // {
+
+                // }
+                //if(!Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp")&& !Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp"))
+                // {
+
+                //     Dm.Delay(1000);
+                //     Delegater.WaitTrue(() => Dm.MoveToClick(908, 478),
+                //                        () => Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp"),
+                //                        () => Dm.Delay(1000),4000);
+                // }
 
 
 
-          
-           return TaskResult.Success;
+
+
+           
+                return true;
+            },() => Dm.Delay(1000));
+            return TaskResult.Success;
             
+        }
+        /// <summary>
+        /// 移动面板:
+        /// </summary>
+        /// <param name="direct">左下,左上,右下,右上</param>
+        private void MovePanel(string direct)
+        {
+            switch(direct)
+            {
+                case "左下":
+                    Dm.Swipe(304, 50, 666, 50);//向右拉
+                    Dm.Delay(500);
+                    Dm.Swipe(80, 418, 80, 115);//向上拉
+                    break;
+                case "左上":
+                    Dm.Swipe(304, 50, 666, 50);//向右拉
+                    Dm.Delay(500);
+                    Dm.Swipe(80, 115, 80, 418);//向下拉
+                    break;
+                case "右下":
+                    Dm.Swipe(666, 50, 304, 50);//向左拉
+                    Dm.Delay(500);
+                    Dm.Swipe(80, 418, 80, 115);//向上拉
+                    break;
+                case "右上":
+                    Dm.Swipe(666, 50, 304, 50);//向左拉
+                    Dm.Delay(500);
+                    Dm.Swipe(80, 115, 80, 418);//向下拉
+                    break;
+                default:
+                    break;
+            }
         }
 
         private TaskResult RunStep3(TaskContext context)

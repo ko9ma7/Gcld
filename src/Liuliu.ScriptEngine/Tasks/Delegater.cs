@@ -85,7 +85,7 @@ namespace Liuliu.ScriptEngine.Tasks
         /// <param name="failAction">每次执行失败时，执行的动作</param>
         /// <param name="milliseconds">多长时间内出现条件则成功ms</param>
         /// <returns></returns>
-        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction,long milliseconds=4000,int maxCount=0)
+        public static bool WaitTrue(Func<bool> trueFunc,Func<bool> trueFlag,Action failAction,long milliseconds=3000,int maxCount=0)
         {
             failAction = failAction ?? (() => { });
             //如果trueFlag存在则表示已经在指定画面,或者取的标志存在多个

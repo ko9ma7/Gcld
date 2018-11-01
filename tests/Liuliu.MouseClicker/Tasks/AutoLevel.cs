@@ -41,8 +41,7 @@ namespace Liuliu.MouseClicker.Tasks
 
            // role.GoToMap("世界");
            // role.CloseWindow();
-            dm.SetDict(1, "maintask.txt");
-            dm.UseDict(1);
+            dm.UseDict(2);
             //int level = role.Level;
             while (true)
             {

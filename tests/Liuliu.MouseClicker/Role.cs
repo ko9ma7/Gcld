@@ -179,18 +179,15 @@ namespace Liuliu.MouseClicker
 
         public bool ChangeRole()
         {
-            _dm.MoveToClick(29, 34);
-            _dm.Delay(1000);
-      
-                _dm.Delay(1000);
 
+            Delegater.WaitTrue(() => _dm.MoveToClick(29, 34),()=>IsExistWindowMenu("角色"),() => _dm.Delay(1000));
                 Delegater.WaitTrue(()=>
                 {
                     OpenWindowMenu("角色");
                     return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp");
                 
-                },()=>_dm.Delay(1000));
-
+                },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp"),()=>_dm.Delay(1000));
+                
                 _dm.Delay(1000);
                 _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(500);
@@ -265,7 +262,14 @@ namespace Liuliu.MouseClicker
             return false;
 
         }
+        public bool IsExistWindowMenu(string menu)
+        {
 
+            // OutSubMessage("开始打开窗口...");
+            //未选中:45.34.60-5.5.20
+            //选中:60.18.75-5.5.25
+            return _dm.IsExistStr(80, 3, 934, 78, menu, "45.34.60-5.5.20|60.18.75-5.5.25");
+        }
         public bool OpenMap()
         {
           return Delegater.WaitTrue(() => _dm.MoveToClick(920, 69),
@@ -282,7 +286,21 @@ namespace Liuliu.MouseClicker
 
         public bool OpenActivityBoard(string activity)
         {
-           string points=_dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
+            if (_dm.IsExistStr(75, 2, 909, 70, activity, "45.34.60-5.5.20|60.18.75-5.5.25"))
+            {
+                OutSubMessage("活动面板已经打开!");
+                return Delegater.WaitTrue(() => {
+                    _dm.FindStrAndClick(75, 2, 909, 70, activity, "45.34.60-5.5.20");
+                    _dm.Delay(500);
+                    if (_dm.IsExistStr(75, 2, 909, 70, activity, "60.18.75-5.5.25"))
+                        return true;
+                    return false;
+                }, () => _dm.Delay(500), 10);
+            }
+            else
+                CloseWindow();
+
+            string points=_dm.FindPicEx(286, 37, 875, 284, @"\bmp\活动2.bmp", "202020", 0.8, 0);
             Debug.WriteLine(points);
 
             if (points == "")
@@ -297,10 +315,19 @@ namespace Liuliu.MouseClicker
                 string[] p = item.Split(',');
                 _dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
                 _dm.Delay(1000);
-                if (_dm.FindStrAndClick(75, 2, 909, 70, activity, "45.34.60-5.5.20|60.18.75-5.5.25"))
+                if (_dm.IsExistStr(75, 2, 909, 70, activity, "45.34.60-5.5.20|60.18.75-5.5.25"))
                 {
-                    return true;
+                    return Delegater.WaitTrue(() => {
+                         _dm.FindStrAndClick(75, 2, 909, 70, activity, "45.34.60-5.5.20");
+                         _dm.Delay(500);
+                         if (_dm.IsExistStr(75, 2, 909, 70, activity, "60.18.75-5.5.25"))
+                            return true;
+                        return false;
+                        },() => _dm.Delay(500), 10);
                 }
+                else
+                    CloseWindow();
+            
             }
             CloseWindow();
             return false;

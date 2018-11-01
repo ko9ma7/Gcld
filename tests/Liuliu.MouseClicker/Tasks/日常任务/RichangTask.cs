@@ -35,9 +35,38 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
-             
+                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
              };
             return steps;
+        }
+
+        private TaskResult RunStep6(TaskContext arg)
+        {
+            Role role = (Role)Role;
+            if (Dm.GetColorNum(523, 379, 602, 450, "dc3146-303030", 0.9) > 50)
+            {
+                Delegater.WaitTrue(() => Dm.MoveToClick(30, 32),
+                                   () => role.IsExistWindowMenu("设置"),
+                                   () => Dm.Delay(1000));
+                Delegater.WaitTrue(() => role.OpenWindowMenu("设置"),
+                                 () => Dm.IsExistPic(507, 99, 583, 163, @"\bmp\礼包.bmp"),
+                                     () => Dm.Delay(1000));
+                Delegater.WaitTrue(() =>
+                {
+                    Dm.FindPicAndClick(507, 99, 583, 163, @"\bmp\礼包.bmp");
+                    Dm.Delay(1000);
+                    if (Dm.FindPicAndClick(678, 241, 811, 344, @"\bmp\宝箱.bmp"))
+                    {
+                        Dm.Delay(2000);
+                    }
+                    else
+                        return true;
+                    return false;
+                }, () => Dm.Delay(1000), 10);
+            }
+
+            role.CloseWindow();
+            return TaskResult.Success;
         }
 
         private TaskResult RunStep4(TaskContext arg)
@@ -60,27 +89,37 @@ namespace Liuliu.MouseClicker.Tasks
                      }
                      return true;
                  }, () => Dm.Delay(50), 10);
-
+            Dm.UseDict(1);
             Delegater.WaitTrue(() =>
             {
                 string t = Dm.Ocr(204, 61, 278, 96, "C59E00-3A2E00", 0.9);
-                if (int.Parse(t) > 0)
+
+                try
                 {
-                    Dm.MoveToClick(322, 451);
-                    Dm.Delay(500);
-                    return false;
-                }
-                else
-                {
-                    Debug.WriteLine(t);
-                    if(Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
+                    if (int.Parse(t) > 0)
                     {
-                        Dm.Delay(1000);
+                        Dm.MoveToClick(322, 451);
+                        Dm.Delay(500);
+                        return false;
                     }
+                    else
+                    {
+                        Debug.WriteLine(t);
+                        if (Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
+                        {
+                            Dm.Delay(1000);
+                        }
+                        return true;
+                    }
+                }
+                catch
+                {
+                    role.OutSubMessage("------------------------------出现错误:" + t);
                     return true;
                 }
+              
             },()=>Dm.Delay(50),40);
-
+            Dm.UseDict(0);
             role.CloseWindow();
             return TaskResult.Success;
         }
