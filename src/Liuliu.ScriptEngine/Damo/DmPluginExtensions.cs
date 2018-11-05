@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Liuliu.ScriptEngine.Damo
@@ -21,7 +22,7 @@ namespace Liuliu.ScriptEngine.Damo
         public static bool IsExistPic(this DmPlugin _dm,int x1,int y1,int x2,int y2,string picname)
         {
             int intX, intY;
-            _dm.FindPic(x1, y1, x2, y2, picname, "101010", 0.9, 0, out intX, out intY);
+            _dm.FindPic(x1, y1, x2, y2, picname, "202020", 0.8, 0, out intX, out intY);
             if (intX > 0 && intY > 0)
             {
                 Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "存在图片【"+ picname + "】!");
@@ -68,10 +69,10 @@ namespace Liuliu.ScriptEngine.Damo
         public static bool FindPicAndClick(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname,int a=0,int b=0)
         {
             int intX, intY;
-            _dm.FindPic(x1, y1, x2, y2, picname, "101010", 0.9, 0, out intX, out intY);
+            _dm.FindPic(x1, y1, x2, y2, picname, "202020", 0.8, 0, out intX, out intY);
             if (intX > 0 && intY > 0)
             {
-                //Debug.WriteLine("找图[" + picname + "]成功!");
+                Debug.WriteLine("找图[" + picname + "]成功!"+"坐标:"+intX+" "+intY);
                 _dm.MoveToClick(intX+a, intY+b);
                 _dm.Delay(50);
                 return true;
@@ -202,6 +203,33 @@ namespace Liuliu.ScriptEngine.Damo
         public static bool IsInRect(this DmPlugin _dm,int x1,int y1,int x2,int y2,int a,int b)
         {
             return a >= x1 && a <= x2 && b <= y2 && b >= y1;
+        }
+        /// <summary>
+        /// 获取识别到的数字
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="color"></param>
+        /// <param name="sim"></param>
+        /// <returns>-1为获取失败,否则返回正整数</returns>
+        public static int GetOcrNumber(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,double sim=0.8)
+        {
+            string ocr = _dm.Ocr(x1, y1, x2, y2, color, sim);
+            if (ocr == "")
+                return -1;
+            int result;
+            try
+            {
+                if (int.TryParse(ocr, out result))
+                    return result;
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return -1;
         }
 
     }

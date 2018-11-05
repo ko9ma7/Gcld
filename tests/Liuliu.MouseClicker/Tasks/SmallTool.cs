@@ -43,6 +43,14 @@ namespace Liuliu.MouseClicker.Tasks
                 }
             }
             catch { }
+            try
+            {
+                if (context.Settings.IsRefreshEquipment)
+                {
+                    return 4;
+                }
+            }
+            catch { }
             return 1;
         }
 
@@ -52,10 +60,41 @@ namespace Liuliu.MouseClicker.Tasks
              {
                 new TaskStep() {Name="自动兵器",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="自动建筑",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="自动洗练",Order=3,RunFunc=RunStep3 }
+                new TaskStep() {Name="自动洗练",Order=3,RunFunc=RunStep3 },
+                new TaskStep() {Name="刷新装备",Order=4,RunFunc=RunStep4 }
              };
             return steps;
         }
+
+        private TaskResult RunStep4(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            Delegater.WaitTrue(() => Dm.FindPicAndClick(856, 448, 958, 536, @"\bmp\菜单未打开.bmp"),
+                               () => Dm.IsExistPic(856, 448, 958, 536, @"\bmp\菜单打开.bmp"),()=>Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenMenu(@"\bmp\装备.bmp"),
+                              () => role.OpenWindowMenu ("商店"),() => Dm.Delay(1000));
+            Delegater.WaitTrue(() =>
+            {
+                Dm.FindStrAndClick(718, 448, 857, 502,"刷新", "86.17.70-5.5.25");
+                if(Dm.IsExistPic(283,192,668,411,@"\bmp\金币秒CD.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
+                    return true;
+                }
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                }
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                }
+                return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
+            },()=>Dm.Delay(500));
+            role.CloseWindow();
+            return TaskResult.Finished;
+        }
+
         private TaskResult RunStep3(TaskContext context)
         {
             Role role = (Role)context.Role;

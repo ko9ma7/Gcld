@@ -36,8 +36,113 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
                 new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+               // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
              };
             return steps;
+        }
+        private TaskResult RunStep7(TaskContext arg)
+        {
+            Role role = (Role)Role;
+
+            Delegater.WaitTrue(() =>
+            {
+                if(Dm.IsExistPic(864,446,960,542, @"\bmp\菜单未打开.bmp"))
+                {
+                    Dm.MoveToClick(756, 503);
+                    Dm.Delay(1000);
+                    return true;
+                }
+                return false;
+            },() => role.IsExistWindowMenu("集市"),() => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenWindowMenu("集市"),
+                               () => Dm.IsExistPic(97,60,217,113, @"\bmp\购买次数.bmp"),
+                               () => Dm.Delay(1000));
+           
+            Dm.UseDict(1);
+            Dm.Delay(1000);
+            int intX, intY;
+            Delegater.WaitTrue(() =>
+            {
+                int result = Dm.GetOcrNumber(178, 72, 212, 109, "49A031-152F0F");
+                if (result > 0)
+                {
+                    int type1=Dm.FindPic(160, 129, 346, 377, @"\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp|\bmp\招商令.bmp|\bmp\镔铁.bmp", "202020", 0.8,0, out intX, out intY);
+                    switch(type1)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            Dm.MoveToClick(250, 356);
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case -1:
+                            break;
+                    }
+                    Dm.Delay(1000);
+                    int type2 = Dm.FindPic(395, 132, 573, 373, @"\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp|\bmp\招商令.bmp|\bmp\镔铁.bmp", "202020", 0.8, 0, out intX, out intY);
+                    Debug.WriteLine(type2);
+                    switch (type1)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            Dm.MoveToClick(487,356);
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case -1:
+                            break;
+                    }
+                    Dm.Delay(1000);
+                    int type3 = Dm.FindPic(630, 131, 810, 377, @"\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp|\bmp\招商令.bmp|\bmp\镔铁.bmp", "202020", 0.8, 0, out intX, out intY);
+                    Debug.WriteLine(type3);
+                    switch (type1)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            Dm.MoveToClick(728,357);
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case -1:
+                            break;
+                    }
+                    Dm.Delay(1000);
+                    if (type1==2||type2==2||type3==2)
+
+
+                    Dm.Delay(500);
+                    return false;
+                }
+                else if (result == 0)
+                    return true;
+                else
+                {
+                    role.OutSubMessage("数字识别失败!");
+                    if (Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
+                    {
+                        Dm.Delay(1000);
+                    }
+                    return true;
+                }
+            }, () => Dm.Delay(50), 40);
+            Dm.UseDict(0);
+            role.CloseWindow();
+            return TaskResult.Success;
         }
 
         private TaskResult RunStep6(TaskContext arg)
@@ -72,7 +177,7 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep4(TaskContext arg)
         {
             Role role = (Role)Role;
-            role.OpenMenu("资源");
+            role.OpenMenu(@"\bmp\资源|bmp\资源2.bmp");
             Delegater.WaitTrue(() => role.OpenWindowMenu("祭祀"),
                                () => Dm.GetColorNum(204, 61, 278, 96, "cba300-303030", 0.9)>10,
                                () => Dm.Delay(1000));
@@ -92,11 +197,7 @@ namespace Liuliu.MouseClicker.Tasks
             Dm.UseDict(1);
             Delegater.WaitTrue(() =>
             {
-                string t = Dm.Ocr(204, 61, 278, 96, "C59E00-3A2E00", 0.9);
-
-                try
-                {
-                    if (int.Parse(t) > 0)
+                    if (Dm.GetOcrNumber(204, 61, 278, 96, "C59E00-3A2E00") > 0)
                     {
                         Dm.MoveToClick(322, 451);
                         Dm.Delay(500);
@@ -104,20 +205,13 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                     else
                     {
-                        Debug.WriteLine(t);
+                        role.OutSubMessage("数字识别失败!");
                         if (Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
                         {
                             Dm.Delay(1000);
                         }
                         return true;
                     }
-                }
-                catch
-                {
-                    role.OutSubMessage("------------------------------出现错误:" + t);
-                    return true;
-                }
-              
             },()=>Dm.Delay(50),40);
             Dm.UseDict(0);
             role.CloseWindow();

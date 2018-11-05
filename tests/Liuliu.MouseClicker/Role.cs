@@ -184,9 +184,9 @@ namespace Liuliu.MouseClicker
                 Delegater.WaitTrue(()=>
                 {
                     OpenWindowMenu("角色");
-                    return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp");
+                    return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp|\bmp\切换角色2.bmp");
                 
-                },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp"),()=>_dm.Delay(1000));
+                },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp|\bmp\开始游戏2.bmp"),()=>_dm.Delay(1000));
                 
                 _dm.Delay(1000);
                 _dm.Swipe(490, 337, 490, 128);
@@ -262,6 +262,11 @@ namespace Liuliu.MouseClicker
             return false;
 
         }
+        /// <summary>
+        /// 是否存在面板标题(商店,仓库,回购等)
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <returns></returns>
         public bool IsExistWindowMenu(string menu)
         {
 
@@ -332,10 +337,14 @@ namespace Liuliu.MouseClicker
             CloseWindow();
             return false;
         }
-
+        /// <summary>
+        /// 打开菜单栏(装备,资源,武将,国家等)
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <returns></returns>
         public bool OpenMenu(string menu)
         {
-            return _dm.FindPicAndClickClear(327, 456, 886, 538, @"\bmp\" + menu + ".bmp", 27, -20);
+            return _dm.FindPicAndClick(331, 467, 869, 537, menu);
         }
 
 

@@ -102,6 +102,11 @@ namespace Liuliu.ScriptEngine.Tasks
                 {  //一直运行到成功为止
                     while (!trueFunc()&&i<10)
                     {
+                        if (trueFlag())
+                        {
+                            Debug.WriteLine("Err:已经在指定画面,或者取的标志存在多个(需要重新选择标志)");
+                            return true;
+                        }
                         failAction();
                         i++;
                     }

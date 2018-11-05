@@ -139,6 +139,12 @@ namespace Liuliu.MouseClicker.ViewModels
                     {
                         tasks.Add(new AutoLevel(context));
                     }
+                    
+                    if (role.SelectedItemTask.Content.ToString() == "刷新装备")
+                    {
+                        context.Settings.IsRefreshEquipment = true;
+                        tasks.Add(new SmallTool(context));
+                    }
                     engine.Cycle = 10;
                     engine.OnCycleEnd = () => role.ChangeRole();
                     engine.Start(tasks.ToArray());
