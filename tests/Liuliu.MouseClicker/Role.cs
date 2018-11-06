@@ -27,6 +27,7 @@ namespace Liuliu.MouseClicker
             Debug.WriteLine(_window.Dm.Ver());
             _hwnd = hwnd;
             TaskEngine = new TaskEngine();
+            TaskEngine.OutMessage = OutMessage;
             TaskEngine.Window = _window;
             WindowTitle = _window.TopTitle;
         }
@@ -124,19 +125,38 @@ namespace Liuliu.MouseClicker
 
         public TaskEngine TaskEngine { get; set; }
 
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                SetProperty(ref _message, value, () => Message);
+            }
+        }
+        private string _subMessage;
+        public string SubMessage
+        {
+            get { return _subMessage; }
+            set
+            {
+                SetProperty(ref _subMessage, value, () => SubMessage);
+            }
+        }
         public Action<string> OutMessage
         {
             get
             {
-                return (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "角色通知："+str); };
+                return (str) => { Message = str; };
             }
+
         }
 
         public Action<string> OutSubMessage
         {
             get
             {
-                return (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "角色通知："+str); };
+                return (str) => { SubMessage = str; };
             }
         }
 

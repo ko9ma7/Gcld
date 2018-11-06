@@ -204,14 +204,7 @@ namespace Liuliu.ScriptEngine.Tasks
             TaskRunState = TaskRunState.Starting;
             OnStateChanged(_taskEventArg);
             OnStarting(_taskEventArg);
-            try
-            {
-                _workThread.Start();
-            }catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-           
+            _workThread.Start();
         }
 
         public void Pause()

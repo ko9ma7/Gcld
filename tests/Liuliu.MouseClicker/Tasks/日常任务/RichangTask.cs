@@ -24,7 +24,7 @@ namespace Liuliu.MouseClicker.Tasks
            
             return 1;
         }
-
+     
 
         protected override TaskStep[] StepsInitialize()
         {
@@ -282,9 +282,10 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
-
+           
             role.GoToMap("世界");
-      
+            role.CloseWindow();
+            dm.Delay(1000);
             role.OpenMap();
 
             int intX, intY;

@@ -86,13 +86,29 @@
                 <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="模拟器名称" Width="100" DisplayMemberBinding="{Binding Path=WindowTitle,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
-                            <GridViewColumn Header="窗口句柄" Width="70" DisplayMemberBinding="{Binding Path=Hwnd,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></GridViewColumn>
-                            <GridViewColumn Header="工作状态" Width="70" DisplayMemberBinding="{Binding Path=TaskEngine.TaskRunState}"></GridViewColumn>
-
-                            <GridViewColumn Header="剩余循环" Width="70" DisplayMemberBinding="{Binding Path=TaskEngine.Cycle}"></GridViewColumn>
+                            <GridViewColumn Header="模拟器列表" Width="360">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <StackPanel>
+                                                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                    <Label Content="{Binding Path=WindowTitle}"></Label>
+                                                    <Label Content="{Binding Path=Hwnd}"></Label>
+                                                    <Label Content="{Binding Path=TaskEngine.TaskRunState}"></Label>
+                                                    <Label Content="{Binding Path=TaskEngine.Cycle}"></Label>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="3" Orientation="Horizontal">
+                                                    <Label Content="消息："></Label>
+                                                    <Label Content="{Binding Message,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="100"></Label>
+                                                    <Label Content="子消息："></Label>
+                                                    <Label Content="{Binding SubMessage,UpdateSourceTrigger=PropertyChanged}" Width="100"></Label>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="任务配置" Width="150">
-
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <ComboBox SelectedItem="{Binding SelectedItemTask}">
@@ -108,13 +124,13 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="操作" Width="200">
+                            <GridViewColumn Header="操作" Width="120">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <WrapPanel>
+                                        <StackPanel Orientation="Horizontal">
                                             <Button Margin="5" Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                        </WrapPanel>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

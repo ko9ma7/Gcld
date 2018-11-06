@@ -109,7 +109,6 @@ namespace Liuliu.MouseClicker.ViewModels
                     TaskContext context = new TaskContext(role, func);
                     TaskEngine engine = role.TaskEngine;
                    
-                    engine.OutMessage = (str) => { Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + str); };
                     List<TaskBase> tasks = new List<TaskBase>();
 
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
@@ -147,7 +146,14 @@ namespace Liuliu.MouseClicker.ViewModels
                     }
                     engine.Cycle = 10;
                     engine.OnCycleEnd = () => role.ChangeRole();
-                    engine.Start(tasks.ToArray());
+                    try
+                    {
+                        engine.Start(tasks.ToArray());
+                    }catch(Exception ex)
+                    {
+                        role.OutMessage(ex.Message);
+                    }
+                  
 
                 });
             }
