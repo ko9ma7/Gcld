@@ -96,6 +96,30 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Process p = new Process();
+            p.StartInfo.FileName = "cmd.exe";//设置启动的应用程序
+            p.StartInfo.UseShellExecute = false;//禁止使用操作系统外壳程序启动进程
+            p.StartInfo.RedirectStandardInput = true;//应用程序的输入从流中读取
+            p.StartInfo.RedirectStandardOutput = true;//应用程序的输出写入流中
+            p.StartInfo.RedirectStandardError = true;//将错误信息写入流
+            p.StartInfo.CreateNoWindow = true;//是否在新窗口中启动进程
+            p.Start();
+            //p.StandardInput.WriteLine(@"netstat -a -n>c:\port.txt");//将字符串写入文本流
+            p.StandardInput.WriteLine(@"netstat -aon|findstr ""42.62.119.245""");
+            
+            try
+            {
+                string str;
+
+                while ((str = p.StandardOutput.ReadLine()) != null)
+            {
+                Debug.WriteLine(str);
+            }
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            Debug.WriteLine("sdfs");
             Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
             // Retrieve the device list
             var devices = CaptureDeviceList.Instance;

@@ -94,14 +94,17 @@
                                                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                                                     <Label Content="{Binding Path=WindowTitle}"></Label>
                                                     <Label Content="{Binding Path=Hwnd}"></Label>
+                                                    <Label Content="{Binding Path=ProcessId}"></Label>
                                                     <Label Content="{Binding Path=TaskEngine.TaskRunState}"></Label>
                                                     <Label Content="{Binding Path=TaskEngine.Cycle}"></Label>
                                                 </StackPanel>
                                                 <StackPanel Grid.Row="3" Orientation="Horizontal">
                                                     <Label Content="消息："></Label>
-                                                    <Label Content="{Binding Message,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Width="100"></Label>
+                                                    <Label Content="{Binding Message,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="4" Orientation="Horizontal">
                                                     <Label Content="子消息："></Label>
-                                                    <Label Content="{Binding SubMessage,UpdateSourceTrigger=PropertyChanged}" Width="100"></Label>
+                                                    <Label Content="{Binding SubMessage,UpdateSourceTrigger=PropertyChanged}"></Label>
                                                 </StackPanel>
                                             </StackPanel>
                                         </Grid>

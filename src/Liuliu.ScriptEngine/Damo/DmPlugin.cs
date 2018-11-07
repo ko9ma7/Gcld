@@ -39,7 +39,6 @@ namespace Liuliu.ScriptEngine
         public DmPlugin()
             : this("dm.dll")
         { }
-
         /// <summary>
         /// 初始化一个<see cref="DmPlugin"/>类型的新实例
         /// </summary>
@@ -112,6 +111,8 @@ namespace Liuliu.ScriptEngine
         {
             return _dm.EnablePicCache(enable ? 1 : 0) == 1;
         }
+
+
 
         /// <summary>
         /// 【基本】获取注册在系统中的dm.dll的路径

@@ -294,6 +294,7 @@ namespace Liuliu.MouseClicker.Tasks
                 dm.FindStr(75, 246, 227, 296, "军资奖励", "44.34.64-10.10.25", 0.9, out intX, out intY);
                 if (intX > 0 && intY > 0)
                 {
+                    role.OutSubMessage("领取军资...");
                     dm.MoveToClick(156, 420);
                     dm.Delay(50);
                     if(dm.GetColorNum(157, 242, 227, 293, "f60000-101010",0.9)>5)
@@ -304,7 +305,7 @@ namespace Liuliu.MouseClicker.Tasks
                     dm.Delay(300);
                 }else
                 {
-                    role.OutMessage("找不到军资奖励");
+                    role.OutSubMessage("找不到军资奖励");
                     break;
                 }
             }

@@ -22,6 +22,11 @@ namespace Liuliu.MouseClicker.Tasks
            
             return 1;
         }
+        protected override void OnStopping(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            role.CloseWindow();
+        }
         protected override void OnStarting(TaskContext context)
         {
             Role role = (Role)context.Role;
@@ -248,6 +253,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 return TaskResult.Jump;
             }
+
             Delegater.WaitTrue(() => role.OpenActivityBoard("探宝寻踪"),
                              () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
                              () => Dm.Delay(1000));
@@ -257,10 +263,11 @@ namespace Liuliu.MouseClicker.Tasks
                 Delegater.WaitTrue(() => Dm.FindPicAndClick(140, 380, 824, 512, @"\bmp\古城探索.bmp"),
                                    () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
                                    () => Dm.Delay(1000));
+                bool isMove且末西 = false, isMove且末北 = false,isMove车师南=false,isMove楼兰古城=false;
                 Delegater.WaitTrue(() =>
                 {
-                    //存在古城金币则没有次数,退出
-                    if (Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp"))
+                    //存在古城金币则没有次数,并且没有可走,退出
+                    if (Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp")&&!Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp"))
                     {
                        return Delegater.WaitTrue(() => Dm.FindPicAndClick(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
                                            () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
@@ -269,11 +276,99 @@ namespace Liuliu.MouseClicker.Tasks
                     //还可走,已经投掷骰子
                     if (Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp"))
                     {
-                        MovePanel("左下");
-                        if(Dm.IsExistPic(0,0,0,0, @"\bmp\古城马位置.bmp"))
+                        if (isMove且末西 == false)
                         {
-                            Debug.WriteLine("古城马在....");
-                            return true;
+                            MovePanel("左下");
+                            Dm.Delay(1000);
+                            if (Dm.IsExistPic(87,63,581,476, @"\bmp\马车.bmp", 0.6))
+                            {
+                                Dm.MoveToClick(183, 135);
+                                Dm.Delay(2000);
+                                MovePanel("左下");
+                            }
+                            else
+                            {
+                                role.OutSubMessage("未找到马车,可能已经走过或马车无法识别.");
+                                isMove且末西 = true;
+                            }
+                            if (Dm.IsExistPic(101, 78, 261, 193, @"\bmp\马车.bmp", 0.6))
+                            {
+                                role.OutSubMessage("马车在且末西.");
+                                isMove且末西 = true; 
+                            }
+                            return false;
+                        }
+                        
+                        if (isMove且末北 == false)
+                        {
+                            MovePanel("左上");
+                            Dm.Delay(1000);
+                            if (Dm.IsExistPic(69,163,407,494, @"\bmp\马车.bmp", 0.6))
+                            {
+                                Dm.MoveToClick(308, 251);
+                                Dm.Delay(2000);
+                                MovePanel("左上");
+                            }
+                            else
+                            {
+                                role.OutSubMessage("未找到马车,可能已经走过或马车无法识别.");
+                                isMove且末北 = true;
+                            }
+
+                            if (Dm.IsExistPic(225, 191, 390, 312, @"\bmp\马车.bmp", 0.6))
+                            {
+                                role.OutSubMessage("马车在且末北.");
+                                isMove且末北 = true;
+                            }
+                            return false;
+                        }
+                        
+                        if (isMove车师南 == false)
+                        {
+                            MovePanel("左上");
+                            Dm.Delay(1000);
+                            if (Dm.IsExistPic(210, 180, 820, 422, @"\bmp\马车.bmp", 0.6))
+                            {
+                                Dm.MoveToClick(943, 370);
+                                Dm.Delay(2000);
+                            }
+                            else
+                            {
+                                MovePanel("右上");
+                                Dm.Delay(1000);
+                                if (Dm.IsExistPic(168, 257, 590, 438, @"\bmp\马车.bmp", 0.6))
+                                {
+                                    Dm.MoveToClick(515, 372);
+                                    Dm.Delay(2000);
+                                    MovePanel("右上");
+                                }
+                                else
+                                {
+                                    role.OutSubMessage("未找到马车,可能已经走过或马车无法识别.");
+                                    isMove车师南 = true;
+                                }
+                                if (Dm.IsExistPic(424, 305, 592, 434, @"\bmp\马车.bmp", 0.6))
+                                {
+                                    role.OutSubMessage("马车在车师南.");
+                                    isMove车师南 = true;
+                                }
+                            }
+                          
+                            return false;
+                        }
+                        if (isMove楼兰古城 == false)
+                        {
+                            MovePanel("右上");
+                            Dm.Delay(1000);
+                            Dm.MoveToClick(706,136);
+                            Dm.Delay(2000);
+                            if (Dm.IsExistPic(424, 305, 592, 434, @"\bmp\马车.bmp", 0.6))
+                            {
+                                role.OutSubMessage("马车在楼兰古城.");
+                                isMove楼兰古城 = true;
+                                return true;
+                            }
+                            return false;
                         }
                     }
                     //投掷骰子

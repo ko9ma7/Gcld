@@ -30,6 +30,7 @@ namespace Liuliu.MouseClicker
             TaskEngine.OutMessage = OutMessage;
             TaskEngine.Window = _window;
             WindowTitle = _window.TopTitle;
+            ProcessId = _window.ProcessId;
         }
         private DmWindow _window;
         private DmPlugin _dm;
@@ -51,6 +52,15 @@ namespace Liuliu.MouseClicker
             set
             {
                 SetProperty(ref _hwnd, value, () => Hwnd);
+            }
+        }
+        private int _processId;
+        public int ProcessId
+        {
+            get { return _processId; }
+            set
+            {
+                SetProperty(ref _processId, value, () => ProcessId);
             }
         }
         public string Ac
@@ -199,7 +209,7 @@ namespace Liuliu.MouseClicker
 
         public bool ChangeRole()
         {
-
+            OutMessage("切换角色中...");
             Delegater.WaitTrue(() => _dm.MoveToClick(29, 34),()=>IsExistWindowMenu("角色"),() => _dm.Delay(1000));
                 Delegater.WaitTrue(()=>
                 {
@@ -313,7 +323,7 @@ namespace Liuliu.MouseClicker
         {
             if (_dm.IsExistStr(75, 2, 909, 70, activity, "45.34.60-5.5.20|60.18.75-5.5.25"))
             {
-                OutSubMessage("活动面板已经打开!");
+                OutSubMessage("活动面板["+activity+"]已经打开!");
                 return Delegater.WaitTrue(() => {
                     _dm.FindStrAndClick(75, 2, 909, 70, activity, "45.34.60-5.5.20");
                     _dm.Delay(500);
@@ -375,7 +385,7 @@ namespace Liuliu.MouseClicker
                 case "世界":
                    if(_dm.IsExistPic(818, 281, 953, 447,@"\bmp\主城.bmp")&&_dm.IsExistPic(818, 281, 953, 447,@"\bmp\副本.bmp"))
                     {
-                        OutMessage("已经在世界界面!");
+                        OutSubMessage("已经在世界界面!");
                         break;
                     }
                     Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\世界.bmp"),
@@ -385,7 +395,7 @@ namespace Liuliu.MouseClicker
                 case "副本":
                     if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"))
                     {
-                        OutMessage("已经在副本界面!");
+                        OutSubMessage("已经在副本界面!");
                         break;
                     }
                     Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\副本.bmp"),
@@ -395,7 +405,7 @@ namespace Liuliu.MouseClicker
                 case "主城":
                     if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
                     {
-                        OutMessage("已经在主城界面!");
+                        OutSubMessage("已经在主城界面!");
                         break;
                     }
                     Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\主城.bmp"),
@@ -403,7 +413,7 @@ namespace Liuliu.MouseClicker
                                () => _dm.Delay(1000));
                     break;
                 default:
-                    OutMessage("输入地图错误,无法打开");
+                    OutSubMessage("输入地图错误,无法打开");
                     break;
             }
             _dm.Delay(2000);

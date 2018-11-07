@@ -107,7 +107,7 @@ namespace Liuliu.ScriptEngine.Tasks
             while (true)
             {
                 TaskStep step = TaskContext.TaskSteps[TaskContext.StepIndex - 1];
-                Debug.WriteLine("["+ Thread.CurrentThread.ManagedThreadId.ToString() + "]"+"执行步骤" + TaskContext.StepIndex + ":" + step.Name);
+                Role.OutMessage("执行步骤" + TaskContext.StepIndex + ":" + step.Name);
                 OnStepStarting(TaskContext);
                 //执行任务步骤
                 result = step.RunFunc(TaskContext);
@@ -120,7 +120,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 }
                 if (result.ResultType == TaskResultType.Jump)
                 {
-                    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "步骤" + ":" + TaskContext.StepIndex+"跳过了!");  
+                    Role.OutSubMessage("步骤" + ":" + TaskContext.StepIndex+"跳过了!");  
                 }
                 TaskContext.StepIndex++;
                 if (TaskContext.StepIndex >TaskContext.TaskSteps.Length)

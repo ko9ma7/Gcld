@@ -113,11 +113,11 @@ namespace Liuliu.MouseClicker.ViewModels
 
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
-                        tasks.Add(new RichangTask(context));
+                        tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "活动任务")
                     {
-                        tasks.Add(new HuodongTask(context));
+                        tasks.Add(new HuodongTask(new TaskContext(role, new Function() { Name = "活动任务" })));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动兵器")
                     {
