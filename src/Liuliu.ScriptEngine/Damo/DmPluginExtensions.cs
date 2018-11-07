@@ -30,7 +30,7 @@ namespace Liuliu.ScriptEngine.Damo
                 return true;
             }
             else
-            {
+            { 
                 Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "不存在图片【" + picname + "】!");
                 return false;
             }
