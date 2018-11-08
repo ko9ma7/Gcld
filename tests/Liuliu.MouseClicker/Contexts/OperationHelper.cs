@@ -30,13 +30,13 @@ namespace Liuliu.MouseClicker.Contexts
             if (ver > new Version("3.1233"))
             {
                 string code = SoftContext.Locator.Settings.DmRegCode;
-                code = "rhjv5528a9fb08d84534868df99ad3940be57c";
+                //code = "rhjv5528a9fb08d84534868df99ad3940be57c";
                 if (code == null)
                 {
                     return new OperationResult<DmSystem>(OperationResultType.Error, "大漠插件版本大于“3.1233”，请在“菜单-设置”中设置大漠注册码");
                 }
                 //int ret = dm.Reg(code);
-                int ret = dm.RegEx("rhjv5528a9fb08d84534868df99ad3940be57c", "1.0", "221.229.162.75|58.218.204.170|221.229.162.171|221.229.162.40|112.84.124.170");
+                int ret = dm.RegEx(code, "1.0", "221.229.162.75|58.218.204.170|221.229.162.171|221.229.162.40|112.84.124.170");
                 if (ret != 1)
                 {
                     return new OperationResult<DmSystem>(OperationResultType.Error, $"大漠插件版本大于“3.1233”，执行插件注册失败，失败码：{ret}");

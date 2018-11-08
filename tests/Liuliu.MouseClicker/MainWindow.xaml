@@ -86,32 +86,12 @@
                 <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="模拟器列表" Width="360">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <StackPanel>
-                                                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                                    <Label Content="{Binding Path=WindowTitle}"></Label>
-                                                    <Label Content="{Binding Path=Hwnd}"></Label>
-                                                    <Label Content="{Binding Path=ProcessId}"></Label>
-                                                    <Label Content="{Binding Path=TaskEngine.TaskRunState}"></Label>
-                                                    <Label Content="{Binding Path=TaskEngine.Cycle}"></Label>
-                                                </StackPanel>
-                                                <StackPanel Grid.Row="3" Orientation="Horizontal">
-                                                    <Label Content="消息："></Label>
-                                                    <Label Content="{Binding Message,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
-                                                </StackPanel>
-                                                <StackPanel Grid.Row="4" Orientation="Horizontal">
-                                                    <Label Content="子消息："></Label>
-                                                    <Label Content="{Binding SubMessage,UpdateSourceTrigger=PropertyChanged}"></Label>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="任务配置" Width="150">
+                            <GridViewColumn Header="模拟器列表" Width="100" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
+                            <GridViewColumn Header="进程Id" Width="60" DisplayMemberBinding="{Binding ProcessId}"></GridViewColumn>
+                            <GridViewColumn Header="句柄" Width="60" DisplayMemberBinding="{Binding Hwnd}"></GridViewColumn>
+                            <GridViewColumn Header="运行状态" Width="80" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
+                            <GridViewColumn Header="剩余循环" Width="70" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
+                            <GridViewColumn Header="任务配置" Width="140">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <ComboBox SelectedItem="{Binding SelectedItemTask}">

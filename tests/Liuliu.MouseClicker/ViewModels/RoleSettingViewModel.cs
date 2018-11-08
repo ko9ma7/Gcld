@@ -17,11 +17,25 @@ using Liuliu.MouseClicker.Mvvm;
 using Liuliu.ScriptEngine;
 using Liuliu.ScriptEngine.Damo;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using GalaSoft.MvvmLight.Messaging;
+using System.IO;
+using Liuliu.MouseClicker.Contexts;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
     public class RoleSettingViewModel : ViewModelExBase
     {
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                SetProperty(ref _name, value, () => Name);
+            }
+        }
+
 
         private bool _isChecked木牛流马;
         public bool IsChecked木牛流马
@@ -49,6 +63,85 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             get { return _isChecked领取军资; }
             set { SetProperty(ref _isChecked领取军资, value, () => IsChecked领取军资); }
+        }
+
+
+
+       
+
+      
+
+     
+
+       
+
+      
+
+        [JsonIgnore]
+        public ICommand DmFileBrowseCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Messenger.Default.Send("DmFileBrowse", "SettingsFlyout");
+                });
+            }
+        }
+
+        [JsonIgnore]
+        public override string Error
+        {
+            get
+            {
+                //if (!File.Exists(DmFile))
+                //{
+                //    return "大漠插件文件不存在";
+                //}
+                //if (DmRegCodeShow && DmRegCode.IsMissing())
+                //{
+                //    return "大漠注册码不能为空";
+                //}
+                return base.Error;
+            }
+        }
+
+        /// <summary>
+        /// 从本地数据初始化
+        /// </summary>
+        public void InitFromLocal()
+        {
+            var model = LocalDataHandler.GetData<RoleSettingViewModel>("data.db", _name);
+            if (model != null)
+            {
+                Name = model.Name;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+                IsChecked木牛流马 = model.IsChecked木牛流马;
+            }
+        }
+
+        /// <summary>
+        /// 保存数据到本地
+        /// </summary>
+        public void SaveToLocal()
+        {
+            LocalDataHandler.SetData("data.db", _name, this);
         }
     }
 }

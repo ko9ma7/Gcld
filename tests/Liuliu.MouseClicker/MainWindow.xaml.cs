@@ -105,16 +105,10 @@ namespace Liuliu.MouseClicker
             p.StartInfo.CreateNoWindow = true;//是否在新窗口中启动进程
             p.Start();
             //p.StandardInput.WriteLine(@"netstat -a -n>c:\port.txt");//将字符串写入文本流
-            p.StandardInput.WriteLine(@"netstat -aon|findstr ""42.62.119.245""");
-            
+           
             try
             {
-                string str;
-
-                while ((str = p.StandardOutput.ReadLine()) != null)
-            {
-                Debug.WriteLine(str);
-            }
+                p.StandardInput.WriteLine(@"netstat -aon|findstr ""42.62.119.245"">" + AppDomain.CurrentDomain.BaseDirectory + @"\port.txt");
             }catch(Exception ex)
             {
                 Debug.WriteLine(ex.Message);

@@ -339,6 +339,21 @@ namespace Liuliu.ScriptEngine
         {
             return _dm.SetPath(path) == 1;
         }
+        private string picPath="";
+        /// <summary>
+        /// 设置图片路径,设置了此路径后,所有图片调用中,相关的文件都相对于此路径.
+        /// </summary>
+        /// <param name="path"></param>
+        public void SetPicPath(string path)
+        {
+            if (path == null || path == "")
+            {
+                picPath = _dm.GetBasePath();
+                return;
+            }
+            picPath = path;
+            return;
+        }
 
         /// <summary>
         /// 【基本】设置是否弹出错误信息,默认是打开.
@@ -2457,6 +2472,8 @@ namespace Liuliu.ScriptEngine
         public int FindPic(int x1, int y1, int x2, int y2, string picName, string deltaColor, double sim, int dir, out int intX, out int intY)
         {
             object x, y;
+            string[] pn = picName.Split('|');
+
             int result = _dm.FindPic(x1, y1, x2, y2, picName, deltaColor, sim, dir, out x, out y);
             intX = (int)x;
             intY = (int)y;
