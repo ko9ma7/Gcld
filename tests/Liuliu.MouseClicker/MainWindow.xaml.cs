@@ -113,67 +113,76 @@ namespace Liuliu.MouseClicker
             {
                 Debug.WriteLine(ex.Message);
             }
-            Debug.WriteLine("sdfs");
-            Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
-            // Retrieve the device list
-            var devices = CaptureDeviceList.Instance;
-
-            // If no devices were found print an error
-            if (devices.Count < 1)
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
+            Task task = new Task(() =>
             {
-                Debug.WriteLine("出现错误：电脑未检测到网卡！");
-                return;
-            }
+                Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
+                // Retrieve the device list
+                var devices = CaptureDeviceList.Instance;
 
-            Debug.WriteLine("该电脑有以下网卡:");
-            Debug.WriteLine("----------------------------------------------------");
-            int i = 0;
-            foreach (var dev in devices)
-            {
-                Debug.WriteLine("{0}) {1} {2}", i, dev.Name, dev.Description);
-                i++;
-            }
-            Debug.WriteLine("-- 选择一个网卡抓包: ");
-            i = 1;
+                // If no devices were found print an error
+                if (devices.Count < 1)
+                {
+                    Debug.WriteLine("出现错误：电脑未检测到网卡！");
+                    return;
+                }
 
-            var device = devices[i];
+                Debug.WriteLine("该电脑有以下网卡:");
+                Debug.WriteLine("----------------------------------------------------");
+                int i = 0;
+                foreach (var dev in devices)
+                {
+                    Debug.WriteLine("{0}) {1} {2}", i, dev.Name, dev.Description);
+                    i++;
+                }
+                Debug.WriteLine("-- 选择一个网卡抓包: ");
+                i = 1;
 
-            // Register our handler function to the 'packet arrival' event
-            device.OnPacketArrival +=
-                new PacketArrivalEventHandler(device_OnPacketArrival);
+                var device = devices[i];
 
-            // Open the device for capturing
-            int readTimeoutMilliseconds = 1000;
+                // Register our handler function to the 'packet arrival' event
+                device.OnPacketArrival +=
+                    new PacketArrivalEventHandler(device_OnPacketArrival);
 
-            if (device is WinPcapDevice)
-            {
-                var winPcap = device as WinPcapDevice;
-                winPcap.Open(OpenFlags.DataTransferUdp | OpenFlags.NoCaptureLocal, readTimeoutMilliseconds);
-            }
-            else
-            {
-                throw new InvalidOperationException("未知的设备类型： " + device.GetType().ToString());
-            }
+                // Open the device for capturing
+                int readTimeoutMilliseconds = 1000;
+
+                if (device is WinPcapDevice)
+                {
+                    var winPcap = device as WinPcapDevice;
+                    winPcap.Open(OpenFlags.DataTransferUdp | OpenFlags.NoCaptureLocal, readTimeoutMilliseconds);
+                }
+                else
+                {
+                    throw new InvalidOperationException("未知的设备类型： " + device.GetType().ToString());
+                }
 
 
-            Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
+                Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
 
-            // tcpdump filter to capture only TCP/IP packets
-            string filter = "ip and tcp";
-            device.Filter = filter;
-            device.StartCapture();
+                // tcpdump filter to capture only TCP/IP packets
+                string filter = "host 42.62.119.245";
+                device.Filter = filter;
+                device.StartCapture();
 
-            Thread.Sleep(5000);
+                while (!token.IsCancellationRequested)
+                {
+                    Thread.Sleep(5000);
+                }
+                device.StopCapture();
 
-            device.StopCapture();
+                Debug.WriteLine("--捕获结束.");
+                // Print out the device statistics
+                Debug.WriteLine(device.Statistics.ToString());
 
-            Debug.WriteLine("--捕获结束.");
-            // Print out the device statistics
-            Debug.WriteLine(device.Statistics.ToString());
-
-            // Close the pcap device
-            device.Close();
-
+                // Close the pcap device
+                device.Close();
+            },token);
+           
+            task.Start();
+            task.Wait();
+            tokenSource.Cancel();
         }
 
 
@@ -182,7 +191,19 @@ namespace Liuliu.MouseClicker
             var time = e.Packet.Timeval.Date;
             var len = e.Packet.Data.Length;
             Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
-            Debug.WriteLine(Encoding.Default.GetString(e.Packet.Data));
+            Debug.WriteLine(BitConverter.ToString(e.Packet.Data));
+        }
+
+
+        /// <summary>
+        /// 是否存在某字节字符串
+        /// </summary>
+        /// <param name="byteshuzu"></param>
+        /// <param name="bytestr"></param>
+        /// <returns></returns>
+        private bool IsHasBytes(byte[] byteshuzu,string bytestr)
+        {
+            return BitConverter.ToString(byteshuzu).IndexOf(bytestr)>0;
         }
 
     }
