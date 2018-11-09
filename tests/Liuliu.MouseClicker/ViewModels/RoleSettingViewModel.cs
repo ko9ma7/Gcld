@@ -26,6 +26,11 @@ namespace Liuliu.MouseClicker.ViewModels
 {
     public class RoleSettingViewModel : ViewModelExBase
     {
+        public RoleSettingViewModel()
+        {
+            _name = "";
+        }
+
         private string _name;
         public string Name
         {

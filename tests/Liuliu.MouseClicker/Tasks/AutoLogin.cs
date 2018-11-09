@@ -39,13 +39,13 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
-            Delegater.WaitTrue(() =>
-            {
-                if(Dm.IsExistPic(0,0,0,0,""))
+            //Delegater.WaitTrue(() =>
+            //{
+            //    if(Dm.IsExistPic(0,0,0,0,""))
 
 
-                return true;
-            },()=>dm.Delay(1000));
+            //    return true;
+            //},()=>dm.Delay(1000));
 
 
             return TaskResult.Finished;

@@ -60,11 +60,12 @@ namespace Liuliu.MouseClicker.Flyouts
             RoleSettingViewModel model = SoftContext.Locator.RoleSetting;
             if (IsOpen)
             {
+                model.InitFromLocal();
                 return;
             }
-           
+            model.SaveToLocal();
             SoftContext.Locator.Main.StatusBar = "设置信息保存成功";
         }
-
+      
     }
 }

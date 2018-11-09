@@ -51,7 +51,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="角色设置" Command="{Binding OpenRoleSettingFlyoutCommand}">
+                        <!--<MenuItem Header="角色设置" Command="{Binding OpenRoleSettingFlyoutCommand}">
                             <MenuItem.Icon>
                                 <Rectangle Width="14" Height="14" Margin="0">
                                     <Rectangle.Fill>
@@ -59,7 +59,7 @@
                                     </Rectangle.Fill>
                                 </Rectangle>
                             </MenuItem.Icon>
-                        </MenuItem>
+                        </MenuItem>-->
 
                     </ContextMenu>
                 </Button.ContextMenu>
@@ -87,9 +87,8 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="模拟器列表" Width="100" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
-                            <GridViewColumn Header="进程Id" Width="60" DisplayMemberBinding="{Binding ProcessId}"></GridViewColumn>
-                            <GridViewColumn Header="句柄" Width="60" DisplayMemberBinding="{Binding Hwnd}"></GridViewColumn>
-                            <GridViewColumn Header="运行状态" Width="80" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
+                            <GridViewColumn Header="当前角色" Width="70" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                            <GridViewColumn Header="运行状态" Width="70" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
                             <GridViewColumn Header="剩余循环" Width="70" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
                             <GridViewColumn Header="任务配置" Width="140">
                                 <GridViewColumn.CellTemplate>
@@ -107,12 +106,13 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="操作" Width="120">
+                            <GridViewColumn Header="操作" Width="180">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Button Margin="5" Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button Margin="5" Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
