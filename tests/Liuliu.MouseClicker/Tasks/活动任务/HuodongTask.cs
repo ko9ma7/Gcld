@@ -50,7 +50,7 @@ namespace Liuliu.MouseClicker.Tasks
                 {
                     Dm.Delay(2000);
                 }
-                string ocr = Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25", 0.9);
+                string ocr = Dm.Ocr(75, 2, 909, 70, "45.34.60-5.5.20|60.18.75-5.5.25", 0.8);
                 Debug.WriteLine(ocr);
                 activities += ocr;
             }
@@ -635,9 +635,10 @@ namespace Liuliu.MouseClicker.Tasks
           
              Delegater.WaitTrue(() =>
              {
-                 if(Dm.GetColorNum(124, 507, 189, 552, "54.72.99-10.20.10", 0.9)>10)
+                 //是否存在金币颜色
+                 if(Dm.GetColorNum(135,451,183,490, "C7B43D-384B3B", 1.0)>10)
                  {
-                     if (Dm.FindPicAndClick(581, 514, 724, 580, @"\bmp\前往下层.bmp"))
+                     if (Dm.FindPicAndClick(568, 452, 742, 521, @"\bmp\前往下层.bmp"))
                      {
                          if (Dm.IsExistPic(305, 230, 655, 458, @"\bmp\进入下层.bmp"))
                          {
@@ -647,12 +648,59 @@ namespace Liuliu.MouseClicker.Tasks
                      else
                          return true;
                  }
-               if(Dm.GetColorNum(124, 507, 189, 552, "0.0.83-5.5.20", 0.9)>6)
+                 //是否存在数字
+               if(Dm.GetColorNum(135, 451, 183, 490, "C0C0C0-3C3C3C", 1.0)>6)
                  {
-                     Dm.FindPicAndClick(95, 231, 867, 515, @"\bmp\星星1.bmp");
-                     Dm.Delay(1000);
-                     Dm.MoveToClick(120, 253);
-                     Dm.Delay(500);
+                     int intX, intY;
+                     Dm.FindPic(95, 231, 867, 515, @"\bmp\星星2.bmp", "202020", 0.9, 0, out intX, out intY);
+                     if (intX > 0 && intY > 0)
+                     {
+                         Delegater.WaitTrue(() =>
+                         {
+                             if (Dm.IsExistPic(intX - 10, intY - 10, intX + 120, intY + 50, @"\bmp\星星1.bmp"))
+                             {
+                                 Dm.MoveToClick(intX + 37, intY - 20);
+                                 Dm.Delay(200);
+                                 Dm.MoveToClick(intX + 37, intY - 20);
+                                 Dm.Delay(500);
+                             }
+                             else
+                             {
+                                 return true;
+                             }
+                             if (Dm.GetColorNum(135, 451, 183, 490, "C7B43D-384B3B", 1.0) > 10)
+                             {
+                                 return true;
+                             }
+                             return false;
+                         },()=>Dm.Delay(1000));
+                     }
+                     else
+                     {
+                         Dm.FindPic(95, 231, 867, 515, @"\bmp\星星1.bmp", "202020", 0.9, 0, out intX, out intY);
+                         if (intX > 0 && intY > 0)
+                         {
+                             Delegater.WaitTrue(() =>
+                             {
+                                 if (Dm.GetColorNum(135, 451, 183, 490, "C7B43D-384B3B", 1.0) > 10)
+                                 {
+                                     return true;
+                                 }
+                                 if (Dm.IsExistPic(intX - 10, intY - 10, intX + 120, intY + 50, @"\bmp\星星1.bmp"))
+                                 {
+                                     Dm.MoveToClick(intX + 37, intY - 20);
+                                     Dm.Delay(200);
+                                     Dm.MoveToClick(intX + 37, intY - 20);
+                                     Dm.Delay(500);
+                                 }
+                                 else
+                                 {
+                                     return true;
+                                 }
+                                 return false;
+                             }, () => Dm.Delay(1000));
+                         }  
+                     } 
                  }
                  Dm.MoveToClick(120, 253);
                  Dm.Delay(500);

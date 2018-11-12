@@ -49,7 +49,7 @@ namespace Liuliu.ScriptEngine.Damo
         public static bool IsExistStr(this DmPlugin _dm, int x1, int y1, int x2, int y2, string str,string color)
         {
             int intX, intY;
-            _dm.FindStr(x1, y1, x2, y2, str, color, 0.9, out intX, out intY);
+            _dm.FindStr(x1, y1, x2, y2, str, color, 0.8, out intX, out intY);
             if (intX > 0 && intY > 0)
                 return true;
             else
@@ -66,19 +66,20 @@ namespace Liuliu.ScriptEngine.Damo
         /// <param name="picname"></param>
         /// <param name="a"></param>
         /// <param name="b"></param>
+        /// <param name="sim"></param>
         /// <returns></returns>
-        public static bool FindPicAndClick(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname,int a=0,int b=0)
+        public static bool FindPicAndClick(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname,int a=0,int b=0,double sim=0.8)
         {
             int intX, intY;
-            _dm.FindPic(x1, y1, x2, y2, picname, "202020", 0.8, 0, out intX, out intY);
+            _dm.FindPic(x1, y1, x2, y2, picname, "202020",sim, 0, out intX, out intY);
             if (intX > 0 && intY > 0)
             {
-                Debug.WriteLine("找图[" + picname + "]成功!"+"坐标:"+intX+" "+intY);
+                _dm.DebugPrint("找图[" + picname + "]成功!"+"坐标:"+intX+" "+intY);
                 _dm.MoveToClick(intX+a, intY+b);
                 _dm.Delay(50);
                 return true;
             }
-            Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找图[" + picname + "]失败!");
+            _dm.DebugPrint("找图[" + picname + "]失败!");
             return false;
         }
         /// <summary>

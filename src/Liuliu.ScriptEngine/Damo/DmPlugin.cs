@@ -2855,7 +2855,9 @@ namespace Liuliu.ScriptEngine
         /// <returns>颜色数量</returns>
         public int GetColorNum(int x1, int y1, int x2, int y2, string color, double sim)
         {
-            return _dm.GetColorNum(x1, y1, x2, y2, color, sim);
+            int result = _dm.GetColorNum(x1, y1, x2, y2, color, sim);
+            DebugPrint(string.Format("区域[{0},{1},{2},{3}]存在颜色[{4}]数量为:{5}", x1, y1, x2, y2, color,result));
+            return result;
         }
 
         /// <summary>
@@ -2980,6 +2982,10 @@ namespace Liuliu.ScriptEngine
             return _dm.SetPicPwd(pwd) == 1;
         }
 
+        public void DebugPrint(string message)
+        {
+            Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + message);
+        }
         #endregion
 
         #region 内存
