@@ -71,7 +71,7 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             Delegater.WaitTrue(() => Dm.FindPicAndClick(856, 448, 958, 536, @"\bmp\菜单未打开.bmp"),
                                () => Dm.IsExistPic(856, 448, 958, 536, @"\bmp\菜单打开.bmp"),()=>Dm.Delay(1000));
-            Delegater.WaitTrue(() => role.OpenMenu(@"\bmp\装备.bmp"),
+            Delegater.WaitTrue(() => role.OpenMenu("装备"),
                               () => role.OpenWindowMenu ("商店"),() => Dm.Delay(1000));
             Delegater.WaitTrue(() =>
             {
@@ -153,24 +153,26 @@ namespace Liuliu.MouseClicker.Tasks
             else
             {
                 role.GoToMap("主城");
-                dm.MoveToClick(317, 460);
+                //dm.MoveToClick(317, 460);//点击兵营
+                dm.MoveToClick(419, 245);//点击银币
+                //dm.MoveToClick(200, 200);//点击木材
                 dm.Delay(2000);
             }
             string a, b;
+            dm.FindPicAndClick(852, 78, 952, 148, @"\bmp\自动升级.bmp");
+            dm.Delay(1000);
             Delegater.WaitTrue(() =>
             {
                a=dm.FetchWord(903, 103, 954, 145, "eaeaea-202020", "建筑队列数");
-                //Dm.MoveToClick(681, 281);
-                //dm.FindPicAndClick(546, 168, 868, 382, @"\bmp\升级.bmp");
-                //dm.Delay(1000);
-                if (!dm.FindPicAndClick(102, 48, 857, 468, @"\bmp\加速锤2.bmp"))
+                if (!dm.FindPicAndClick(102, 48, 857, 468, @"\bmp\加速锤.bmp",0,0,0.7))
                 {
+                    dm.DebugPrint("不存在加速锤！等待5s");
                     dm.MoveToClick(152, 429);
                     dm.Delay(5000);
                 }
                 dm.Delay(500);
                 b = dm.FetchWord(903, 103, 954, 145, "eaeaea-202020", "建筑队列数");
-                if(a!=b)
+                if (a!=b)
                 {
                     dm.FindPicAndClick(852, 78, 952, 148, @"\bmp\自动升级.bmp");
                 }

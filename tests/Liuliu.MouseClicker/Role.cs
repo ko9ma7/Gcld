@@ -185,7 +185,7 @@ namespace Liuliu.MouseClicker
             //int intX, intY;
             //_dm.FindMultiColor(258, 34, 854, 218, "d69f5a", "-8|5|3a3327,5|13|d5c484,21|14|cfbf80,29|6|2f2a1e,-10|1|352d20,-5|-2|c89b60,2|22|1f0201", 0.9, 0, out intX, out intY);
 
-            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp|\bmp\特殊事件2.bmp",37,23))
+            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp",37,23))
             {
                 _dm.Delay(1000);
                 OutSubMessage("打开成功!");
@@ -367,6 +367,7 @@ namespace Liuliu.MouseClicker
             CloseWindow();
             return false;
         }
+       
         /// <summary>
         /// 打开菜单栏(装备,资源,武将,国家等)
         /// </summary>
@@ -374,7 +375,61 @@ namespace Liuliu.MouseClicker
         /// <returns></returns>
         public bool OpenMenu(string menu)
         {
-            return _dm.FindPicAndClick(331, 467, 869, 537, menu);
+            int intX, intY;
+            return Delegater.WaitTrue(()=>
+            {
+                switch (menu)
+                {
+                    case "资源":
+                        if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
+                            _dm.MoveToClick(760, 500);
+                        if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+                            _dm.MoveToClick(382, 501);
+                        break;
+                    case "武将":
+                        if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
+                            _dm.MoveToClick(834, 499);
+                        if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+                            _dm.MoveToClick(451, 504);
+                        break;
+                        case "国家":
+                        Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
+                                           () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                        _dm.MoveToClick(530, 506);
+                        break;
+                    case "装备":
+                        Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                        _dm.MoveToClick(608, 503);
+                        break;
+                         case "科技":
+                        Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                        _dm.MoveToClick(680, 498);
+                        break;
+                    case "排行":
+                        Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                        _dm.MoveToClick(761, 494);
+                        break;
+                        case "兵器":
+                        Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                        _dm.MoveToClick(835, 497);
+                        break;
+                        default:
+                        break;
+                }
+            
+                _dm.Delay(1000);
+                _dm.FindMultiColor(539, 0, 916, 298, "f4c792", "-11|4|be1a1c,-6|-7|fbd7c5,6|8|d9af79,-7|8|d6ab77,0|14|aa0305,-14|1|aa0305,13|-1|ac0507,1|-12|bb1719", 0.9, 0, out intX, out intY);
+                if (intX > 0 && intY > 0)
+                {
+                    return true;
+                }
+                return false;
+            },()=>_dm.Delay(1000));
+           
         }
 
 

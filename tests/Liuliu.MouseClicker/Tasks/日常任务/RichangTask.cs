@@ -177,7 +177,7 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep4(TaskContext arg)
         {
             Role role = (Role)Role;
-            role.OpenMenu(@"\bmp\资源|bmp\资源2.bmp");
+            role.OpenMenu("资源");
             Delegater.WaitTrue(() => role.OpenWindowMenu("祭祀"),
                                () => Dm.GetColorNum(204, 61, 278, 96, "cba300-303030", 0.9)>10,
                                () => Dm.Delay(1000));
@@ -199,7 +199,8 @@ namespace Liuliu.MouseClicker.Tasks
             {
                     if (Dm.GetOcrNumber(204, 61, 278, 96, "C59E00-3A2E00") > 0)
                     {
-                        Dm.MoveToClick(322, 451);
+                       // Dm.MoveToClick(322, 451);//祭祀木材
+                        Dm.MoveToClick(162, 454);//祭祀银子
                         Dm.Delay(500);
                         return false;
                     }
@@ -221,11 +222,13 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep5(TaskContext arg)
         {
             Role role = (Role)Role;
-            role.OpenTeshushijian();
+            Delegater.WaitTrue(()=> role.OpenTeshushijian(),
+                               ()=>Dm.IsExistPic(370,81,595,139, @"\bmp\特殊事件3.bmp"),
+                               ()=>Dm.Delay(1000)) ;
             if (Dm.FindPicAndClick(114, 142, 827, 489, @"\bmp\恭贺奖励.bmp", 30, 0))
             {
                 Dm.Delay(1000);
-                int count = 30;
+                int count = 13;
                 while (true)
                 {
                     while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp")&&count!=0)
@@ -286,6 +289,10 @@ namespace Liuliu.MouseClicker.Tasks
             role.GoToMap("世界");
             role.CloseWindow();
             dm.Delay(1000);
+            if(Dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+            Delegater.WaitTrue(() => Dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单打开.bmp"),
+                                           () => Dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"), 
+                                           () => Dm.Delay(1000), 2000);
             role.OpenMap();
 
             int intX, intY;

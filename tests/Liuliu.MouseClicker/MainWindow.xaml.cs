@@ -96,6 +96,17 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            string s = "C3 69 8F 66 63 C1 A1 D1";
+            byte[] temp = Encoding.Unicode.GetBytes("强防");
+            string str = Encoding.Unicode.GetString(new byte[] { 0x3A, 0x5F, 0x32,0x96 });
+            string str2 = Encoding.Unicode.GetString(new byte[] { 0xC3, 0x69 });
+            string str3 = Encoding.Unicode.GetString(new byte[] { 0x69, 0x8F });
+            string str4 = Encoding.Unicode.GetString(new byte[] { 0x8F, 0x66 });
+            string str5 = Encoding.Unicode.GetString(new byte[] { 0x66, 0x63 });
+            string str6 = Encoding.Unicode.GetString(new byte[] { 0x63, 0xC1 });
+            string str7 = Encoding.Unicode.GetString(new byte[] { 0xC1, 0xA1 });
+            Debug.WriteLine(temp);
+            return;
             Process p = new Process();
             p.StartInfo.FileName = "cmd.exe";//设置启动的应用程序
             p.StartInfo.UseShellExecute = false;//禁止使用操作系统外壳程序启动进程
