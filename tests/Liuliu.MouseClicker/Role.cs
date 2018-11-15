@@ -184,8 +184,8 @@ namespace Liuliu.MouseClicker
             OutSubMessage("打开特殊事件...");
             //int intX, intY;
             //_dm.FindMultiColor(258, 34, 854, 218, "d69f5a", "-8|5|3a3327,5|13|d5c484,21|14|cfbf80,29|6|2f2a1e,-10|1|352d20,-5|-2|c89b60,2|22|1f0201", 0.9, 0, out intX, out intY);
-
-            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp",37,23))
+ 
+            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp",37,15))
             {
                 _dm.Delay(1000);
                 OutSubMessage("打开成功!");

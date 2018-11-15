@@ -233,6 +233,30 @@ namespace Liuliu.ScriptEngine.Damo
             }
             return -1;
         }
+        /// <summary>
+        /// 获取某处颜色数量,执行某个操作,结束后判断数量是否改变
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="color"></param>
+        /// <param name="action"></param>
+        /// <param name="sim"></param>
+        /// <returns></returns>
+        public static bool ColorNumEx(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,Action action,double sim=0.9)
+        {
+            int a=_dm.GetColorNum(x1, y1, x2, y2, color, sim);
+            action();
+            int b = _dm.GetColorNum(x1, y1, x2, y2, color, sim);
+            if (a == b)
+                return false;
+            else
+                return true;
+        }
+
+
 
     }
 }

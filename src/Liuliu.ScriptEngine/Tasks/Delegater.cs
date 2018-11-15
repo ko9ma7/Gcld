@@ -95,12 +95,11 @@ namespace Liuliu.ScriptEngine.Tasks
                 return true;
             }
             Stopwatch sw = new Stopwatch();
-            int i = 0;
             if (maxCount==0)
             {
                 while(true)
                 {  //一直运行到成功为止
-                    while (!trueFunc()&&i<10)
+                    while (!trueFunc())
                     {
                         if (trueFlag())
                         {
@@ -108,17 +107,8 @@ namespace Liuliu.ScriptEngine.Tasks
                             return true;
                         }
                         failAction();
-                        i++;
                     }
-                    if (i >=10)
-                    {
-                        Debug.WriteLine("要返回真的操作,无法返回真!");
-                        return false;
-                    }
-                    else
-                    {
-                        Debug.WriteLine("要返回真的操作,返回成功了!");
-                    }
+   
                     sw.Start();
                     while (sw.ElapsedMilliseconds <= milliseconds)
                     {
@@ -133,23 +123,18 @@ namespace Liuliu.ScriptEngine.Tasks
                     }
                     sw.Stop();
                     sw.Reset();
-                    i = 0;
+
                     Debug.WriteLine(milliseconds + "ms后还没有出现,操作失败了,网络延时严重!");
                 }
             }
             int count = 0;
-            i = 0;
+
             while(count < maxCount)
             {
-                while (!trueFunc()&&i<10)
+                while (!trueFunc())
                 {
                     failAction();
-                    i++;
-                }
-                if (i >= 10)
-                {
-                    Debug.WriteLine("要返回真的操作,无法返回真!");
-                    return false;
+
                 }
                 sw.Start();
                 while (sw.ElapsedMilliseconds <= milliseconds)
@@ -164,7 +149,6 @@ namespace Liuliu.ScriptEngine.Tasks
                 }
                 sw.Stop();
                 sw.Reset();
-                i = 0;
                 Debug.WriteLine(milliseconds + "ms后还没有出现,操作失败了,网络延时严重!");
             }
             return count < maxCount;

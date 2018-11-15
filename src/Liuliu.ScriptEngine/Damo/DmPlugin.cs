@@ -2852,11 +2852,13 @@ namespace Liuliu.ScriptEngine
         /// <param name="y2">区域的右下Y坐标</param>
         /// <param name="color">颜色 格式为"RRGGBB-DRDGDB",比如"123456-000000|aabbcc-202020".注意，这里只支持RGB颜色</param>
         /// <param name="sim">相似度,取值范围0.1-1.0</param>
+        /// <param name="isDebug"></param>
         /// <returns>颜色数量</returns>
-        public int GetColorNum(int x1, int y1, int x2, int y2, string color, double sim)
+        public int GetColorNum(int x1, int y1, int x2, int y2, string color, double sim,bool isDebug=true)
         {
             int result = _dm.GetColorNum(x1, y1, x2, y2, color, sim);
-            DebugPrint(string.Format("区域[{0},{1},{2},{3}]存在颜色[{4}]数量为:{5}", x1, y1, x2, y2, color,result));
+            if(isDebug)
+                DebugPrint(string.Format("区域[{0},{1},{2},{3}]存在颜色[{4}]数量为:{5}", x1, y1, x2, y2, color,result));
             return result;
         }
 

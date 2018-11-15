@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 7;
+            return 1;
         }
      
 
@@ -35,8 +35,8 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
-                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-               new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+               // new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+              // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
              };
             return steps;
         }
@@ -53,46 +53,42 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(1000);
                 Delegater.WaitTrue(() =>
                 {
-                // int result = Dm.GetOcrNumber(178, 72, 212, 109, "49A031-152F0F");
-                int result = 24;
-                Dm.DebugPrint("识别的数字：" + result.ToString());
-                if (result > 0)
-                {
-                    var rt1 = GetResourceType(160, 129, 346, 377);
-                    var rc1 = GetResourceColor(176, 119, 328, 178);
-                    Dm.DebugPrint("第一个资源：" + rt1.ToString() + ",颜色：" + rc1.ToString());
+                    bool result = Dm.ColorNumEx(170, 72, 237, 107, "49A031-152F0F", () =>
+                           {
+                               var rt1 = GetResourceType(160, 129, 346, 377);
+                               var rc1 = GetResourceColor(176, 119, 328, 178);
+                               Dm.DebugPrint("第一个资源：" + rt1.ToString() + ",颜色：" + rc1.ToString());
 
-                    var rt2 = GetResourceType(395, 132, 573, 373);
-                    var rc2 = GetResourceColor(409, 129, 566, 175);
-                    Dm.DebugPrint("第二个资源：" + rt2.ToString() + ",颜色：" + rc2.ToString());
+                               var rt2 = GetResourceType(395, 132, 573, 373);
+                               var rc2 = GetResourceColor(409, 129, 566, 175);
+                               Dm.DebugPrint("第二个资源：" + rt2.ToString() + ",颜色：" + rc2.ToString());
 
-                    var rt3 = GetResourceType(630, 131, 810, 377);
-                    var rc3 = GetResourceColor(633, 124, 804, 180);
-                    Dm.DebugPrint("第三个资源：" + rt3.ToString() + ",颜色：" + rc3.ToString());
-                    List<Resource> list = new List<Resource>()
+                               var rt3 = GetResourceType(630, 131, 810, 377);
+                               var rc3 = GetResourceColor(633, 124, 804, 180);
+                               Dm.DebugPrint("第三个资源：" + rt3.ToString() + ",颜色：" + rc3.ToString());
+                               List<Resource> list = new List<Resource>()
+                                {
+                                   new Resource() { Pos=1,Type=rt1,Color=rc1,Buypos=new Tuple<int, int>(253,353) },
+                                   new Resource() { Pos=2,Type=rt2,Color=rc2,Buypos=new Tuple<int, int>(495,353) },
+                                   new Resource() { Pos=3,Type=rt3,Color=rc3,Buypos=new Tuple<int, int>(727,353) }
+                                };
+                               var rlist = list.OrderByDescending(q => q.Type).ThenByDescending(x => x.Color).ToList();
+                               Dm.DebugPrint(string.Format("购买位置：{0},资源类型:{1},资源颜色:{2}", rlist.First().Pos, rlist.First().Type.ToString(), rlist.First().Color.ToString()));
+                               Dm.MoveToClick(rlist.First().Buypos.Item1, rlist.First().Buypos.Item2);
+                               Dm.Delay(1000);
+                           });
+                    if(!result)
                     {
-                       new Resource() { Pos=1,Type=rt1,Color=rc1,Buypos=new Tuple<int, int>(253,353) },
-                       new Resource() { Pos=2,Type=rt2,Color=rc2,Buypos=new Tuple<int, int>(495,353) },
-                       new Resource() { Pos=3,Type=rt3,Color=rc3,Buypos=new Tuple<int, int>(727,353) }
-                    };
-                    var rlist= list.OrderByDescending(q => q.Type).ThenByDescending(x => x.Color).ToList();
-                    Dm.DebugPrint(string.Format("购买位置：{0},资源类型:{1},资源颜色:{2}",rlist.First().Pos,rlist.First().Type.ToString(),rlist.First().Color.ToString()));
-                    Dm.MoveToClick(rlist.First().Buypos.Item1, rlist.First().Buypos.Item2);
-                    Dm.Delay(1000);
-                    return false;
-                }
-                else if (result == 0)
-                    return true;
-                else
-                {
-                    role.OutSubMessage("数字识别失败!");
+                        Dm.DebugPrint("操作完颜色结果不变,可能已经完成!~");
+                        if(Dm.IsExistPic(171,71,247,105,@"\bmp\集市0.bmp"))
+                            return true;
+                    }
                     if (Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
                     {
                         Dm.Delay(1000);
                     }
-                    return true;
-                }
-            }, () => Dm.Delay(50), 40);
+                    return false;
+                }, () => Dm.Delay(50), 40);
             Dm.UseDict(0);
             role.CloseWindow();
             return TaskResult.Success;
@@ -128,17 +124,17 @@ namespace Liuliu.MouseClicker.Tasks
         {
             int intX, intY;
             int type = Dm.FindPic(x1, y1, x2, y2, @"\bmp\招商令.bmp|\bmp\镔铁.bmp|\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp", "303030", 0.8, 0, out intX, out intY);
-            Dm.DebugPrint("资源类型：" + type.ToString());
+           // Dm.DebugPrint("资源类型：" + type.ToString());
             return (ResourceType)type;
         }
         private ResourceColor GetResourceColor(int x1, int y1, int x2, int y2)
         {
-            int 白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9);
-            int 蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9);
-            int 绿色数量 = Dm.GetColorNum(x1, y1, x2, y2, "5CB52C-15290B", 0.9);
-            int 黄色数量 = Dm.GetColorNum(x1, y1, x2, y2, "CD9735-31250D", 0.9);
-            int 红色数量 = Dm.GetColorNum(x1, y1, x2, y2, "C44C4C-341414", 0.9);
-            int 紫色数量 = Dm.GetColorNum(x1, y1, x2, y2, "A85EC2-2A1730", 0.9);
+            int 白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9,false);
+            int 蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9, false);
+            int 绿色数量 = Dm.GetColorNum(x1, y1, x2, y2, "5CB52C-15290B", 0.9, false);
+            int 黄色数量 = Dm.GetColorNum(x1, y1, x2, y2, "CD9735-31250D", 0.9, false);
+            int 红色数量 = Dm.GetColorNum(x1, y1, x2, y2, "C44C4C-341414", 0.9, false);
+            int 紫色数量 = Dm.GetColorNum(x1, y1, x2, y2, "A85EC2-2A1730", 0.9, false);
             int[] 颜色数量 = new int[] { 白色数量, 蓝色数量, 绿色数量, 黄色数量,红色数量, 紫色数量 };
             int max = 颜色数量.Max();
             
@@ -179,40 +175,44 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)Role;
             role.OpenMenu("资源");
             Delegater.WaitTrue(() => role.OpenWindowMenu("祭祀"),
-                               () => Dm.GetColorNum(204, 61, 278, 96, "cba300-303030", 0.9)>10,
+                               () => role.IsExistWindowMenu("祭祀"),
                                () => Dm.Delay(1000));
 
             Dm.FindPicAndClick(699, 63, 868, 118, @"\bmp\祭祀十次.bmp");
             Dm.Delay(1000);
             Delegater.WaitTrue(() =>
                  {
-                   if(Dm.GetColorNum(738, 500, 761, 522, "79a03b-303030", 0.9)>20)
+                   if(Dm.GetColorNum(738, 500, 761, 522, "79a03b-303030", 1.0)>20)
                      {
                          Dm.MoveToClick(783, 512);
-                         Dm.Delay(500);
+                         Dm.Delay(1000);
                          return false;
                      }
                      return true;
                  }, () => Dm.Delay(50), 10);
             Dm.UseDict(1);
+
             Delegater.WaitTrue(() =>
             {
-                    if (Dm.GetOcrNumber(204, 61, 278, 96, "C59E00-3A2E00") > 0)
+                if (Dm.IsExistPic(197, 59, 288, 102, @"\bmp\祭祀0.bmp"))
+                    return true;
+                bool result=Dm.ColorNumEx(204, 61, 278, 96, "C59E00-3A2E00", () =>
+                {
+                    // Dm.MoveToClick(322, 451);//祭祀木材
+                    Dm.MoveToClick(162, 454);//祭祀银子
+                    Dm.Delay(500);
+                });
+                if(!result)
+                {
+                    Dm.DebugPrint("操作完颜色结果不变,可能已经完成!~");
+                    if (Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
                     {
-                       // Dm.MoveToClick(322, 451);//祭祀木材
-                        Dm.MoveToClick(162, 454);//祭祀银子
-                        Dm.Delay(500);
-                        return false;
+                        Dm.Delay(1000);
                     }
-                    else
-                    {
-                        role.OutSubMessage("数字识别失败!");
-                        if (Dm.FindPicAndClick(475, 315, 628, 415, @"\bmp\取消.bmp"))
-                        {
-                            Dm.Delay(1000);
-                        }
+                    if(Dm.IsExistPic(197,59,288,102, @"\bmp\祭祀0.bmp"))
                         return true;
-                    }
+                }
+                return true;
             },()=>Dm.Delay(50),40);
             Dm.UseDict(0);
             role.CloseWindow();
