@@ -278,19 +278,15 @@ namespace Liuliu.MouseClicker
 
         public bool OpenWindowMenu(string menu)
         {
-           
-            OutSubMessage("开始打开窗口...");
             //未选中:45.34.60-5.5.20
             //选中:60.18.75-5.5.25
-            if (_dm.FindStrAndClick(80,3,934,78,menu,"45.34.60-5.5.20|60.18.75-5.5.25"))
-            {
-                _dm.Delay(1000);
-                OutSubMessage("打开窗口["+menu+"]成功!");
-                return true;
-            }
-            OutSubMessage("打开窗口[" + menu + "]失败!");
-            return false;
-
+             return  Delegater.WaitTrue(() => {
+                _dm.FindStrAndClick(75, 2, 909, 70, menu, "45.34.60-5.5.20");
+                _dm.Delay(500);
+                if (_dm.IsExistStr(75, 2, 909, 70, menu, "60.18.75-5.5.25"))
+                    return true;
+                return false;
+            });
         }
         /// <summary>
         /// 是否存在面板标题(商店,仓库,回购等)

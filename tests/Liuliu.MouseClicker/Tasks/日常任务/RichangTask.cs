@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 1;
+            return 7;
         }
      
 
@@ -36,96 +36,49 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
                 new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-               // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+               new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
              };
             return steps;
         }
+
         private TaskResult RunStep7(TaskContext arg)
         {
-            Role role = (Role)Role;
+                Role role = (Role)Role;
+                Dm.UseDict(0);
+                Delegater.WaitTrue(() => role.OpenMenu("资源"), () => role.IsExistWindowMenu("集市"), () => Dm.Delay(1000));
+                Delegater.WaitTrue(() => role.OpenWindowMenu("集市"),
+                                   () => Dm.Delay(1000));
 
-            Delegater.WaitTrue(() =>
-            {
-                if(Dm.IsExistPic(864,446,960,542, @"\bmp\菜单未打开.bmp"))
+                Dm.UseDict(1);
+                Dm.Delay(1000);
+                Delegater.WaitTrue(() =>
                 {
-                    Dm.MoveToClick(756, 503);
-                    Dm.Delay(1000);
-                    return true;
-                }
-                return false;
-            },() => role.IsExistWindowMenu("集市"),() => Dm.Delay(1000));
-            Delegater.WaitTrue(() => role.OpenWindowMenu("集市"),
-                               () => Dm.IsExistPic(97,60,217,113, @"\bmp\购买次数.bmp"),
-                               () => Dm.Delay(1000));
-           
-            Dm.UseDict(1);
-            Dm.Delay(1000);
-            int intX, intY;
-            Delegater.WaitTrue(() =>
-            {
-                int result = Dm.GetOcrNumber(178, 72, 212, 109, "49A031-152F0F");
+                // int result = Dm.GetOcrNumber(178, 72, 212, 109, "49A031-152F0F");
+                int result = 24;
+                Dm.DebugPrint("识别的数字：" + result.ToString());
                 if (result > 0)
                 {
-                    int type1=Dm.FindPic(160, 129, 346, 377, @"\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp|\bmp\招商令.bmp|\bmp\镔铁.bmp", "202020", 0.8,0, out intX, out intY);
-                    switch(type1)
-                    {
-                        case 0:
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            Dm.MoveToClick(250, 356);
-                            break;
-                        case 3:
-                            break;
-                        case 4:
-                            break;
-                        case -1:
-                            break;
-                    }
-                    Dm.Delay(1000);
-                    int type2 = Dm.FindPic(395, 132, 573, 373, @"\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp|\bmp\招商令.bmp|\bmp\镔铁.bmp", "202020", 0.8, 0, out intX, out intY);
-                    Debug.WriteLine(type2);
-                    switch (type1)
-                    {
-                        case 0:
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            Dm.MoveToClick(487,356);
-                            break;
-                        case 3:
-                            break;
-                        case 4:
-                            break;
-                        case -1:
-                            break;
-                    }
-                    Dm.Delay(1000);
-                    int type3 = Dm.FindPic(630, 131, 810, 377, @"\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp|\bmp\招商令.bmp|\bmp\镔铁.bmp", "202020", 0.8, 0, out intX, out intY);
-                    Debug.WriteLine(type3);
-                    switch (type1)
-                    {
-                        case 0:
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            Dm.MoveToClick(728,357);
-                            break;
-                        case 3:
-                            break;
-                        case 4:
-                            break;
-                        case -1:
-                            break;
-                    }
-                    Dm.Delay(1000);
-                    if (type1==2||type2==2||type3==2)
+                    var rt1 = GetResourceType(160, 129, 346, 377);
+                    var rc1 = GetResourceColor(176, 119, 328, 178);
+                    Dm.DebugPrint("第一个资源：" + rt1.ToString() + ",颜色：" + rc1.ToString());
 
+                    var rt2 = GetResourceType(395, 132, 573, 373);
+                    var rc2 = GetResourceColor(409, 129, 566, 175);
+                    Dm.DebugPrint("第二个资源：" + rt2.ToString() + ",颜色：" + rc2.ToString());
 
-                    Dm.Delay(500);
+                    var rt3 = GetResourceType(630, 131, 810, 377);
+                    var rc3 = GetResourceColor(633, 124, 804, 180);
+                    Dm.DebugPrint("第三个资源：" + rt3.ToString() + ",颜色：" + rc3.ToString());
+                    List<Resource> list = new List<Resource>()
+                    {
+                       new Resource() { Pos=1,Type=rt1,Color=rc1,Buypos=new Tuple<int, int>(253,353) },
+                       new Resource() { Pos=2,Type=rt2,Color=rc2,Buypos=new Tuple<int, int>(495,353) },
+                       new Resource() { Pos=3,Type=rt3,Color=rc3,Buypos=new Tuple<int, int>(727,353) }
+                    };
+                    var rlist= list.OrderByDescending(q => q.Type).ThenByDescending(x => x.Color).ToList();
+                    Dm.DebugPrint(string.Format("购买位置：{0},资源类型:{1},资源颜色:{2}",rlist.First().Pos,rlist.First().Type.ToString(),rlist.First().Color.ToString()));
+                    Dm.MoveToClick(rlist.First().Buypos.Item1, rlist.First().Buypos.Item2);
+                    Dm.Delay(1000);
                     return false;
                 }
                 else if (result == 0)
@@ -145,6 +98,53 @@ namespace Liuliu.MouseClicker.Tasks
             return TaskResult.Success;
         }
 
+        class Resource
+        {
+            public int Pos { get; set; }
+           public ResourceColor Color { get; set; }
+           public ResourceType Type { get; set; }
+           public Tuple<int, int> Buypos { get; set; }
+        }
+        enum ResourceType
+        {
+            无法识别=-1,
+            招商令,
+            镔铁,
+            粮食,
+            木材,
+            募兵令,
+        }
+        enum ResourceColor
+        {
+            无法识别 = -1,
+            白,
+            蓝,
+            绿,
+            黄,
+            红,
+            紫,
+        }
+        private ResourceType GetResourceType(int x1,int y1,int x2,int y2)
+        {
+            int intX, intY;
+            int type = Dm.FindPic(x1, y1, x2, y2, @"\bmp\招商令.bmp|\bmp\镔铁.bmp|\bmp\粮食.bmp|\bmp\木材.bmp|\bmp\募兵令.bmp", "303030", 0.8, 0, out intX, out intY);
+            Dm.DebugPrint("资源类型：" + type.ToString());
+            return (ResourceType)type;
+        }
+        private ResourceColor GetResourceColor(int x1, int y1, int x2, int y2)
+        {
+            int 白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9);
+            int 蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9);
+            int 绿色数量 = Dm.GetColorNum(x1, y1, x2, y2, "5CB52C-15290B", 0.9);
+            int 黄色数量 = Dm.GetColorNum(x1, y1, x2, y2, "CD9735-31250D", 0.9);
+            int 红色数量 = Dm.GetColorNum(x1, y1, x2, y2, "C44C4C-341414", 0.9);
+            int 紫色数量 = Dm.GetColorNum(x1, y1, x2, y2, "A85EC2-2A1730", 0.9);
+            int[] 颜色数量 = new int[] { 白色数量, 蓝色数量, 绿色数量, 黄色数量,红色数量, 紫色数量 };
+            int max = 颜色数量.Max();
+            
+            return (ResourceColor)颜色数量.ToList().IndexOf(max);
+        }
+     
         private TaskResult RunStep6(TaskContext arg)
         {
             Role role = (Role)Role;
