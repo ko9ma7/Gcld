@@ -115,6 +115,7 @@
     <Compile Include="Contexts\ADBCommand.cs" />
     <Compile Include="Contexts\SoftContext.cs" />
     <Compile Include="Contexts\SoftRunStatus.cs" />
+    <Compile Include="Contexts\YeShenSimulator.cs" />
     <Compile Include="Converters\BitmapToImageSourceConverter.cs" />
     <Compile Include="Converters\ListViewItemToRoleConverter.cs" />
     <Compile Include="Converters\BooleanToNoConverter.cs" />

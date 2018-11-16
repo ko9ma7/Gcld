@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls;
+using Liuliu.MouseClicker.Contexts;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -56,11 +57,11 @@ namespace Liuliu.MouseClicker.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    SoftContext.UpdateHwnd();
-                    foreach (var item in SoftContext.Hwnds)
+                    SoftContext.UpdateSimulator();
+                    foreach (YeShenSimulator item in SoftContext.YeShenSimulatorList)
                     {
 
-                        IRole role = new Role(item);
+                        IRole role = new Role(item.NoxHwnd);
                         DmPlugin dm = role.Window.Dm;
 
                         if (role.Window.ClientSize.Item1 != 960 || role.Window.ClientSize.Item2 != 540)
@@ -74,7 +75,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         dm.SetDict(1, "number.txt");
                         dm.SetDict(2, "maintask.txt");
                         dm.UseDict(0);
-                        if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item).Count() > 0)
+                        if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item.NoxHwnd).Count() > 0)
                         {
                             Debug.WriteLine("该句柄已经存在！");
                         }

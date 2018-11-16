@@ -154,25 +154,9 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            adbObj.RunAdbCmd(@"E:\Nox\bin\nox_adb shell am start -n com.regin.gcld.fl/.gcld");
-            return;
-            Process p = new Process();
-            p.StartInfo.FileName = "cmd.exe";//设置启动的应用程序
-            p.StartInfo.UseShellExecute = false;//禁止使用操作系统外壳程序启动进程
-            p.StartInfo.RedirectStandardInput = true;//应用程序的输入从流中读取
-            p.StartInfo.RedirectStandardOutput = true;//应用程序的输出写入流中
-            p.StartInfo.RedirectStandardError = true;//将错误信息写入流
-            p.StartInfo.CreateNoWindow = true;//是否在新窗口中启动进程
-            p.Start();
-            //p.StandardInput.WriteLine(@"netstat -a -n>c:\port.txt");//将字符串写入文本流
+           // adbObj.RunAdbCmd(@"E:\Nox\bin\nox_adb shell am start -n com.regin.gcld.fl/.gcld");
+
            
-            try
-            {
-                p.StandardInput.WriteLine(@"netstat -aon|findstr ""42.62.119.245"">" + AppDomain.CurrentDomain.BaseDirectory + @"\port.txt");
-            }catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             Task task = new Task(() =>

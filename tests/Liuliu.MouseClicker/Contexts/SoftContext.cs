@@ -16,6 +16,7 @@ using Microsoft.Practices.ServiceLocation;
 
 using OSharp.Utility.Data;
 using Liuliu.ScriptEngine.Damo;
+using System.Text.RegularExpressions;
 
 namespace Liuliu.MouseClicker
 {
@@ -24,7 +25,7 @@ namespace Liuliu.MouseClicker
         static SoftContext()
         {
             Version = GetVersion();
-            Hwnds = new List<int>();
+            YeShenSimulatorList= new List<YeShenSimulator>();
         }
 
         public static MainWindow MainWindow { get; set; }
@@ -94,34 +95,101 @@ namespace Liuliu.MouseClicker
         }
 
         /// <summary>
-        /// 模拟器窗口句柄组
+        /// 模拟器组
         /// </summary>
-        public static List<int> Hwnds { get; set; }
+        public static List<YeShenSimulator> YeShenSimulatorList { get; set; }
 
-        public static void UpdateHwnd()
-        {
-            if (DmSystem == null)
+        
+            public static void UpdateSimulator()
             {
-                return; ;
-            }
-            DmPlugin dm = DmSystem.Dm;
+                if (DmSystem == null)
+                {
+                    return; ;
+                }
+                DmPlugin dm = DmSystem.Dm;
 
-            string hwnds = dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
+                string hwnds = dm.EnumWindow(0, "QWidgetClassWindow", "Qt5QWindowIcon", 3);
 
-            if(hwnds=="")
-            {
-                Debug.WriteLine("获取句柄失败!");
-                return;
-            }
-            else
-            {
-                Debug.WriteLine(hwnds);
-            }
+                if (hwnds == "")
+                {
+                    Debug.WriteLine("获取句柄失败!");
+                    return;
+                }
+                else
+                {
+                    Debug.WriteLine(hwnds);
+                }
+
+                Process p = new Process();
+                p.StartInfo.FileName = "cmd.exe";//设置启动的应用程序
+                p.StartInfo.UseShellExecute = false;//禁止使用操作系统外壳程序启动进程
+                p.StartInfo.RedirectStandardInput = true;//应用程序的输入从流中读取
+                p.StartInfo.RedirectStandardOutput = true;//应用程序的输出写入流中
+                p.StartInfo.RedirectStandardError = true;//将错误信息写入流
+                p.StartInfo.CreateNoWindow = true;//是否在新窗口中启动进程
+                p.Start();
+                p.StandardInput.WriteLine(@"netstat -aon|findstr ""ESTABLISHED""");
+                p.StandardInput.WriteLine("exit");
+                Regex reg = new Regex("\\s+", RegexOptions.Compiled);
+                string line = "";
+                List<NetStat> list = new List<NetStat>();
+                while ((line = p.StandardOutput.ReadLine()) != null)
+                {
+                    line = line.Trim();
+                    if (line.StartsWith("TCP", StringComparison.OrdinalIgnoreCase))
+                    {
+                        line = reg.Replace(line, ",");
+                        string[] arr = line.Split(',');
+                        if (arr.Length == 5)
+                        {
+                            if (arr[1].StartsWith("127.0.0.1") && arr[2].StartsWith("127.0.0.1"))
+                            {
+                                NetStat netstat = new NetStat()
+                                {
+                                    Proto = arr[0],
+                                    LocalAddress = arr[1],
+                                    ForeignAddress = arr[2],
+                                    State = arr[3],
+                                    Pid = arr[4]
+                                };
+                                list.Add(netstat);
+                            }
+                        }
+                    }
+                }
+                //移除所有不存在的窗口
+                YeShenSimulatorList.RemoveAll(x => !dm.GetWindowState(x.NoxHwnd, 0));
+                foreach (var hwnd in hwnds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList())
+                {
+                    if (YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == hwnd) != null)
+                        continue;
+                    YeShenSimulator yss = new YeShenSimulator();
+                    yss.NoxHwnd = hwnd;
+                    yss.NoxPid = dm.GetWindowProcessId(hwnd);
+                    try
+                    {
+                        //找到模拟器Nox所对应连接NoxVMHandle
+                        NetStat n1 = list.First(a => a.Pid == yss.NoxPid.ToString());
+                        //本地远程相反的连接就是NoxVMHandle,获得进程Id
+                        NetStat n2 = list.First(b => b.ForeignAddress == n1.LocalAddress && b.LocalAddress == n1.ForeignAddress);
+                        //找到该进程id的另一个连接就是adb连接
+                        NetStat n3 = list.First(c => c.Pid == n2.Pid && c.LocalAddress != n2.LocalAddress && c.ForeignAddress != n2.ForeignAddress);
+                        if (n3 != null)
+                        {
+                            yss.NoxVMHandlePid = int.Parse(n3.Pid);
+                            yss.AdbDevicesId = n3.LocalAddress; //对应的本地地址就是adb设备地址
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                   
+                    YeShenSimulatorList.Add(yss);
+                }
+                p.Close();
+                Debug.WriteLine("当前打开的模拟器：" + YeShenSimulatorList.Count);
             
-
-            Hwnds=hwnds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(Int32.Parse).ToList();
-     
-            Debug.WriteLine("当前打开的模拟器："+Hwnds.Count);
         }
 
         /// <summary>
@@ -145,5 +213,21 @@ namespace Liuliu.MouseClicker
             }
             return new Version("0.0.0.1");
         }
+
+        private static List<YeShenSimulator> GetSimulator()
+        {
+            List<YeShenSimulator> list = new List<YeShenSimulator>();
+
+            return list;
+        }
+       
+    }
+    class NetStat
+    {
+        public string Proto { get; set; }
+        public string LocalAddress { get; set; }
+        public string ForeignAddress { get; set; }
+        public string State { get; set; }
+        public string Pid { get; set; }
     }
 }
