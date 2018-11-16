@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 1;
+            return 7;
         }
      
 
@@ -35,8 +35,8 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
-               // new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-              // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+               new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
              };
             return steps;
         }
@@ -55,6 +55,7 @@ namespace Liuliu.MouseClicker.Tasks
                 {
                     bool result = Dm.ColorNumEx(170, 72, 237, 107, "49A031-152F0F", () =>
                            {
+                               Dm.StartWatch();
                                var rt1 = GetResourceType(160, 129, 346, 377);
                                var rc1 = GetResourceColor(176, 119, 328, 178);
                                Dm.DebugPrint("第一个资源：" + rt1.ToString() + ",颜色：" + rc1.ToString());
@@ -66,6 +67,8 @@ namespace Liuliu.MouseClicker.Tasks
                                var rt3 = GetResourceType(630, 131, 810, 377);
                                var rc3 = GetResourceColor(633, 124, 804, 180);
                                Dm.DebugPrint("第三个资源：" + rt3.ToString() + ",颜色：" + rc3.ToString());
+                               Dm.StopWatch();
+                               Dm.StartWatch();
                                List<Resource> list = new List<Resource>()
                                 {
                                    new Resource() { Pos=1,Type=rt1,Color=rc1,Buypos=new Tuple<int, int>(253,353) },
@@ -75,6 +78,7 @@ namespace Liuliu.MouseClicker.Tasks
                                var rlist = list.OrderByDescending(q => q.Type).ThenByDescending(x => x.Color).ToList();
                                Dm.DebugPrint(string.Format("购买位置：{0},资源类型:{1},资源颜色:{2}", rlist.First().Pos, rlist.First().Type.ToString(), rlist.First().Color.ToString()));
                                Dm.MoveToClick(rlist.First().Buypos.Item1, rlist.First().Buypos.Item2);
+                               Dm.StopWatch();
                                Dm.Delay(1000);
                            });
                     if(!result)

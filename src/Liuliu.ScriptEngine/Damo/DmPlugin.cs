@@ -32,6 +32,26 @@ namespace Liuliu.ScriptEngine
     {
         private readonly ComLibraryLoader _comLoader;
         private readonly IDmsoft _dm;
+        private Stopwatch _stopWatch = new Stopwatch();
+
+        public void StartWatch()
+        {
+            if (this._stopWatch.IsRunning)
+                this._stopWatch.Restart();
+            else
+                this._stopWatch.Start();
+        }
+
+        public void StopWatch()
+        {
+            if (this._stopWatch.IsRunning)
+            {
+                this._stopWatch.Stop();
+                DebugPrint("总计时：" + this._stopWatch.ElapsedMilliseconds);
+                this._stopWatch.Reset();
+            }
+
+        }
 
         /// <summary>
         /// 初始化一个<see cref="DmPlugin"/>类型的新实例

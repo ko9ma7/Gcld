@@ -112,6 +112,7 @@
     </ApplicationDefinition>
     <Compile Include="Contexts\LocalDataHandler.cs" />
     <Compile Include="Contexts\OperationHelper.cs" />
+    <Compile Include="Contexts\ADBCommand.cs" />
     <Compile Include="Contexts\SoftContext.cs" />
     <Compile Include="Contexts\SoftRunStatus.cs" />
     <Compile Include="Converters\BitmapToImageSourceConverter.cs" />

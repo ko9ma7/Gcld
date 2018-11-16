@@ -26,6 +26,8 @@ using SharpPcap;
 using System.Text;
 using SharpPcap.WinPcap;
 using System.Threading;
+using Liuliu.MouseClicker.Contexts;
+using System.IO;
 
 namespace Liuliu.MouseClicker
 {
@@ -43,9 +45,65 @@ namespace Liuliu.MouseClicker
             MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
 
             SoftContext.MainWindow = this;
-            Loaded += async (o, args) => await MainWindow_Loaded(o, args);  
+            Loaded += async (o, args) => await MainWindow_Loaded(o, args);
+            adbObj = new ADBCommand(new ADBCommand.MessageOutputDelegate(this.ShowResultLine));
+            this.ADBEnvironmentCheck();
         }
-      
+
+        public delegate void delegateHandler(string responseStr);
+        public delegateHandler handle;
+
+        AutoResetEvent autoReset = new AutoResetEvent(false);
+        ADBCommand adbObj;
+        protected void ShowResultLine(String line)
+        {
+            //if (!this.richTextBox1.Disposing || !this.richTextBox1.IsDisposed)
+            //    this.richTextBox1.Invoke(new Action(delegate () { this.richTextBox1.AppendText(line + "\r\n"); }));
+            Debug.WriteLine(line);
+        }
+        string[] PathKey = { "legacy", "api", "andoird", "sdk" };
+        private void ADBEnvironmentCheck()
+        {
+            try
+            {
+                bool isExist = true;
+                string pathlist = Environment.GetEnvironmentVariable("PATH");
+                if (pathlist == null)
+                    isExist = false;
+                else
+                {
+                    isExist = false;
+                    string[] list = pathlist.Split(';');
+                    foreach (string variable in list)
+                    {
+                        foreach (string key in PathKey)
+                        {
+                            if (variable.ToLower().Contains(key))
+                            {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!isExist)
+                {
+                    string system32 = System.Environment.SystemDirectory;
+                    string[] files = Directory.EnumerateFiles(@"./Resources/Api").ToArray();
+                    foreach (string file in files)
+                    {
+                        if (!File.Exists(Path.Combine(system32, Path.GetFileName(file))))
+                            File.Copy(file, Path.Combine(system32, Path.GetFileName(file)), true);
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         public ViewModelLocator Locator
         {
             get { return ServiceLocator.Current.GetInstance<ViewModelLocator>(); }
@@ -96,16 +154,7 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string s = "C3 69 8F 66 63 C1 A1 D1";
-            byte[] temp = Encoding.Unicode.GetBytes("强防");
-            string str = Encoding.Unicode.GetString(new byte[] { 0x3A, 0x5F, 0x32,0x96 });
-            string str2 = Encoding.Unicode.GetString(new byte[] { 0xC3, 0x69 });
-            string str3 = Encoding.Unicode.GetString(new byte[] { 0x69, 0x8F });
-            string str4 = Encoding.Unicode.GetString(new byte[] { 0x8F, 0x66 });
-            string str5 = Encoding.Unicode.GetString(new byte[] { 0x66, 0x63 });
-            string str6 = Encoding.Unicode.GetString(new byte[] { 0x63, 0xC1 });
-            string str7 = Encoding.Unicode.GetString(new byte[] { 0xC1, 0xA1 });
-            Debug.WriteLine(temp);
+            adbObj.RunAdbCmd(@"E:\Nox\bin\nox_adb shell am start -n com.regin.gcld.fl/.gcld");
             return;
             Process p = new Process();
             p.StartInfo.FileName = "cmd.exe";//设置启动的应用程序
