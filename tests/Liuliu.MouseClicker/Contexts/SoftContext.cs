@@ -168,12 +168,12 @@ namespace Liuliu.MouseClicker
                     yss.NoxPid = dm.GetWindowProcessId(hwnd);
                     try
                     {
-                        //找到模拟器Nox所对应连接NoxVMHandle
-                        NetStat n1 = list.First(a => a.Pid == yss.NoxPid.ToString());
-                        //本地远程相反的连接就是NoxVMHandle,获得进程Id
-                        NetStat n2 = list.First(b => b.ForeignAddress == n1.LocalAddress && b.LocalAddress == n1.ForeignAddress);
+                        //找到模拟器Nox所对应连接NoxVMHandle,可能有多个连接
+                        List<NetStat> ln1 = list.FindAll(a => a.Pid == yss.NoxPid.ToString());
+                        //本地远程相反的连接就是NoxVMHandle,获得NoxVMHandle进程Id,n2为NoxVMHandle进程与Nox一个链接
+                        NetStat n2 = list.First(b => b.ForeignAddress == ln1.FirstOrDefault().LocalAddress && b.LocalAddress == ln1.FirstOrDefault().ForeignAddress);
                         //找到该进程id的另一个连接就是adb连接
-                        NetStat n3 = list.First(c => c.Pid == n2.Pid && c.LocalAddress != n2.LocalAddress && c.ForeignAddress != n2.ForeignAddress);
+                        NetStat n3 = list.FirstOrDefault(c => c.Pid == n2.Pid && (ln1.FirstOrDefault(x=>x.ForeignAddress==c.LocalAddress))==null);
                         if (n3 != null)
                         {
                             yss.NoxVMHandlePid = int.Parse(n3.Pid);

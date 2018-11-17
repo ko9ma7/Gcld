@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Controls;
 using Liuliu.MouseClicker.Contexts;
+using System.IO;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -85,13 +86,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                        
                     }
-                    List<Role> roles=SoftContext.Locator.Main.Roles.Where(x => x.Window.IsAlive == false).ToList<Role>();
-                    foreach (var item in roles)
-                    {
-
-                        SoftContext.Locator.Main.Roles.Remove(item);
-                    }
-                   
+                    SoftContext.Locator.Main.Roles.ToList().RemoveAll(x => x.Window.IsAlive == false);
 
                 });
             }
@@ -149,6 +144,10 @@ namespace Liuliu.MouseClicker.ViewModels
                     engine.OnCycleEnd = () => role.ChangeRole();
                     try
                     {
+                        //nox_adb shell dumpsys window w|findstr \/|findstr name=
+                        //adbObj = new ADBCommand(new ADBCommand.MessageOutputDelegate((str)=> { Debug.WriteLine(str); }));
+                        //adbObj.RunAdbCmd(@"E:\Nox\bin\nox_adb -s "+SoftContext.YeShenSimulatorList.FirstOrDefault(x=>x.NoxHwnd==role.Hwnd).AdbDevicesId+" shell am start -n com.regin.gcld.fl/.gcld");
+                       // role.Window.Dm.Delay(4000);
                         engine.Start(tasks.ToArray());
                     }catch(Exception ex)
                     {
@@ -159,7 +158,14 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-             public ICommand StopCommand
+    
+        public delegate void delegateHandler(string responseStr);
+        public delegateHandler handle;
+
+        AutoResetEvent autoReset = new AutoResetEvent(false);
+        ADBCommand adbObj;
+
+        public ICommand StopCommand
         {
             get
             {

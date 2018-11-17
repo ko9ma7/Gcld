@@ -131,6 +131,7 @@ namespace Liuliu.MouseClicker.Contexts
                     if (e.Data != null && e.Data != string.Empty)
                     {
                         MessageOutputEvent("[" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "]\r\n" + "[RECEIVE] " + e.Data);
+                     
                     }
                 }
             }
