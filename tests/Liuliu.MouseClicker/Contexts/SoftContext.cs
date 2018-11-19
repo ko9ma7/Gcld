@@ -17,6 +17,7 @@ using Microsoft.Practices.ServiceLocation;
 using OSharp.Utility.Data;
 using Liuliu.ScriptEngine.Damo;
 using System.Text.RegularExpressions;
+using Liuliu.MouseClicker.Models;
 
 namespace Liuliu.MouseClicker
 {
@@ -26,7 +27,27 @@ namespace Liuliu.MouseClicker
         {
             Version = GetVersion();
             YeShenSimulatorList= new List<YeShenSimulator>();
+            AccountList = new List<Account>()
+            {
+                new Account() {UserName="rhjv99",Password="rhjv99",Platform=Platform.飞流,IsFinished=false },
+                new Account() {UserName="rhjv88",Password="rhjv88",Platform=Platform.飞流,IsFinished=false },
+                new Account() {UserName="rhjv77",Password="rhjv77",Platform=Platform.飞流,IsFinished=false },
+                new Account() {UserName="rhjv66",Password="rhjv66",Platform=Platform.飞流,IsFinished=false },
+                new Account() {UserName="rhjv55",Password="rhjv55",Platform=Platform.飞流,IsFinished=false },
+                new Account() {UserName="rhjv44",Password="rhjv44",Platform=Platform.飞流,IsFinished=false },
+                new Account() {UserName="daipf99",Password="daipf99",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf88",Password="daipf88",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf77",Password="daipf77",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf66",Password="daipf66",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf55",Password="daipf55",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf44",Password="daipf44",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf33",Password="daipf33",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="daipf22",Password="daipf22",Platform=Platform.楚游,IsFinished=false },
+
+            };
         }
+
+        public static List<Account> AccountList { get; set; }
 
         public static MainWindow MainWindow { get; set; }
 
@@ -214,11 +235,9 @@ namespace Liuliu.MouseClicker
             return new Version("0.0.0.1");
         }
 
-        private static List<YeShenSimulator> GetSimulator()
+        public static Account GetAccount()
         {
-            List<YeShenSimulator> list = new List<YeShenSimulator>();
-
-            return list;
+            return AccountList.FirstOrDefault(x => x.IsFinished == false); 
         }
        
     }

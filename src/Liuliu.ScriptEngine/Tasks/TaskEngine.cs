@@ -311,16 +311,6 @@ namespace Liuliu.ScriptEngine.Tasks
             {
                 while (Cycle > 0)
                 {
-                    //窗口绑定
-                    DmPlugin dm = Window.Dm;
-                    bool flag;
-                    flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
-                    //flag = Delegater.WaitTrue(() => Window.BindNormal(), () => dm.Delay(1000), 10);
-                    if (!flag)
-                    {
-                        throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
-                    }
-
                     foreach (TaskBase task in tasks)
                     {
                         _task = task;

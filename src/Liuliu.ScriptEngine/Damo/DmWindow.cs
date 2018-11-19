@@ -279,7 +279,7 @@ namespace Liuliu.ScriptEngine
             }
             else
             {
-                dmRet = Dm.BindWindowEx(_hwnd, "dx.graphic.opengl", "windows", "windows", "dx.public.graphic.protect|dx.public.anti.api", 0);
+                dmRet = Dm.BindWindowEx(_hwnd, "dx.graphic.opengl", "windows", "windows", "dx.public.graphic.protect|dx.public.anti.api|dx.public.input.ime", 0);
             }
             if (!dmRet)
             {

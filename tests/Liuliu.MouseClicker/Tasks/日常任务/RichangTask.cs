@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 7;
+            return 1;
         }
      
 
@@ -36,7 +36,7 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
                 new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-               new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+             //  new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
              };
             return steps;
         }

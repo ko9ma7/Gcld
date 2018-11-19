@@ -450,7 +450,7 @@ namespace Liuliu.MouseClicker
                         break;
                     }
                     Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\副本.bmp"),
-                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && _dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp")&& _dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"),
                                () => _dm.Delay(1000));
                     break;
                 case "主城":
@@ -471,7 +471,122 @@ namespace Liuliu.MouseClicker
             return true;
         }
 
+        public bool GoToMap30(string map)
+        {
+            switch (map)
+            {
+                case "副本":
+                    if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp")&&!_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                    {
+                        if(OpenMenu())
+                        {
+                            _dm.Delay(1000);
+                            if(!_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                            {
+                                OutSubMessage("已经在副本界面!");
+                                break;
+                            }
+                        }
+                    }
+                    Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && !_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                               () => _dm.Delay(1000));
+                    break;
+                case "主城":
+                    if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp")&& !_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp"))
+                    {
+                        OutSubMessage("已经在主城界面!");
+                        break;
+                    }
+                    Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\主城.bmp"),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本2.bmp") && !_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp"),
+                               () => _dm.Delay(1000));
+                    break;
+                default:
+                    OutSubMessage("输入地图错误,无法打开");
+                    break;
+            }
+            _dm.Delay(2000);
+            return true;
+        }
 
+
+        public bool GoToFubenArea(string area)
+        {   
+
+            List<string> areas = new List<string>() { "虎牢关", "下邳", "官渡", "西蜀" };
+            string currentArea = "";
+            int intX, intY, i = 0;
+            foreach (var a in areas)
+            {
+                _dm.FindPic(320, 453, 640, 534, @"\bmp\" + a + ".bmp", "303030", 0.7, 0, out intX, out intY);
+                if (intX > 0 && intY > 0)
+                {
+                    _dm.DebugPrint("当前位于副本区域[" + a + "]");
+                    currentArea = a;
+                    break;
+                }
+            }
+            if(currentArea==area)
+            {
+                _dm.DebugPrint("已经在副本区域[" + area + "]");
+                return true;
+            }
+            _dm.DebugPrint("正在移动到目标区域...");
+            return Delegater.WaitTrue(() =>
+            {
+                _dm.FindPic(320, 453, 640, 534, @"\bmp\" + area + ".bmp", "303030", 0.7, 0, out intX, out intY);
+                if (intX > 0 && intY > 0)
+                {
+                    _dm.DebugPrint("已经在副本区域[" + area + "]");
+                    return true;
+                }
+                else
+                {
+                    int index = areas.IndexOf(area);
+                    foreach (var a in areas)
+                    {
+                        _dm.FindPic(320, 453, 640, 534, @"\bmp\" + a + ".bmp", "303030", 0.7, 0, out intX, out intY);
+                        if (intX > 0 && intY > 0)
+                        {
+                            _dm.DebugPrint("当前位于副本区域[" + a + "]");
+                            currentArea = a;
+                            break;
+                        }
+                    }
+                    int currentIndex = areas.IndexOf(currentArea);
+                    if (index > currentIndex)
+                        _dm.Swipe(670,427,93,415);
+                    if (index < currentIndex)
+                        _dm.Swipe(93,415,670,427);
+                }
+                return false;
+            },()=>_dm.Delay(1000));
+        }
+        /// <summary>
+        /// 关闭菜单
+        /// </summary>
+        /// <returns></returns>
+        public bool CloseMenu()
+        {
+            return Delegater.WaitTrue(()=> {
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
+                    return true;
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+                    _dm.MoveToClick(918,499);
+                return false;
+            },()=>_dm.Delay(1000));
+        }
+        public bool OpenMenu()
+        {
+            return Delegater.WaitTrue(() => {
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+                    return true;
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
+                    _dm.MoveToClick(918, 499);
+                return false;
+            }, () => _dm.Delay(1000));
+        }
     }
 
     enum  当前位置
