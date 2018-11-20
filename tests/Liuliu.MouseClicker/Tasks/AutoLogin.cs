@@ -1,4 +1,6 @@
-﻿using Liuliu.ScriptEngine;
+﻿using Liuliu.MouseClicker.Contexts;
+using Liuliu.MouseClicker.Models;
+using Liuliu.ScriptEngine;
 using Liuliu.ScriptEngine.Damo;
 using Liuliu.ScriptEngine.Models;
 using Liuliu.ScriptEngine.Tasks;
@@ -50,5 +52,75 @@ namespace Liuliu.MouseClicker.Tasks
 
             return TaskResult.Finished;
         }
+       
+
+        private bool FeiliuLogin(Account account)
+        {
+            Role role = (Role)Role;
+            YeShenSimulator ysSimulator = SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == ((Role)Role).Hwnd);
+            // string noxPath = @"E:\nox\Nox\bin\";
+            string noxPath = @"E:\Nox\bin\";
+            string result = CmdHelper.ExecuteCmd(noxPath + @"nox_adb shell dumpsys window w|findstr \/|findstr name=").Replace("", "mSurface=Surface(name=").Replace("", ")");
+            if (result.IndexOf("com.regin.gcld.fl/com.regin.gcld.fl.gcld") < 0) //当前应用程序不是飞流攻城掠地
+            {
+                if (result.IndexOf("gcld") > 0)
+                {
+                    CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am force-stop " + result);
+                    Dm.Delay(5000);
+                }
+                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.fl/.gcld");
+                Delegater.WaitTrue(() => Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9), () => Dm.Delay(1000));
+            }
+
+            if (Dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"))
+            {
+                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am force-stop com.regin.gcld.fl");
+                return false;
+            }
+           
+          
+            if (Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9))
+            {
+                Dm.Delay(1000);
+                Dm.MoveToClick(562, 156);
+                Dm.Delay(500);
+                for (int i = 0; i < 20; i++)
+                {
+                    if (Dm.GetColorNum(292, 121, 414, 176, "ffffff-101010", 0.9) > 5)
+                    {
+                        CmdHelper.ExecuteCmd(string.Format("{0}nox_adb -s {1} shell input keyevent 67", noxPath, ysSimulator.AdbDevicesId));
+                        Dm.Delay(200);
+                    }
+                    else
+                        break;
+
+                }
+
+                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.UserName + "\"");
+                Dm.Delay(1000);
+                Dm.MoveToClick(577, 218);
+                Dm.Delay(500);
+                for (int i = 0; i < 20; i++)
+                {
+                    if (Dm.GetColorNum(290, 192, 444, 245, "ffffff-101010", 0.9) > 5)
+                    {
+                        CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67");
+                        Dm.Delay(200);
+                    }
+                    else
+                        break;
+
+                }
+                CmdHelper.ExecuteCmd(noxPath + "nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.Password + "\"");
+                Dm.Delay(1000);
+                Dm.FindPicAndClick(413, 279, 543, 348, @"\bmp\登录.bmp");
+
+                return Delegater.WaitTrue(() => Dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                                   () => Dm.Delay(1000), 20);
+            }
+            return false;
+
+        }
+
     }
 }

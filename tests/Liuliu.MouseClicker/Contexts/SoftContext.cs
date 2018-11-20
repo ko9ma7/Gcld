@@ -18,6 +18,7 @@ using OSharp.Utility.Data;
 using Liuliu.ScriptEngine.Damo;
 using System.Text.RegularExpressions;
 using Liuliu.MouseClicker.Models;
+using System.Threading;
 
 namespace Liuliu.MouseClicker
 {
@@ -29,20 +30,20 @@ namespace Liuliu.MouseClicker
             YeShenSimulatorList= new List<YeShenSimulator>();
             AccountList = new List<Account>()
             {
-                new Account() {UserName="rhjv99",Password="rhjv99",Platform=Platform.飞流,IsFinished=false },
-                new Account() {UserName="rhjv88",Password="rhjv88",Platform=Platform.飞流,IsFinished=false },
-                new Account() {UserName="rhjv77",Password="rhjv77",Platform=Platform.飞流,IsFinished=false },
-                new Account() {UserName="rhjv66",Password="rhjv66",Platform=Platform.飞流,IsFinished=false },
-                new Account() {UserName="rhjv55",Password="rhjv55",Platform=Platform.飞流,IsFinished=false },
-                new Account() {UserName="rhjv44",Password="rhjv44",Platform=Platform.飞流,IsFinished=false },
-                new Account() {UserName="daipf99",Password="daipf99",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf88",Password="daipf88",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf77",Password="daipf77",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf66",Password="daipf66",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf55",Password="daipf55",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf44",Password="daipf44",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf33",Password="daipf33",Platform=Platform.楚游,IsFinished=false },
-                new Account() {UserName="daipf22",Password="daipf22",Platform=Platform.楚游,IsFinished=false },
+                new Account() {UserName="rhjv99",Password="rhjv99",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                new Account() {UserName="rhjv88",Password="rhjv88",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                new Account() {UserName="rhjv77",Password="rhjv77",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                new Account() {UserName="rhjv66",Password="rhjv66",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                new Account() {UserName="rhjv55",Password="rhjv55",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                new Account() {UserName="rhjv44",Password="rhjv44",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf99",Password="daipf99",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf88",Password="daipf88",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf77",Password="daipf77",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf66",Password="daipf66",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf55",Password="daipf55",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf44",Password="daipf44",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf33",Password="daipf33",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="daipf22",Password="daipf22",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
 
             };
         }
@@ -234,10 +235,23 @@ namespace Liuliu.MouseClicker
             }
             return new Version("0.0.0.1");
         }
-
+        // 为保证线程安全，使用一个锁来保护_task的访问
+        readonly static object _locker = new object();
+        // 通过 _wh 给工作线程发信号
+        static EventWaitHandle _wh = new AutoResetEvent(false);
         public static Account GetAccount()
         {
-            return AccountList.FirstOrDefault(x => x.IsFinished == false); 
+            lock(_locker)
+            {
+                var account = AccountList.FirstOrDefault(x => x.IsFinished == false&&x.IsWorking==false);
+                if (account!=null)
+                {
+                    account.IsWorking = true;
+                    return account;
+                }
+                return null;
+            }
+          
         }
        
     }

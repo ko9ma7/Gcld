@@ -30,7 +30,6 @@ namespace Liuliu.MouseClicker
             TaskEngine.OutMessage = OutMessage;
             TaskEngine.Window = _window;
             WindowTitle = _window.TopTitle;
-            ProcessId = _window.ProcessId;
         }
         private DmWindow _window;
         private DmPlugin _dm;
@@ -54,13 +53,13 @@ namespace Liuliu.MouseClicker
                 SetProperty(ref _hwnd, value, () => Hwnd);
             }
         }
-        private int _processId;
-        public int ProcessId
+        private string _accountName;
+        public string AccountName
         {
-            get { return _processId; }
+            get { return _accountName; }
             set
             {
-                SetProperty(ref _processId, value, () => ProcessId);
+                SetProperty(ref _accountName, value, () => AccountName);
             }
         }
         public string Ac

@@ -159,7 +159,8 @@ namespace Liuliu.MouseClicker.ViewModels
                             Debug.WriteLine("所有帐号已经执行完毕!");
                             return;
                         }
-                        YeShenSimulator ysSimulator=SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == role.Hwnd);
+                        role.AccountName = account.UserName;
+                        
                             //窗口绑定
                         DmPlugin dm = role.Window.Dm;
                         bool flag;
@@ -169,56 +170,8 @@ namespace Liuliu.MouseClicker.ViewModels
                             throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
                         }
                         dm.DownCpu(20);
-                        string result=CmdHelper.ExecuteCmd(@"E:\nox\Nox\bin\nox_adb shell dumpsys window w|findstr \/|findstr name=");
-                        if (result.IndexOf("com.regin.gcld.fl/com.regin.gcld.fl.gcld") < 0)
-                        {
-                            CmdHelper.ExecuteCmd(@"E:\nox\Nox\bin\nox_adb -s " + SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == role.Hwnd).AdbDevicesId + " shell am start -n com.regin.gcld.fl/.gcld");
-                            Delegater.WaitTrue(() => dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9), () => dm.Delay(1000));
-                        }
-                        if(dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9))
-                        {
-                            dm.Delay(1000);
-                            dm.MoveToClick(562, 156);
-                            dm.Delay(500);
-                            for (int i = 0; i < 20; i++)
-                            {
-                                if (dm.GetColorNum(292,121,414,176, "ffffff-101010",0.9)>5)
-                                {
-                                    CmdHelper.ExecuteCmd(@"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67&" +
-                                                               "nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67&" +
-                                                               @"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67&" +
-                                                               @"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67"
-                                                               );
-                                }
-                                else
-                                    break;
-
-                            }
-                            
-                            CmdHelper.ExecuteCmd(@"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId +" shell input text \""+account.UserName+"\"");
-                            dm.Delay(1000);
-                            dm.MoveToClick(577, 218);
-                            dm.Delay(500);
-                            for (int i = 0; i < 20; i++)
-                            {
-                                if (dm.GetColorNum(290,192,444,245, "ffffff-101010", 0.9) > 5)
-                                {
-                                    CmdHelper.ExecuteCmd(@"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67&" +
-                                                               "nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67&" +
-                                                               @"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67&" +
-                                                               @"E:\nox\Nox\bin\nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67"
-                                                               );
-                                }
-                                else
-                                    break;
-                               
-                            }
-                            CmdHelper.ExecuteCmd(@"E:\nox\Nox\bin\nox_adb -s " + SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == role.Hwnd).AdbDevicesId + " shell input text \"" + account.Password + "\"");
-                            dm.Delay(1000);
-                            dm.FindPicAndClick(413, 279, 543, 348, @"\bmp\登录.bmp");
-                            dm.Delay(8000);
-                        }
-                        // engine.Start(tasks.ToArray());
+                      
+                        engine.Start(tasks.ToArray());
                     }
                     catch(Exception ex)
                     {
@@ -229,7 +182,7 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-    
+        
         public delegate void delegateHandler(string responseStr);
         public delegateHandler handle;
 

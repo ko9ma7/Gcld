@@ -87,7 +87,7 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="模拟器列表" Width="100" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
-                            <GridViewColumn Header="当前角色" Width="70" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                            <GridViewColumn Header="当前帐号" Width="70" DisplayMemberBinding="{Binding AccountName,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
                             <GridViewColumn Header="运行状态" Width="70" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
                             <GridViewColumn Header="剩余循环" Width="70" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
                             <GridViewColumn Header="任务配置" Width="140">

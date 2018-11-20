@@ -348,6 +348,7 @@ namespace Liuliu.ScriptEngine.Tasks
                     OnCycleEnd();
                     Thread.Sleep(5000);
                 }
+                
                 WaitForUnBind();
                 _workThread = null;
             }) { IsBackground = true};

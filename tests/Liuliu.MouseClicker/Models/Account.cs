@@ -24,6 +24,10 @@ namespace Liuliu.MouseClicker.Models
         /// 是否已经执行完
         /// </summary>
         public bool IsFinished { get; set; }
+        /// <summary>
+        /// 是否正在工作
+        /// </summary>
+        public bool IsWorking { get; set; }
     }
 
     public enum Platform
