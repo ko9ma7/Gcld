@@ -14,6 +14,7 @@ namespace Liuliu.MouseClicker.Contexts
         {
             try
             {
+                Debug.WriteLine(cmd);
                 using (Process CmdProcess = new Process())
                 {
                     CmdProcess.StartInfo.FileName = "cmd.exe";
@@ -26,7 +27,9 @@ namespace Liuliu.MouseClicker.Contexts
                     CmdProcess.StandardInput.WriteLine(cmd + "&exit"); //向cmd窗口发送输入信息  
                     CmdProcess.StandardInput.AutoFlush = true;  //提交  
                   
-                    string result = CmdProcess.StandardOutput.ReadToEnd();//输出  
+                    string result = CmdProcess.StandardOutput.ReadToEnd();//输出
+                    result = result.Remove(0, result.IndexOf(cmd)+cmd.Length+5).Replace(" ","").Replace("\r\n","");
+                    Debug.WriteLine("cmd执行结果:"+result);  
                     CmdProcess.WaitForExit();//等待程序执行完退出进程  
                     CmdProcess.Close();//结束 
                     return result;

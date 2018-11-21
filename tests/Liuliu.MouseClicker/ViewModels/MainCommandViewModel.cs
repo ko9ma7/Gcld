@@ -78,6 +78,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         dm.SetDict(1, "number.txt");
                         dm.SetDict(2, "maintask.txt");
                         dm.UseDict(0);
+
                         if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item.NoxHwnd).Count() > 0)
                         {
                             Debug.WriteLine("该句柄已经存在！");
@@ -115,7 +116,7 @@ namespace Liuliu.MouseClicker.ViewModels
                     TaskEngine engine = role.TaskEngine;
                    
                     List<TaskBase> tasks = new List<TaskBase>();
-
+                    tasks.Add(new AutoLogin(context));
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
                         tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
@@ -153,24 +154,6 @@ namespace Liuliu.MouseClicker.ViewModels
                     engine.OnCycleEnd = () => role.ChangeRole();
                     try
                     {
-                        Account account = SoftContext.GetAccount();
-                        if (account == null)
-                        {
-                            Debug.WriteLine("所有帐号已经执行完毕!");
-                            return;
-                        }
-                        role.AccountName = account.UserName;
-                        
-                            //窗口绑定
-                        DmPlugin dm = role.Window.Dm;
-                        bool flag;
-                        flag = Delegater.WaitTrue(() => role.Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
-                        if (!flag)
-                        {
-                            throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
-                        }
-                        dm.DownCpu(20);
-                      
                         engine.Start(tasks.ToArray());
                     }
                     catch(Exception ex)
@@ -182,12 +165,6 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-        
-        public delegate void delegateHandler(string responseStr);
-        public delegateHandler handle;
-
-        AutoResetEvent autoReset = new AutoResetEvent(false);
-        ADBCommand adbObj;
 
         public ICommand StopCommand
         {

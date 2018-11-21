@@ -41,13 +41,27 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
-            //Delegater.WaitTrue(() =>
-            //{
-            //    if(Dm.IsExistPic(0,0,0,0,""))
+            Account account = SoftContext.GetAccount();
+            if (account == null)
+            {
+                Debug.WriteLine("所有帐号已经执行完毕!");
+                return new TaskResult(TaskResultType.Fail, "所有帐号已经执行完毕!");
+            }
+            role.AccountName = account.UserName;
+            switch(account.Platform)
+            {
+                case Platform.飞流:
+                    FeiliuLogin(account);
+                    break;
+                case Platform.楚游:
+                    FeiliuLogin(account);
+                    break;
+            }
+            Delegater.WaitTrue(() =>
+            {
 
-
-            //    return true;
-            //},()=>dm.Delay(1000));
+                    return true;
+            }, () => dm.Delay(1000));
 
 
             return TaskResult.Finished;
@@ -60,25 +74,18 @@ namespace Liuliu.MouseClicker.Tasks
             YeShenSimulator ysSimulator = SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == ((Role)Role).Hwnd);
             // string noxPath = @"E:\nox\Nox\bin\";
             string noxPath = @"E:\Nox\bin\";
-            string result = CmdHelper.ExecuteCmd(noxPath + @"nox_adb shell dumpsys window w|findstr \/|findstr name=").Replace("", "mSurface=Surface(name=").Replace("", ")");
-            if (result.IndexOf("com.regin.gcld.fl/com.regin.gcld.fl.gcld") < 0) //当前应用程序不是飞流攻城掠地
+            string result = CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s "+ysSimulator.AdbDevicesId+@" shell dumpsys window w|findstr \/|findstr name=");
+            result=result.Replace("mSurface=Surface(name=","").Replace(")", "");
+            //com.regin.gcld.fl/com.regin.gcld.fl.gcld
+            if (result.IndexOf("gcld") >0) //当前应用程序是攻城掠地
             {
-                if (result.IndexOf("gcld") > 0)
-                {
-                    CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am force-stop " + result);
-                    Dm.Delay(5000);
-                }
-                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.fl/.gcld");
-                Delegater.WaitTrue(() => Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9), () => Dm.Delay(1000));
+                int index = result.IndexOf('/');
+                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am force-stop " + result.Remove(index,result.Length-index));
+                Dm.Delay(5000);
             }
-
-            if (Dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp"))
-            {
-                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am force-stop com.regin.gcld.fl");
-                return false;
-            }
-           
-          
+            CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.fl/.gcld");
+            Delegater.WaitTrue(() => Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9), () => Dm.Delay(1000));
+            Dm.Delay(1000);
             if (Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9))
             {
                 Dm.Delay(1000);
