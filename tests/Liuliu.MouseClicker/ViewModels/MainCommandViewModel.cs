@@ -116,7 +116,7 @@ namespace Liuliu.MouseClicker.ViewModels
                     TaskEngine engine = role.TaskEngine;
                    
                     List<TaskBase> tasks = new List<TaskBase>();
-                    tasks.Add(new AutoLogin(context));
+                   // tasks.Add(new AutoLogin(context));
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
                         tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
@@ -151,7 +151,8 @@ namespace Liuliu.MouseClicker.ViewModels
                         tasks.Add(new SmallTool(context));
                     }
                     engine.Cycle = 10;
-                    engine.OnCycleEnd = () => role.ChangeRole();
+  
+                    engine.ChangeRole = () => role.ChangeRole();
                     try
                     {
                         engine.Start(tasks.ToArray());

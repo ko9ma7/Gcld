@@ -43,7 +43,6 @@ namespace Liuliu.ScriptEngine.Tasks
         public TaskEngine()
         {
             TaskList = new List<TaskBase>();
-            OnCycleEnd = () => { };
         }
 
         #region 属性
@@ -296,31 +295,54 @@ namespace Liuliu.ScriptEngine.Tasks
             WaitForUnBind();
             _workThread = null;
         }
-
         /// <summary>
-        /// 每次循环结束要做的操作
+        /// 自动登录
         /// </summary>
-        public Action OnCycleEnd { get; set; }
+        public Func<bool> AutoLogin { get; set; }
+        /// <summary>
+        /// 切换角色
+        /// </summary>
+        public Func<bool> ChangeRole { get; set; }
         #endregion
 
         #region 私有方法
-
+     
+     
         private Thread GetWorkThread(IEnumerable<TaskBase> tasks)
         {
             return new Thread(() =>
             {
-                while (Cycle > 0)
+                //窗口绑定
+                DmPlugin dm = Window.Dm;
+                bool flag;
+                flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
+                if (!flag)
                 {
-                    //窗口绑定
-                    DmPlugin dm = Window.Dm;
-                    bool flag;
-                    flag = Delegater.WaitTrue(() => Window.BindHalfBackgroundMoniqi(), () => dm.Delay(1000), 10);
-                    if (!flag)
-                    {
-                        throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
-                    }
-                    dm.DownCpu(20);
+                    throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
+                }
+                dm.DownCpu(20);
 
+                while(true)
+                {
+
+                
+
+                //自动登录
+                if(AutoLogin!=null)
+                {
+                    bool isLogin = AutoLogin();
+                    if (isLogin == false)
+                    {
+                        Logger.Error("任务执行失败，{0}","登录失败!");
+                        OutMessage("任务执行失败，{0}".FormatWith("登录失败!"));
+                        WaitForUnBind();
+                        _workThread = null;
+                        return;
+                    }
+                }
+
+                while (true)
+                {
                     foreach (TaskBase task in tasks)
                     {
                         _task = task;
@@ -354,12 +376,21 @@ namespace Liuliu.ScriptEngine.Tasks
                         Window.Dm.Delay(1000);
                         TaskList.Remove(task);
                     }
-                    Cycle--;
-                    //线程可能不一致？
-                    OnCycleEnd();
+
+                    //切换角色
+                    if (ChangeRole != null)
+                    {
+                        bool isChange = ChangeRole();
+                        if (isChange == false)
+                        {
+                            Logger.Error("切换角色失败!");
+                            OutMessage("切换角色失败!");
+                            break;
+                        }
+                    }
                     Thread.Sleep(5000);
                 }
-                
+                }
                 WaitForUnBind();
                 _workThread = null;
             }) { IsBackground = true};

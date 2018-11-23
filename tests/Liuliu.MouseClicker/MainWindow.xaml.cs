@@ -28,6 +28,7 @@ using SharpPcap.WinPcap;
 using System.Threading;
 using Liuliu.MouseClicker.Contexts;
 using System.IO;
+using PacketDotNet;
 
 namespace Liuliu.MouseClicker
 {
@@ -100,6 +101,8 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var bytes = new byte[] { 0xE5, 0xBC, 0xBA };
+            Debug.WriteLine(Encoding.UTF8.GetString(bytes));
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             Task task = new Task(() =>
@@ -124,7 +127,7 @@ namespace Liuliu.MouseClicker
                     i++;
                 }
                 Debug.WriteLine("-- 选择一个网卡抓包: ");
-                i = 1;
+                i = 0;
 
                 var device = devices[i];
 
@@ -149,14 +152,14 @@ namespace Liuliu.MouseClicker
                 Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
 
                 // tcpdump filter to capture only TCP/IP packets
-                string filter = "host 42.62.119.245";
+                string filter = "host 39.105.208.92";
                 device.Filter = filter;
                 device.StartCapture();
 
-                while (!token.IsCancellationRequested)
-                {
-                    Thread.Sleep(5000);
-                }
+              //  while (!token.IsCancellationRequested)
+               // {
+                    Thread.Sleep(25000);
+              //  }
                 device.StopCapture();
 
                 Debug.WriteLine("--捕获结束.");
@@ -177,8 +180,26 @@ namespace Liuliu.MouseClicker
         {
             var time = e.Packet.Timeval.Date;
             var len = e.Packet.Data.Length;
-            Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
-            Debug.WriteLine(BitConverter.ToString(e.Packet.Data));
+           // Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
+           if(len>54)
+            {
+                if (BitConverter.ToString(e.Packet.Data).IndexOf("26-74-6F-3D") > 0)
+                {
+                    var packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+                    var tcpPacket = packet.Extract(typeof(TcpPacket));
+
+
+                   // Debug.WriteLine(tcpPacket.PrintHex());
+
+                    string re = BitConverter.ToString(tcpPacket.PayloadData);
+                    Debug.WriteLine(re);
+                    string result = Encoding.UTF8.GetString(tcpPacket.PayloadData);
+
+                    Debug.WriteLine(result);
+                }
+              
+            }
+      
         }
 
 

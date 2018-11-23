@@ -72,8 +72,8 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)Role;
             YeShenSimulator ysSimulator = SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == ((Role)Role).Hwnd);
-            // string noxPath = @"E:\nox\Nox\bin\";
-            string noxPath = @"E:\Nox\bin\";
+             string noxPath = @"E:\nox\Nox\bin\";
+            //string noxPath = @"E:\Nox\bin\";
             string result = CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s "+ysSimulator.AdbDevicesId+@" shell dumpsys window w|findstr \/|findstr name=");
             result=result.Replace("mSurface=Surface(name=","").Replace(")", "");
             //com.regin.gcld.fl/com.regin.gcld.fl.gcld
