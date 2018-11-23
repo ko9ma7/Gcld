@@ -50,7 +50,7 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
-                    
+
                 });
             }
         }
@@ -87,7 +87,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         {
                             SoftContext.Locator.Main.Roles.Add((Role)role);
                         }
-                       
+
                     }
                     foreach (var item in SoftContext.Locator.Main.Roles.ToList())
                     {
@@ -102,21 +102,21 @@ namespace Liuliu.MouseClicker.ViewModels
             }
         }
 
-             public ICommand BeginCommand
+        public ICommand BeginCommand
         {
             get
             {
                 return new RelayCommand<Role>((role) =>
                 {
-                  
+
                     Function func = new Function();
                     func.Name = "任务";
 
                     TaskContext context = new TaskContext(role, func);
                     TaskEngine engine = role.TaskEngine;
-                   
+
                     List<TaskBase> tasks = new List<TaskBase>();
-                   // tasks.Add(new AutoLogin(context));
+                    // tasks.Add(new AutoLogin(context));
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
                         tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
@@ -137,35 +137,123 @@ namespace Liuliu.MouseClicker.ViewModels
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动建筑")
                     {
-                        context.Settings.IsAutoBuilding = true; 
+                        context.Settings.IsAutoBuilding = true;
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动主线")
                     {
                         tasks.Add(new AutoLevel(context));
                     }
-                    
+
                     if (role.SelectedItemTask.Content.ToString() == "刷新装备")
                     {
                         context.Settings.IsRefreshEquipment = true;
                         tasks.Add(new SmallTool(context));
                     }
-                    engine.Cycle = 10;
-  
+                    engine.AutoLogin = () => AutoLogin(context);
                     engine.ChangeRole = () => role.ChangeRole();
                     try
                     {
                         engine.Start(tasks.ToArray());
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         role.OutMessage(ex.Message);
                     }
-                  
+
 
                 });
             }
         }
+        public bool AutoLogin(TaskContext context)
+        {
+            Role role = (Role)context.Role;
+            Account account = SoftContext.GetAccount();
+            if (account == null)
+            {
+                Debug.WriteLine("所有帐号已经执行完毕!");
+                return false;
+            }
+            role.AccountName = account.UserName;
+            switch (account.Platform)
+            {
+                case Platform.飞流:
+                    return FeiliuLogin(account, role);
+                case Platform.楚游:
+                    return FeiliuLogin(account, role);
+            }
+            return false;
+        }
+        private bool FeiliuLogin(Account account, Role role)
+        {
+            DmPlugin Dm = role.Window.Dm;
+            YeShenSimulator ysSimulator = SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == role.Hwnd);
+            // string noxPath = @"E:\nox\Nox\bin\";
+            string noxPath = @"E:\Nox\bin\";
+            string result = CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + @" shell dumpsys window w|findstr \/|findstr name=");
+            result = result.Replace("mSurface=Surface(name=", "").Replace(")", "");
+            //com.regin.gcld.fl/com.regin.gcld.fl.gcld
+            if (result.IndexOf("gcld") > 0) //当前应用程序是攻城掠地
+            {
+                int index = result.IndexOf('/');
+                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am force-stop " + result.Remove(index, result.Length - index));
+                Dm.Delay(5000);
+            }
+            switch (account.Platform)
+            {
+                case Platform.飞流:
+                    CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.fl/.gcld");
+                    Delegater.WaitTrue(() => Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9), () => Dm.Delay(1000), 20);
+                    Dm.Delay(1000);
+                    if (Dm.IsExistPic(279, 37, 476, 100, @"\bmp\飞流帐号登录.bmp", 0.9))
+                    {
+                        Dm.Delay(1000);
+                        Dm.MoveToClick(562, 156);
+                        Dm.Delay(500);
+                        for (int i = 0; i < 20; i++)
+                        {
+                            if (Dm.GetColorNum(292, 121, 414, 176, "ffffff-101010", 0.9) > 5)
+                            {
+                                CmdHelper.ExecuteCmd(string.Format("{0}nox_adb -s {1} shell input keyevent 67", noxPath, ysSimulator.AdbDevicesId));
+                                Dm.Delay(200);
+                            }
+                            else
+                                break;
+
+                        }
+
+                        CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.UserName + "\"");
+                        Dm.Delay(1000);
+                        Dm.MoveToClick(577, 218);
+                        Dm.Delay(500);
+                        for (int i = 0; i < 20; i++)
+                        {
+                            if (Dm.GetColorNum(290, 192, 444, 245, "ffffff-101010", 0.9) > 5)
+                            {
+                                CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell input keyevent 67");
+                                Dm.Delay(200);
+                            }
+                            else
+                                break;
+
+                        }
+                        CmdHelper.ExecuteCmd(noxPath + "nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.Password + "\"");
+                        Dm.Delay(1000);
+                        Dm.FindPicAndClick(413, 279, 543, 348, @"\bmp\登录.bmp");
+
+                        return Delegater.WaitTrue(() => Dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                                            () => Dm.Delay(1000), 20);
+                    }
+                    break;
+
+                case Platform.楚游:
+                    CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.sy/sy07073.mobile.game.sdk.activity.Login");
+                    break;
+            }
+            return false;
+        }
+
+
 
         public ICommand StopCommand
         {

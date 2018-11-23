@@ -166,20 +166,6 @@ namespace Liuliu.ScriptEngine.Tasks
 
         #region 公共方法
 
-        private int _cycle=1;
-        /// <summary>
-        /// 循环次数
-        /// </summary>
-        public int Cycle
-        {
-            get { return _cycle; }
-            set
-            {
-                _cycle = value;
-                RaisePropertyChanged("Cycle");
-            }
-        }
-
         public void Start(params TaskBase[] tasks)
         {
             tasks.CheckNotNull("tasks");
@@ -322,75 +308,68 @@ namespace Liuliu.ScriptEngine.Tasks
                 }
                 dm.DownCpu(20);
 
-                while(true)
-                {
+                        if (AutoLogin != null)
+                        {
+                            bool isLogin = AutoLogin();
+                            if (isLogin == false)
+                            {
+                                Logger.Error("任务执行失败，{0}", "登录失败!");
+                                OutMessage("任务执行失败，{0}".FormatWith("登录失败!"));
+                                WaitForUnBind();
+                                _workThread = null;
+                                return;
+                            }
+                        }
 
-                
-
-                //自动登录
-                if(AutoLogin!=null)
-                {
-                    bool isLogin = AutoLogin();
-                    if (isLogin == false)
+                    while (true)
                     {
-                        Logger.Error("任务执行失败，{0}","登录失败!");
-                        OutMessage("任务执行失败，{0}".FormatWith("登录失败!"));
-                        WaitForUnBind();
-                        _workThread = null;
-                        return;
-                    }
-                }
-
-                while (true)
-                {
-                    foreach (TaskBase task in tasks)
-                    {
-                        _task = task;
-                        _taskEventArg = new TaskEventArg { Context = _task.TaskContext };
-                        try
+                        foreach (TaskBase task in tasks)
                         {
-                            TaskRunState = TaskRunState.Running;
-                            OnStateChanged(_taskEventArg);
-                            OnStarted(_taskEventArg);
+                            _task = task;
+                            _taskEventArg = new TaskEventArg { Context = _task.TaskContext };
+                            try
+                            {
+                                TaskRunState = TaskRunState.Running;
+                                OnStateChanged(_taskEventArg);
+                                OnStarted(_taskEventArg);
 
-                            OutMessage("任务“{0}”启动成功。".FormatWith(_task.Name));
-                            TaskStart();
-                            TaskStop(true);
-                            Window.FlashWindow();
+                                OutMessage("任务“{0}”启动成功。".FormatWith(_task.Name));
+                                TaskStart();
+                                TaskStop(true);
+                                Window.FlashWindow();
 
+                            }
+                            catch (ThreadAbortException)
+                            {
+                                TaskStop(true);
+                                WaitForUnBind();
+                                break;
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                TaskStop();
+                                Window.FlashWindow();
+                                Logger.Error("任务执行失败，{0}", ex.FormatMessage());
+                                OutMessage("任务执行失败，{0}".FormatWith(ex.Message));
+                            }
+                            Window.Dm.Delay(1000);
+                            TaskList.Remove(task);
                         }
-                        catch (ThreadAbortException)
-                        {
-                            TaskStop(true);
-                            WaitForUnBind();
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
-                            TaskStop();
-                            Window.FlashWindow();
-                            Logger.Error("任务执行失败，{0}", ex.FormatMessage());
-                            OutMessage("任务执行失败，{0}".FormatWith(ex.Message));
-                        }
-                        Window.Dm.Delay(1000);
-                        TaskList.Remove(task);
-                    }
 
-                    //切换角色
-                    if (ChangeRole != null)
-                    {
-                        bool isChange = ChangeRole();
-                        if (isChange == false)
+                        //切换角色
+                        if (ChangeRole != null)
                         {
-                            Logger.Error("切换角色失败!");
-                            OutMessage("切换角色失败!");
-                            break;
+                            bool isChange = ChangeRole();
+                            if (isChange == false)
+                            {
+                                Logger.Error("切换角色失败!");
+                                OutMessage("切换角色失败!");
+                                break;
+                            }
                         }
-                    }
-                    Thread.Sleep(5000);
-                }
-                }
+                        Thread.Sleep(3000);
+                  }
                 WaitForUnBind();
                 _workThread = null;
             }) { IsBackground = true};
