@@ -61,7 +61,8 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="自动兵器",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="自动建筑",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="自动洗练",Order=3,RunFunc=RunStep3 },
-                new TaskStep() {Name="刷新装备",Order=4,RunFunc=RunStep4 }
+                new TaskStep() {Name="刷新装备",Order=4,RunFunc=RunStep4 },
+              
              };
             return steps;
         }

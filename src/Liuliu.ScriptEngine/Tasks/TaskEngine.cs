@@ -319,6 +319,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 {
                     if (AutoLogin != null)
                     {
+                        Cycle = 0;
                         bool isLogin = AutoLogin();
                         if (isLogin == false)
                         {
@@ -326,11 +327,12 @@ namespace Liuliu.ScriptEngine.Tasks
                             OutMessage("任务执行失败，{0}".FormatWith("登录失败!"));
                             break;
                         }
-                        Cycle = 0;
+                       
                     }
 
                     while (true)
                     {
+                        Cycle++;
                         foreach (TaskBase task in tasks)
                         {
                             _task = task;
@@ -364,7 +366,7 @@ namespace Liuliu.ScriptEngine.Tasks
                             Window.Dm.Delay(1000);
                             TaskList.Remove(task);
                         }
-                        Cycle++;
+                       
                         //切换角色
                         if (ChangeRole != null)
                         {

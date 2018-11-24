@@ -131,6 +131,9 @@
     <Compile Include="Flyouts\SettingsFlyout.xaml.cs">
       <DependentUpon>SettingsFlyout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Flyouts\XilianFlyout.xaml.cs">
+      <DependentUpon>XilianFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Hook\Main.cs" />
     <Compile Include="Hook\SocketInterFace.cs" />
     <Compile Include="Models\Account.cs" />
@@ -154,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Flyouts\SettingsFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Flyouts\XilianFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

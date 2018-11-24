@@ -156,7 +156,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         context.Settings.IsRefreshEquipment = true;
                         tasks.Add(new SmallTool(context));
                     }
-                    engine.AutoLogin = () => AutoLogin(context);
+                    //engine.AutoLogin = () => AutoLogin(context);
                     engine.ChangeRole = () => role.ChangeRole();
                     try
                     {
