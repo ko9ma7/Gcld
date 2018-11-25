@@ -46,6 +46,14 @@ namespace Liuliu.ScriptEngine.Tasks
         }
 
         #region 属性
+        private int _cycle=0;
+        public int Cycle
+        {
+            get { return _cycle; }
+            set { _cycle = value;
+                RaisePropertyChanged("Cycle");
+            }
+        }
 
         public DmWindow Window { get; set; }
 
@@ -307,19 +315,19 @@ namespace Liuliu.ScriptEngine.Tasks
                     throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
                 }
                 dm.DownCpu(20);
-
-                        if (AutoLogin != null)
+                while (true)
+                {
+                    if (AutoLogin != null)
+                    {
+                        bool isLogin = AutoLogin();
+                        if (isLogin == false)
                         {
-                            bool isLogin = AutoLogin();
-                            if (isLogin == false)
-                            {
-                                Logger.Error("任务执行失败，{0}", "登录失败!");
-                                OutMessage("任务执行失败，{0}".FormatWith("登录失败!"));
-                                WaitForUnBind();
-                                _workThread = null;
-                                return;
-                            }
+                            Logger.Error("任务执行失败，{0}", "登录失败!");
+                            OutMessage("任务执行失败，{0}".FormatWith("登录失败!"));
+                            break;
                         }
+                        Cycle = 0;
+                    }
 
                     while (true)
                     {
@@ -356,7 +364,7 @@ namespace Liuliu.ScriptEngine.Tasks
                             Window.Dm.Delay(1000);
                             TaskList.Remove(task);
                         }
-
+                        Cycle++;
                         //切换角色
                         if (ChangeRole != null)
                         {
@@ -369,7 +377,9 @@ namespace Liuliu.ScriptEngine.Tasks
                             }
                         }
                         Thread.Sleep(3000);
-                  }
+                    }
+                    Thread.Sleep(3000);
+                }
                 WaitForUnBind();
                 _workThread = null;
             }) { IsBackground = true};

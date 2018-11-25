@@ -245,7 +245,7 @@ namespace Liuliu.ScriptEngine.Damo
         /// <param name="action"></param>
         /// <param name="sim"></param>
         /// <returns></returns>
-        public static bool ColorNumEx(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,Action action,double sim=0.9)
+        public static bool IsChangeColorNum(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,Action action,double sim=0.9)
         {
             int a=_dm.GetColorNum(x1, y1, x2, y2, color, sim);
             action();
@@ -255,7 +255,38 @@ namespace Liuliu.ScriptEngine.Damo
             else
                 return true;
         }
-
+        /// <summary>
+        /// 获取某处颜色数量,执行某个操作,执行完后判断数量在某个时间段内是否改变
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="color"></param>
+        /// <param name="action"></param>
+        /// <param name="time"></param>
+        /// <param name="sim"></param>
+        /// <returns></returns>
+        public static bool IsChangeColorNumEx(this DmPlugin _dm, int x1, int y1, int x2, int y2, string color, Action action,long time=2000,double sim = 0.9)
+        {
+            int a, b;
+            a= _dm.GetColorNum(x1, y1, x2, y2, color, sim);
+            action();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            while(sw.ElapsedMilliseconds<=time)
+            {
+                b = _dm.GetColorNum(x1, y1, x2, y2, color, sim);
+                if (a != b)
+                {
+                    sw.Stop();
+                    break;
+                }
+            }
+            sw.Stop();
+            return sw.ElapsedMilliseconds <=time;
+        }
 
 
     }

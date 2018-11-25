@@ -35,7 +35,7 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
-                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+               // new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
              //  new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
              };
             return steps;
@@ -53,7 +53,7 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(1000);
                 Delegater.WaitTrue(() =>
                 {
-                    bool result = Dm.ColorNumEx(170, 72, 237, 107, "49A031-152F0F", () =>
+                    bool result = Dm.IsChangeColorNumEx(170, 72, 237, 107, "49A031-152F0F", () =>
                            {
                                Dm.StartWatch();
                                var rt1 = GetResourceType(160, 129, 346, 377);
@@ -198,9 +198,9 @@ namespace Liuliu.MouseClicker.Tasks
 
             Delegater.WaitTrue(() =>
             {
-                if (Dm.IsExistPic(197, 59, 288, 102, @"\bmp\祭祀0.bmp"))
+                if (Dm.IsExistPic(197, 59, 288, 102, @"\bmp\祭祀0.bmp",0.7))
                     return true;
-                bool result=Dm.ColorNumEx(204, 61, 278, 96, "C59E00-3A2E00", () =>
+                bool result=Dm.IsChangeColorNumEx(204, 61, 278, 96, "C59E00-3A2E00", () =>
                 {
                     // Dm.MoveToClick(322, 451);//祭祀木材
                     Dm.MoveToClick(162, 454);//祭祀银子
@@ -213,10 +213,9 @@ namespace Liuliu.MouseClicker.Tasks
                     {
                         Dm.Delay(1000);
                     }
-                    if(Dm.IsExistPic(197,59,288,102, @"\bmp\祭祀0.bmp"))
-                        return true;
+                    return true;
                 }
-                return true;
+                return false;
             },()=>Dm.Delay(50),40);
             Dm.UseDict(0);
             role.CloseWindow();

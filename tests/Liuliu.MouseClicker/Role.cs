@@ -11,6 +11,7 @@ using System.Threading;
 using Liuliu.ScriptEngine.Tasks;
 using Liuliu.MouseClicker.Mvvm;
 using System.Windows.Controls;
+using Liuliu.MouseClicker.Models;
 
 namespace Liuliu.MouseClicker
 {
@@ -206,17 +207,20 @@ namespace Liuliu.MouseClicker
             return false;
         }
 
+        List<string> nameList = new List<string>();
         public bool ChangeRole()
         {
             OutMessage("切换角色中...");
-            Delegater.WaitTrue(() => _dm.MoveToClick(29, 34),()=>IsExistWindowMenu("角色"),() => _dm.Delay(1000));
+            Delegater.WaitTrue(() => _dm.MoveToClick(29, 51),()=>IsExistWindowMenu("角色"),() => _dm.Delay(1000));
                 Delegater.WaitTrue(()=>
                 {
                     OpenWindowMenu("角色");
                     return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp|\bmp\切换角色2.bmp");
                 
                 },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp|\bmp\开始游戏2.bmp"),()=>_dm.Delay(1000));
-                
+            string name = "";
+            Delegater.WaitTrue(() =>
+            {
                 _dm.Delay(1000);
                 _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(500);
@@ -226,13 +230,30 @@ namespace Liuliu.MouseClicker
                 _dm.Delay(500);
                 _dm.Swipe(490, 337, 490, 128);
                 _dm.Delay(1000);
-                 
-                _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\等级.bmp");
+
+                if (_dm.FindPicAndClick(312, 285, 646, 394, @"\bmp\等级.bmp"))
+                {
+                     name = _dm.FetchWord(422, 305, 533, 333, "edebe9-303030", "角色名");
+                    _dm.Delay(500);
+                    return _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
+                }
+                return false;
+               });
+            _dm.DebugPrint(name);
+            if (name!=""&&nameList.Contains(name))
+            {
+                _dm.DebugPrint("该角色已经执行过!切换失败");
                 _dm.Delay(500);
                 _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
-
-                CloseWindow();
-    
+                Account account = SoftContext.AccountList.FirstOrDefault(x => x.UserName == AccountName);
+                if (account != null)
+                    account.IsFinished =true;
+                return false;
+            }
+            else
+            {
+                nameList.Add(name);
+            }
             return true;
         }
 
@@ -389,27 +410,27 @@ namespace Liuliu.MouseClicker
                         break;
                         case "国家":
                         Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
-                                           () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                                           () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000,10);
                         _dm.MoveToClick(530, 506);
                         break;
                     case "装备":
                         Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
-                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000, 10);
                         _dm.MoveToClick(608, 503);
                         break;
                          case "科技":
                         Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
-                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000, 10);
                         _dm.MoveToClick(680, 498);
                         break;
                     case "排行":
                         Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
-                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000, 10);
                         _dm.MoveToClick(761, 494);
                         break;
                         case "兵器":
                         Delegater.WaitTrue(() => _dm.FindPicAndClick(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"),
-                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000);
+                                             () => _dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"), () => _dm.Delay(1000), 2000, 10);
                         _dm.MoveToClick(835, 497);
                         break;
                         default:
@@ -423,7 +444,7 @@ namespace Liuliu.MouseClicker
                     return true;
                 }
                 return false;
-            },()=>_dm.Delay(1000));
+            },()=>_dm.Delay(1000),10);
            
         }
 
@@ -475,20 +496,20 @@ namespace Liuliu.MouseClicker
             switch (map)
             {
                 case "副本":
-                    if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp")&&!_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                    if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp")&&!_dm.IsExistPic(811, 302, 956, 450, @"\bmp\副本2.bmp", 0.9))
                     {
                         if(OpenMenu())
                         {
                             _dm.Delay(1000);
-                            if(!_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                            if(!_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp", 0.9))
                             {
                                 OutSubMessage("已经在副本界面!");
                                 break;
                             }
                         }
                     }
-                    Delegater.WaitTrue(() => _dm.FindPicAndClick(818, 281, 953, 447, @"\bmp\副本.bmp"),
-                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && !_dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                    Delegater.WaitTrue(() => _dm.FindPicAndClick(811, 302, 956, 450, @"\bmp\副本2.bmp",0,0, 0.9),
+                               () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") && !_dm.IsExistPic(811, 302, 956, 450, @"\bmp\副本2.bmp",0.9),
                                () => _dm.Delay(1000));
                     break;
                 case "主城":
@@ -574,7 +595,7 @@ namespace Liuliu.MouseClicker
                 if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
                     _dm.MoveToClick(918,499);
                 return false;
-            },()=>_dm.Delay(1000));
+            },()=>_dm.Delay(1000),10);
         }
         public bool OpenMenu()
         {
@@ -584,7 +605,7 @@ namespace Liuliu.MouseClicker
                 if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
                     _dm.MoveToClick(918, 499);
                 return false;
-            }, () => _dm.Delay(1000));
+            }, () => _dm.Delay(1000),10);
         }
     }
 

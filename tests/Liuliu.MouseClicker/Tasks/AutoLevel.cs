@@ -39,13 +39,10 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
 
-           // role.GoToMap("世界");
-           // role.CloseWindow();
-            dm.UseDict(2);
             //int level = role.Level;
             while (true)
             {
-                string taskName = dm.Ocr(0, 122, 114, 179, "C8C8A4-37372D",0.8);
+                string taskName = dm.Ocr(0, 122, 114, 179, "60.19.85-5.5.40", 0.8);
                 dm.DebugPrint("主线任务识别:" + taskName);
                 for (int i = 0; i < 10; i++)
                 {
@@ -94,6 +91,7 @@ namespace Liuliu.MouseClicker.Tasks
                             }
                             break;
                         }
+                      
                         GoToFighting("虎牢关",true);
                        break;
                     case "穿装备":
@@ -175,7 +173,7 @@ namespace Liuliu.MouseClicker.Tasks
                         role.CloseMenu();
                         GoToFighting("下邳", true);
                         break;
-                    case "木场1":
+                    case "木场":
                         role.GoToMap30("主城");
                         Delegater.WaitTrue(() => dm.MoveToClick(200, 200),
                             () => dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp") && dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp"),
@@ -379,6 +377,7 @@ namespace Liuliu.MouseClicker.Tasks
                         break;
                     case "迷雾":
                         //role.GoToMap("世界");
+                        return TaskResult.Finished;
                         break;
                     default:
                         ClickXiaoQian();
@@ -386,7 +385,6 @@ namespace Liuliu.MouseClicker.Tasks
                 }
                 dm.Delay(2000);
             }
-            dm.UseDict(0);
             return TaskResult.Finished;
             
         }
@@ -396,25 +394,31 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)Role;
             DmPlugin dm = role.Window.Dm;
             role.GoToMap30("副本");
-           // role.GoToFubenArea(area);
-           if(area=="下邳")
+            // role.GoToFubenArea(area);
+            if (area == "下邳")
+            {
                 dm.Swipe(670, 427, 93, 425);
+                dm.Delay(1000);
+            }
             Delegater.WaitTrue(() =>
             {
                 dm.MoveToClick(21, 182);
                 if (dm.IsExistPic(116, 72, 936, 351, @"\bmp\战斗.bmp"))
                     return true;
+                dm.FindPicAndClick(395, 311, 574, 393, @"\bmp\上阵.bmp");
                 return false;
             }, () => dm.Delay(500), 10);
 
-            return Delegater.WaitTrue(() =>
+            if(Delegater.WaitTrue(() =>
             {
+                dm.FindPicAndClick(395, 311, 574, 393, @"\bmp\上阵.bmp");
                 dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp");
                 if (dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp"))
                 {
                     //补充兵力
                     dm.MoveToClick(612, 122);
                     dm.Delay(1000);
+                    
                     dm.MoveToClick(749, 128);
                     dm.Delay(1000);
                     dm.MoveToClick(807,259); //点击战斗
@@ -438,7 +442,15 @@ namespace Liuliu.MouseClicker.Tasks
                     return true;
                 }
                 return false;
-            },()=>dm.Delay(1000));
+            },()=>dm.Delay(1000),10))
+            {
+                return true;
+            }
+            else
+            {
+               return GoToFighting(area, true);
+            }
+           
         }
         public bool ClickXiaoQian()
         {

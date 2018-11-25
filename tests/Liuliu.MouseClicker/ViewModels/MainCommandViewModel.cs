@@ -69,14 +69,20 @@ namespace Liuliu.MouseClicker.ViewModels
 
                         if (role.Window.ClientSize.Item1 != 960 || role.Window.ClientSize.Item2 != 540)
                         {
-                            Debug.WriteLine("模拟器窗口大小未设置为960*540,请重新设置！");
-                            Debug.WriteLine("当前窗口大小：" + role.Window.ClientSize.Item1 + "*" + role.Window.ClientSize.Item2);
-                            continue;
+                            if(role.Window.ClientSize.Item1==538&&role.Window.ClientSize.Item2==956)
+                            {
+
+                            }
+                            else
+                            {
+                                Debug.WriteLine("模拟器窗口大小未设置为960*540,请重新设置！");
+                                Debug.WriteLine("当前窗口大小：" + role.Window.ClientSize.Item1 + "*" + role.Window.ClientSize.Item2);
+                                continue;
+                            }
                         }
                         dm.SetPath(AppDomain.CurrentDomain.BaseDirectory);
                         dm.SetDict(0, "dict.txt");
                         dm.SetDict(1, "number.txt");
-                        dm.SetDict(2, "maintask.txt");
                         dm.UseDict(0);
 
                         if (SoftContext.Locator.Main.Roles.Where(x => x.Window.Hwnd == item.NoxHwnd).Count() > 0)
@@ -188,8 +194,8 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             DmPlugin Dm = role.Window.Dm;
             YeShenSimulator ysSimulator = SoftContext.YeShenSimulatorList.FirstOrDefault(x => x.NoxHwnd == role.Hwnd);
-            // string noxPath = @"E:\nox\Nox\bin\";
-            string noxPath = @"E:\Nox\bin\";
+             string noxPath = @"E:\nox\Nox\bin\";
+            //string noxPath = @"E:\Nox\bin\";
             string result = CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + @" shell dumpsys window w|findstr \/|findstr name=");
             result = result.Replace("mSurface=Surface(name=", "").Replace(")", "");
             //com.regin.gcld.fl/com.regin.gcld.fl.gcld
@@ -241,13 +247,79 @@ namespace Liuliu.MouseClicker.ViewModels
                         Dm.Delay(1000);
                         Dm.FindPicAndClick(413, 279, 543, 348, @"\bmp\登录.bmp");
 
-                        return Delegater.WaitTrue(() => Dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
-                                            () => Dm.Delay(1000), 20);
+                        return Delegater.WaitTrue(() => {
+                            if (Dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                            {
+                                while(Dm.IsExistPic(406, 378, 557, 432, @"\bmp\以后再说.bmp",0.8))
+                                {
+                                    Dm.MoveToClick(544, 414);
+                                    Dm.Delay(1000);
+                                }
+                                Dm.Delay(1000);
+                                return true;
+                            }
+                            return false;
+                            },() => Dm.Delay(1000), 20);
+
+
                     }
                     break;
 
                 case Platform.楚游:
-                    CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.sy/sy07073.mobile.game.sdk.activity.Login");
+                    CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.sy/.gcld");
+                    Delegater.WaitTrue(() => Dm.IsExistPic(207,516,334,559, @"\bmp\07073_立即登录.bmp", 0.9), () => Dm.Delay(1000), 20);
+                    Dm.Delay(1000);
+                    if (Dm.IsExistPic(207, 516, 334, 559, @"\bmp\07073_立即登录.bmp", 0.9))
+                    {
+                        Dm.Delay(1000);
+                        Dm.MoveToClick(407, 356);
+                        Dm.Delay(500);
+                        for (int i = 0; i < 20; i++)
+                        {
+                            if (Dm.GetColorNum(125, 324, 383, 383, "242424-202030", 0.9) > 5)
+                            {
+                                CmdHelper.ExecuteCmd(string.Format("{0}nox_adb -s {1} shell input keyevent 67", noxPath, ysSimulator.AdbDevicesId));
+                                Dm.Delay(200);
+                            }
+                            else
+                                break;
+
+                        }
+                        CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.UserName + "\"");
+                        Dm.Delay(1000);
+                        Dm.MoveToClick(412, 434);
+                        Dm.Delay(500);
+                        for (int i = 0; i < 20; i++)
+                        {
+                            if (Dm.GetColorNum(127, 403, 367, 464, "242424-202030", 0.9) > 5)
+                            {
+                                CmdHelper.ExecuteCmd(string.Format("{0}nox_adb -s {1} shell input keyevent 67", noxPath, ysSimulator.AdbDevicesId));
+                                Dm.Delay(200);
+                            }
+                            else
+                                break;
+
+                        }
+                        CmdHelper.ExecuteCmd(noxPath + "nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.Password + "\"");
+                        Dm.Delay(500);
+                        Dm.FindPicAndClick(212, 515, 327, 562, @"\bmp\07073_立即登录.bmp");
+
+                        return Delegater.WaitTrue(() => {
+                            if (Dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
+                            {
+                                //while (Dm.IsExistPic(406, 378, 557, 432, @"\bmp\以后再说.bmp", 0.8))
+                                //{
+                                //    Dm.MoveToClick(544, 414);
+                                //    Dm.Delay(1000);
+                                //}
+                                //Dm.Delay(1000);
+                                return true;
+                            }
+                            return false;
+                        }, () => Dm.Delay(1000), 20);
+
+
+                    }
                     break;
             }
             return false;
@@ -262,6 +334,9 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand<Role>((role) =>
                 {
                     role.TaskEngine.Stop();
+                    Account account=SoftContext.AccountList.FirstOrDefault(x=>x.UserName==role.AccountName);
+                    if (account != null)
+                        account.IsWorking = false;
                 });
             }
         }
