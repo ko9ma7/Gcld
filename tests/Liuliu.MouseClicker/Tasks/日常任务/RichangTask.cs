@@ -198,8 +198,11 @@ namespace Liuliu.MouseClicker.Tasks
 
             Delegater.WaitTrue(() =>
             {
-                if (Dm.IsExistPic(197, 59, 288, 102, @"\bmp\祭祀0.bmp",0.7))
-                    return true;
+                if (Dm.IsExistPic(197, 59, 288, 102, @"\bmp\祭祀0.bmp", 0.7))
+                {
+                    if(Dm.GetColorNum(204, 61, 278, 96, "C59E00-3A2E00",0.9)<75)
+                      return true;
+                }
                 bool result=Dm.IsChangeColorNumEx(204, 61, 278, 96, "C59E00-3A2E00", () =>
                 {
                     // Dm.MoveToClick(322, 451);//祭祀木材

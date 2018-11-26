@@ -317,9 +317,9 @@ namespace Liuliu.ScriptEngine.Tasks
                 dm.DownCpu(20);
                 while (true)
                 {
+                    Cycle = 0;
                     if (AutoLogin != null)
                     {
-                        Cycle = 0;
                         bool isLogin = AutoLogin();
                         if (isLogin == false)
                         {
@@ -329,7 +329,6 @@ namespace Liuliu.ScriptEngine.Tasks
                         }
                        
                     }
-
                     while (true)
                     {
                         Cycle++;

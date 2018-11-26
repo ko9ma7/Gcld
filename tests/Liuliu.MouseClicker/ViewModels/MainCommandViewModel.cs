@@ -122,7 +122,9 @@ namespace Liuliu.MouseClicker.ViewModels
                     TaskEngine engine = role.TaskEngine;
 
                     List<TaskBase> tasks = new List<TaskBase>();
-                    // tasks.Add(new AutoLogin(context));
+
+                    //engine.AutoLogin = () => AutoLogin(context);
+                    engine.ChangeRole = () => role.ChangeRole();
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
                         tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
@@ -133,12 +135,24 @@ namespace Liuliu.MouseClicker.ViewModels
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动兵器")
                     {
+                        engine.AutoLogin = null;
+                        engine.ChangeRole = null;
                         context.Settings.IsAutoWeapon = true;
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动洗练")
                     {
+                        engine.AutoLogin = null;
+                        engine.ChangeRole = null;
                         context.Settings.IsAutoClear = true;
+                        tasks.Add(new SmallTool(context));
+                    }
+                    if (role.SelectedItemTask.Content.ToString() == "指定洗练")
+                    {
+                        engine.AutoLogin = null;
+                        engine.ChangeRole = () => { return false; };
+                        context.Settings.IsAutoClear2 = true;
+                        context.Settings.EquipmentType = role.SelectedIndex;
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动建筑")
@@ -156,8 +170,6 @@ namespace Liuliu.MouseClicker.ViewModels
                         context.Settings.IsRefreshEquipment = true;
                         tasks.Add(new SmallTool(context));
                     }
-                    //engine.AutoLogin = () => AutoLogin(context);
-                    engine.ChangeRole = () => role.ChangeRole();
                     try
                     {
                         engine.Start(tasks.ToArray());

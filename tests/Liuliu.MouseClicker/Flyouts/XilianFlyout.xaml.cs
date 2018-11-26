@@ -18,7 +18,7 @@ namespace Liuliu.MouseClicker.Flyouts
     /// <summary>
     /// XilianFlyout.xaml 的交互逻辑
     /// </summary>
-    public partial class XilianFlyout : UserControl
+    public partial class XilianFlyout
     {
         public XilianFlyout()
         {

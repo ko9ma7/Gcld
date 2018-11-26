@@ -93,16 +93,29 @@
                             <GridViewColumn Header="任务配置" Width="140">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ComboBox SelectedItem="{Binding SelectedItemTask}">
-                                            <ComboBoxItem Content="日常任务"></ComboBoxItem>
-                                            <ComboBoxItem Content="活动任务"></ComboBoxItem>
-                                            <ComboBoxItem Content="自动洗练"></ComboBoxItem>
-                                            <ComboBoxItem Content="自动兵器"></ComboBoxItem>
-                                            <ComboBoxItem Content="自动建筑"></ComboBoxItem>
-                                            <ComboBoxItem Content="购买装备"></ComboBoxItem>
-                                            <ComboBoxItem IsSelected="True" Content="自动主线"></ComboBoxItem>
-                                            <ComboBoxItem Content="刷新装备"></ComboBoxItem>
-                                        </ComboBox>
+                                        <StackPanel>
+                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
+                                                <ComboBoxItem Content="日常任务"></ComboBoxItem>
+                                                <ComboBoxItem Content="活动任务"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动洗练"></ComboBoxItem>
+                                                <ComboBoxItem Content="指定洗练"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动兵器"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动建筑"></ComboBoxItem>
+                                                <ComboBoxItem Content="购买装备"></ComboBoxItem>
+                                                <ComboBoxItem IsSelected="True" Content="自动主线"></ComboBoxItem>
+                                                <ComboBoxItem Content="刷新装备"></ComboBoxItem>
+                                            </ComboBox>
+                                            <ComboBox SelectedIndex="{Binding SelectedIndex}">
+                                                <ComboBoxItem Content="攻击"></ComboBoxItem>
+                                                <ComboBoxItem Content="防御"></ComboBoxItem>
+                                                <ComboBoxItem Content="掌控"></ComboBoxItem>
+                                                <ComboBoxItem Content="血量"></ComboBoxItem>
+                                                <ComboBoxItem Content="强防"></ComboBoxItem>
+                                                <ComboBoxItem Content="强壮"></ComboBoxItem>
+                                                <ComboBoxItem Content="强攻"></ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
+                                       
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -112,7 +125,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Button Margin="5" Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button Margin="5" Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button Margin="5" Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

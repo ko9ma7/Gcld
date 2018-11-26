@@ -72,7 +72,15 @@ namespace Liuliu.MouseClicker
         }
 
 
-
+        private int _electedIndex;
+        public int SelectedIndex
+        {
+            get { return _electedIndex; }
+            set
+            {
+                SetProperty(ref _electedIndex, value, () => SelectedIndex);
+            }
+        }
         public string Area
         {
             get
