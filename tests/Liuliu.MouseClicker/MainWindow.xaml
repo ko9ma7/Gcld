@@ -12,7 +12,7 @@
     xmlns:uc="clr-namespace:Liuliu.MouseClicker.UserControls"
     xmlns:converter="clr-namespace:Liuliu.MouseClicker.Converters"
     mc:Ignorable="d" ResizeMode="CanMinimize" 
-    x:Name="MainWindow1" Title="{Binding Title}" Height="357" Width="637"
+    x:Name="MainWindow1" Title="{Binding Title}" Height="393" Width="637"
     DataContext="{Binding Main, Source={StaticResource Locator}}">
 
     <mah:MetroWindow.Resources>
@@ -70,6 +70,7 @@
         <mah:FlyoutsControl>
             <flyouts:SettingsFlyout x:Name="SettingsFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:RoleSettingFlyout x:Name="RoleSettingFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
+            <flyouts:XilianFlyout x:Name="XilianFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
         </mah:FlyoutsControl>
 
     </mah:MetroWindow.Flyouts>
@@ -83,7 +84,7 @@
 
             <Grid>
 
-                <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,0,0,-29">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="模拟器列表" Width="100" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
@@ -105,15 +106,6 @@
                                                 <ComboBoxItem IsSelected="True" Content="自动主线"></ComboBoxItem>
                                                 <ComboBoxItem Content="刷新装备"></ComboBoxItem>
                                             </ComboBox>
-                                            <ComboBox SelectedIndex="{Binding SelectedIndex}">
-                                                <ComboBoxItem Content="攻击"></ComboBoxItem>
-                                                <ComboBoxItem Content="防御"></ComboBoxItem>
-                                                <ComboBoxItem Content="掌控"></ComboBoxItem>
-                                                <ComboBoxItem Content="血量"></ComboBoxItem>
-                                                <ComboBoxItem Content="强防"></ComboBoxItem>
-                                                <ComboBoxItem Content="强壮"></ComboBoxItem>
-                                                <ComboBoxItem Content="强攻"></ComboBoxItem>
-                                            </ComboBox>
                                         </StackPanel>
                                        
                                     </DataTemplate>
@@ -125,7 +117,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Button Margin="5" Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button Margin="5" Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}"></Button>
+                                            <Button Margin="5" Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -139,7 +131,7 @@
 
             <Button Width="50" Height="30" Click="Button_Click" Margin="508,274,73,24" Grid.RowSpan="2" Content="hook"></Button>
             <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding RefreshCommand}" Width="50" Height="30" Content="刷新" Margin="563,274,21,27" Grid.RowSpan="2"></Button>
-            <StatusBar Grid.Row="1">
+            <StatusBar Grid.Row="1" Margin="0,30,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{Binding StatusBar}" Padding="0" Width="300" Foreground="White"/>
                 </StackPanel>

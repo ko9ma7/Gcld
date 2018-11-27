@@ -47,10 +47,11 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand<Role>((role) =>
                 {
-                    Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
-
+                    // Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
+                    
+                    Messenger.Default.Send(role, "XilianFlyout");
                 });
             }
         }

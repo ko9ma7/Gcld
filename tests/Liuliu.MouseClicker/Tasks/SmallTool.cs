@@ -55,14 +55,14 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 if (context.Settings.IsAutoClear2)
                 {
-                    equipmentType = context.Settings.EquipmentType;
+                    equipmentTypeDict = context.Settings.EquipmentTypeDict;
                     return 5;
                 }
             }
             catch { }
             return 1;
         }
-        private int equipmentType = -1;
+        private Dictionary<string,List<bool?>> equipmentTypeDict = null;
         protected override TaskStep[] StepsInitialize()
         {
             TaskStep[] steps =
@@ -96,7 +96,7 @@ namespace Liuliu.MouseClicker.Tasks
         class Equipment
         {
             public EquipmentType 类型;
-            public bool IsHave=false;
+            public bool? IsHave=false;
         }
         class 套装
         {
@@ -123,7 +123,18 @@ namespace Liuliu.MouseClicker.Tasks
             套装 凤凰套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 }};
             套装 灵龟套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强攻 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强攻 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 }};
             List<套装> list = new List<套装>() { 青龙套装, 白虎套装, 朱雀套装, 鲮鲤套装, 玄武套装, 霸下套装, 驱虎套装, 烛龙套装, 凤凰套装, 灵龟套装 };
-           
+            foreach (var taozhuang in list)
+            {
+                foreach (var item in equipmentTypeDict)
+                {
+                    taozhuang.麒麟双枪.IsHave = item.Value[0];
+                    taozhuang.麒麟.IsHave = item.Value[1];
+                    taozhuang.三昧纯阳铠.IsHave = item.Value[2];
+                    taozhuang.蝶凤舞阳.IsHave = item.Value[3];
+                    taozhuang.伏龙帅印.IsHave = item.Value[4];
+                    taozhuang.蟠龙华盖.IsHave = item.Value[5];
+                }
+            }
         Delegater.WaitTrue(() =>
             {
               Dm.MoveToClick(631, 448);
@@ -135,9 +146,35 @@ namespace Liuliu.MouseClicker.Tasks
                if(Dm.IsExistPic(379,213,475,255,@"\bmp\隐藏技能.bmp"))
                 {
                     var type = GetEquipmentType();
-                    Dm.DebugPrint("需要的类型:" + ((EquipmentType)equipmentType).ToString());
+                   // Dm.DebugPrint("需要的类型:" + ((EquipmentType)equipmentType).ToString());
                     Dm.DebugPrint("当前类型:" + type.ToString());
-                    var taozhuang = list.FirstOrDefault(x => x.麒麟双枪.类型 == type&&x.麒麟双枪.IsHave==false);
+                    string ocr = Dm.Ocr(0, 0, 0, 0, "FFFFFF-101010", 0.9);
+                    套装 taozhuang = null;
+                    switch (ocr)
+                    {
+                        case "麒麟双枪":
+                             taozhuang = list.FirstOrDefault(x => x.麒麟双枪.类型 == type && x.麒麟双枪.IsHave == false);
+                            break;
+                        case "麒麟":
+                             taozhuang = list.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
+                            break;
+                        case "三昧纯阳铠":
+                             taozhuang = list.FirstOrDefault(x => x.三昧纯阳铠.类型 == type && x.三昧纯阳铠.IsHave == false);
+                            break;
+                        case "蝶凤舞阳":
+                             taozhuang = list.FirstOrDefault(x => x.蝶凤舞阳.类型 == type && x.蝶凤舞阳.IsHave == false);
+                            break;
+                        case "伏龙帅印":
+                             taozhuang = list.FirstOrDefault(x => x.伏龙帅印.类型 == type && x.伏龙帅印.IsHave == false);
+                            break;
+                        case "蟠龙华盖":
+                             taozhuang = list.FirstOrDefault(x => x.蟠龙华盖.类型 == type && x.蟠龙华盖.IsHave == false);
+                            break;
+                        case ""
+                            Dm.DebugPrint("未能识别");
+                            break;
+
+                    }
                     if (taozhuang!=null)
                     {
                         taozhuang.麒麟双枪.IsHave = true;
@@ -146,10 +183,10 @@ namespace Liuliu.MouseClicker.Tasks
 
                     if(type != EquipmentType.未知类型)
                     {
-                        if ((int)type == equipmentType)
-                            return true;
-                        else
-                            Dm.MoveToClick(409,362);
+                      //  if ((int)type == equipmentType)
+                      //      return true;
+                     //   else
+                      //      Dm.MoveToClick(409,362);
                         Dm.Delay(500);
                     }
                 }
