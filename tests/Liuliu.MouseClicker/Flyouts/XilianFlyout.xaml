@@ -128,9 +128,9 @@
                     <CheckBox x:Name="T9_6" Grid.Column="6" Grid.Row="9" Content="强攻" IsChecked="{Binding ElementName=T9,Path=IsChecked,Mode=OneWay}"></CheckBox>
                     <CheckBox x:Name="T10_6" Grid.Column="6" Grid.Row="10" Content="掌控" IsChecked="{Binding ElementName=T10,Path=IsChecked,Mode=OneWay}"></CheckBox>
                     
-                    <Button Grid.Column="4" Grid.Row="11" Content="洗练" Width="60" Height="25" Background="White" Click="btnXilian_click"></Button>
-                    <Button Grid.Column="5" Grid.Row="11" Content="停止" Width="60" Height="25" Background="White" Click="btnStop_click"></Button>
-                    <Button Grid.Column="6" Grid.Row="11" Content="重置" Width="60" Height="25" Background="White" Click="btnReset_click"></Button>
+                    <Button Grid.Column="4" Grid.Row="11" Content="洗练" Width="60" Height="25" Background="Green" Click="btnXilian_click"></Button>
+                    <Button Grid.Column="5" Grid.Row="11" Content="停止" Width="60" Height="25" Background="Green" Click="btnStop_click"></Button>
+                    <Button Grid.Column="6" Grid.Row="11" Content="重置" Width="60" Height="25" Background="Green" Click="btnReset_click"></Button>
                 </Grid>
             </GroupBox>
          

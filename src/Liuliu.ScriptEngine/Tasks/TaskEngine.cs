@@ -377,6 +377,12 @@ namespace Liuliu.ScriptEngine.Tasks
                                 break;
                             }
                         }
+                        else
+                        {
+                            WaitForUnBind();
+                            _workThread = null;
+                            return;
+                        }
                         Thread.Sleep(3000);
                     }
                     Thread.Sleep(3000);

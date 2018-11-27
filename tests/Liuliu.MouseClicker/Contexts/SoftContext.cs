@@ -46,6 +46,9 @@ namespace Liuliu.MouseClicker
                 new Account() {UserName="daipf22",Password="daipf22",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
                 new Account() {UserName="daipf11",Password="daipf11",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
                 new Account() {UserName="daipf00",Password="daipf00",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="huang99",Password="huang99",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="huang88",Password="huang88",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                new Account() {UserName="huang77",Password="huang77",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
 
             };
         }

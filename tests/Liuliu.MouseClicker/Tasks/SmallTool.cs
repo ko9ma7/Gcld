@@ -15,7 +15,7 @@ namespace Liuliu.MouseClicker.Tasks
     {
         public SmallTool(TaskContext context) : base(context)
         {
-        
+           
         }
 
         protected override int GetStepIndex(TaskContext context)
@@ -62,7 +62,7 @@ namespace Liuliu.MouseClicker.Tasks
             catch { }
             return 1;
         }
-        private Dictionary<string,List<bool?>> equipmentTypeDict = null;
+        private Dictionary<int,List<bool?>> equipmentTypeDict = null;
         protected override TaskStep[] StepsInitialize()
         {
             TaskStep[] steps =
@@ -90,7 +90,7 @@ namespace Liuliu.MouseClicker.Tasks
         private EquipmentType GetEquipmentType()
         {
             int intX, intY;
-            int result = Dm.FindPic(781, 315, 861, 402, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "202020", 0.8, 0, out intX, out intY);
+            int result = Dm.FindPic(781, 315, 861, 402, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "303030", 0.7, 0, out intX, out intY);
             return (EquipmentType)result;
         }
         class Equipment
@@ -107,35 +107,56 @@ namespace Liuliu.MouseClicker.Tasks
             public Equipment 伏龙帅印;
             public Equipment 蟠龙华盖;
         }
-
+      
+       static List<套装> List { get; set; } 
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
-            
-            套装 青龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.血量 }, 麒麟 = new Equipment() { 类型 = EquipmentType.血量 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.血量 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.血量 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.血量 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.血量 }};
-            套装 白虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 }};
-            套装 朱雀套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强壮 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强壮 }};
-            套装 鲮鲤套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.掌控 }, 麒麟 = new Equipment() { 类型 = EquipmentType.掌控 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.掌控 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强防 }};
-            套装 玄武套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.防御 }, 麒麟 = new Equipment() { 类型 = EquipmentType.防御 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.防御 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.防御 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.防御 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.防御 }};
-            套装 霸下套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强防 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强防 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 }};
-            套装 驱虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 }};
-            套装 烛龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强防 }};
-            套装 凤凰套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 }};
-            套装 灵龟套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强攻 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强攻 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 }};
-            List<套装> list = new List<套装>() { 青龙套装, 白虎套装, 朱雀套装, 鲮鲤套装, 玄武套装, 霸下套装, 驱虎套装, 烛龙套装, 凤凰套装, 灵龟套装 };
-            foreach (var taozhuang in list)
+            套装 青龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.血量 }, 麒麟 = new Equipment() { 类型 = EquipmentType.血量 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.血量 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.血量 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.血量 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.血量 } };
+            套装 白虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 } };
+            套装 朱雀套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强壮 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强壮 } };
+            套装 鲮鲤套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.掌控 }, 麒麟 = new Equipment() { 类型 = EquipmentType.掌控 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.掌控 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强防 } };
+            套装 玄武套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.防御 }, 麒麟 = new Equipment() { 类型 = EquipmentType.防御 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.防御 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.防御 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.防御 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.防御 } };
+            套装 霸下套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强防 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强防 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 } };
+            套装 驱虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 } };
+            套装 烛龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强防 } };
+            套装 凤凰套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 } };
+            套装 灵龟套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强攻 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强攻 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 } };
+            List = new List<套装>() { 青龙套装, 白虎套装, 朱雀套装, 鲮鲤套装, 玄武套装, 霸下套装, 驱虎套装, 烛龙套装, 凤凰套装, 灵龟套装 };
+            for (int i = 0; i < 10; i++)
             {
-                foreach (var item in equipmentTypeDict)
-                {
-                    taozhuang.麒麟双枪.IsHave = item.Value[0];
-                    taozhuang.麒麟.IsHave = item.Value[1];
-                    taozhuang.三昧纯阳铠.IsHave = item.Value[2];
-                    taozhuang.蝶凤舞阳.IsHave = item.Value[3];
-                    taozhuang.伏龙帅印.IsHave = item.Value[4];
-                    taozhuang.蟠龙华盖.IsHave = item.Value[5];
-                }
+                    套装 temp = new 套装();
+                    temp.麒麟双枪 = new Equipment();
+                    temp.麒麟双枪.类型 = List[i].麒麟双枪.类型;
+                    temp.麒麟双枪.IsHave = equipmentTypeDict[i][0];
+
+                    temp.麒麟 = new Equipment();
+                    temp.麒麟.类型 = List[i].麒麟.类型;
+                    temp.麒麟.IsHave = equipmentTypeDict[i][1];
+
+                    temp.三昧纯阳铠 = new Equipment();
+                    temp.三昧纯阳铠.类型 = List[i].三昧纯阳铠.类型;
+                    temp.三昧纯阳铠.IsHave = equipmentTypeDict[i][2];
+
+                    temp.蝶凤舞阳 = new Equipment();
+                    temp.蝶凤舞阳.类型 = List[i].蝶凤舞阳.类型;
+                    temp.蝶凤舞阳.IsHave = equipmentTypeDict[i][3];
+
+                    temp.伏龙帅印 = new Equipment();
+                    temp.伏龙帅印.类型 = List[i].伏龙帅印.类型;
+                    temp.伏龙帅印.IsHave = equipmentTypeDict[i][4];
+
+                    temp.蟠龙华盖 = new Equipment();
+                    temp.蟠龙华盖.类型 = List[i].蟠龙华盖.类型;
+                    temp.蟠龙华盖.IsHave = equipmentTypeDict[i][5];
+                    List[i] = temp;
+           
             }
-        Delegater.WaitTrue(() =>
+            foreach (var taozhuang in List)
+            {
+                Dm.DebugPrint(taozhuang.麒麟双枪.IsHave.ToString()+ taozhuang.麒麟.IsHave.ToString()+ taozhuang.三昧纯阳铠.IsHave.ToString()+ taozhuang.蝶凤舞阳.IsHave.ToString()+taozhuang.伏龙帅印.IsHave.ToString()+ taozhuang.蟠龙华盖.IsHave.ToString());
+            }
+            Delegater.WaitTrue(() =>
             {
               Dm.MoveToClick(631, 448);
               Dm.Delay(500);
@@ -148,47 +169,77 @@ namespace Liuliu.MouseClicker.Tasks
                     var type = GetEquipmentType();
                    // Dm.DebugPrint("需要的类型:" + ((EquipmentType)equipmentType).ToString());
                     Dm.DebugPrint("当前类型:" + type.ToString());
-                    string ocr = Dm.Ocr(0, 0, 0, 0, "FFFFFF-101010", 0.9);
+                    string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
+                    Dm.DebugPrint(ocr);
+                    if (ocr == "")
+                    {
+                        Dm.DebugPrint("未能识别装备类型.");
+                        return true;
+                    }
+
                     套装 taozhuang = null;
-                    switch (ocr)
+                    if(ocr.Contains("双枪"))
                     {
-                        case "麒麟双枪":
-                             taozhuang = list.FirstOrDefault(x => x.麒麟双枪.类型 == type && x.麒麟双枪.IsHave == false);
-                            break;
-                        case "麒麟":
-                             taozhuang = list.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
-                            break;
-                        case "三昧纯阳铠":
-                             taozhuang = list.FirstOrDefault(x => x.三昧纯阳铠.类型 == type && x.三昧纯阳铠.IsHave == false);
-                            break;
-                        case "蝶凤舞阳":
-                             taozhuang = list.FirstOrDefault(x => x.蝶凤舞阳.类型 == type && x.蝶凤舞阳.IsHave == false);
-                            break;
-                        case "伏龙帅印":
-                             taozhuang = list.FirstOrDefault(x => x.伏龙帅印.类型 == type && x.伏龙帅印.IsHave == false);
-                            break;
-                        case "蟠龙华盖":
-                             taozhuang = list.FirstOrDefault(x => x.蟠龙华盖.类型 == type && x.蟠龙华盖.IsHave == false);
-                            break;
-                        case ""
-                            Dm.DebugPrint("未能识别");
-                            break;
-
+                        taozhuang = List.FirstOrDefault(x => x.麒麟双枪.类型 == type && x.麒麟双枪.IsHave == false);
+                        if (taozhuang != null)
+                        {
+                            taozhuang.麒麟双枪.IsHave = true;
+                            Dm.MoveToClick(550, 361);
+                            return true;
+                        }
                     }
-                    if (taozhuang!=null)
+                    if (ocr.Contains("麒麟"))
                     {
-                        taozhuang.麒麟双枪.IsHave = true;
+                        taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
+                        if (taozhuang != null)
+                        {
+                            taozhuang.麒麟.IsHave = true;
+                            Dm.MoveToClick(550, 361);
+                            return true;
+                        }
                     }
-             
-
-                    if(type != EquipmentType.未知类型)
+                    if (ocr.Contains("三昧纯阳铠"))
                     {
-                      //  if ((int)type == equipmentType)
-                      //      return true;
-                     //   else
-                      //      Dm.MoveToClick(409,362);
-                        Dm.Delay(500);
+                        taozhuang = List.FirstOrDefault(x => x.三昧纯阳铠.类型 == type && x.三昧纯阳铠.IsHave == false);
+                        if (taozhuang != null)
+                        {
+                            taozhuang.三昧纯阳铠.IsHave = true;
+                            Dm.MoveToClick(550, 361);
+                            return true;
+                        }
                     }
+                    if (ocr.Contains("蝶凤舞阳"))
+                    {
+                        taozhuang = List.FirstOrDefault(x => x.蝶凤舞阳.类型 == type && x.蝶凤舞阳.IsHave == false);
+                        if (taozhuang != null)
+                        {
+                            taozhuang.蝶凤舞阳.IsHave = true;
+                            Dm.MoveToClick(550, 361);
+                            return true;
+                        }
+                    }
+                    if (ocr.Contains("伏龙帅印"))
+                    {
+                        taozhuang = List.FirstOrDefault(x => x.伏龙帅印.类型 == type && x.伏龙帅印.IsHave == false);
+                        if (taozhuang != null)
+                        {
+                            taozhuang.伏龙帅印.IsHave = true;
+                            Dm.MoveToClick(550, 361);
+                            return true;
+                        }
+                    }
+                    if (ocr.Contains("蟠龙华盖"))
+                    {
+                        taozhuang = List.FirstOrDefault(x => x.蟠龙华盖.类型 == type && x.蟠龙华盖.IsHave == false);
+                        if (taozhuang != null)
+                        {
+                            taozhuang.蟠龙华盖.IsHave = true;
+                            Dm.MoveToClick(550, 361);
+                            return true;
+                        }
+                    }
+                    if (type != EquipmentType.未知类型)
+                        Dm.MoveToClick(409, 362);
                 }
                 return false;
             });
