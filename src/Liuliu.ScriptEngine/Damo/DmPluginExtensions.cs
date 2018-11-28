@@ -19,19 +19,20 @@ namespace Liuliu.ScriptEngine.Damo
         /// <param name="y2"></param>
         /// <param name="picname"></param>
         /// <param name="sim"></param>
+        /// <param name="isShow"></param>
         /// <returns></returns>
-        public static bool IsExistPic(this DmPlugin _dm,int x1,int y1,int x2,int y2,string picname,double sim=0.8)
+        public static bool IsExistPic(this DmPlugin _dm,int x1,int y1,int x2,int y2,string picname,double sim=0.8,bool isShow=true)
         {
             int intX, intY;
             _dm.FindPic(x1, y1, x2, y2, picname, "202020", sim, 0, out intX, out intY);
             if (intX > 0 && intY > 0)
             {
-                Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "存在图片【"+ picname + "】!");
+                _dm.DebugPrint("存在图片【"+ picname + "】!",isShow);
                 return true;
             }
             else
-            { 
-                Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "不存在图片【" + picname + "】!");
+            {
+                _dm.DebugPrint("不存在图片【" + picname + "】!",isShow);
                 return false;
             }
         }

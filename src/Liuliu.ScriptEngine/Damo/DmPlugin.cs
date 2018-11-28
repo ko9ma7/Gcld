@@ -3004,9 +3004,10 @@ namespace Liuliu.ScriptEngine
             return _dm.SetPicPwd(pwd) == 1;
         }
 
-        public void DebugPrint(string message)
+        public void DebugPrint(string message,bool isShow=true)
         {
-            Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + message);
+            if(isShow)
+              Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + message);
         }
         #endregion
 

@@ -90,7 +90,7 @@ namespace Liuliu.MouseClicker.Tasks
         private EquipmentType GetEquipmentType()
         {
             int intX, intY;
-            int result = Dm.FindPic(781, 315, 861, 402, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "303030", 0.7, 0, out intX, out intY);
+            int result = Dm.FindPic(781, 315, 861, 402, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "404040", 0.6, 0, out intX, out intY);
             return (EquipmentType)result;
         }
         class Equipment
@@ -160,11 +160,11 @@ namespace Liuliu.MouseClicker.Tasks
             {
               Dm.MoveToClick(631, 448);
               Dm.Delay(500);
-              if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
+              if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp",0.8,false))
               {
                 Dm.Delay(500);
                }
-               if(Dm.IsExistPic(379,213,475,255,@"\bmp\隐藏技能.bmp"))
+               if(Dm.IsExistPic(379,213,475,255,@"\bmp\隐藏技能.bmp",0.8,false))
                 {
                     var type = GetEquipmentType();
                    // Dm.DebugPrint("需要的类型:" + ((EquipmentType)equipmentType).ToString());
@@ -188,7 +188,7 @@ namespace Liuliu.MouseClicker.Tasks
                             return true;
                         }
                     }
-                    if (ocr.Contains("麒麟"))
+                    if (ocr.Contains("麒麟")&&!ocr.Contains("双枪"))
                     {
                         taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
                         if (taozhuang != null)
