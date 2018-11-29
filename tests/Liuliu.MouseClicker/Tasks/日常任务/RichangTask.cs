@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 1;
+            return 8;
         }
      
 
@@ -35,11 +35,109 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
-               // new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-             //  new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+                new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name="购买装备",Order=8,RunFunc=RunStep8 },
              };
             return steps;
         }
+        class Goods
+        {
+            /// <summary>
+            /// 物品位置序号
+            /// </summary>
+            public int Pos { get; set; }
+            /// <summary>
+            /// 物品颜色
+            /// </summary>
+            public Color Color { get; set; }
+            /// <summary>
+            /// 星星等级
+            /// </summary>
+            public int StarLevel { get; set; }
+            /// <summary>
+            /// 物品类型
+            /// </summary>
+            public GoodsType Type { get; set; }
+            /// <summary>
+            /// 物品购买坐标
+            /// </summary>
+            public Tuple<int, int> Buypos { get; set; }
+        }
+        enum GoodsType
+        {
+            无法识别 = -1,
+              枪,
+              甲,
+              符,
+              马,
+              披风,
+              帅旗,
+              图纸,
+    }
+        private Color GetGoodsColor(int x1,int y1,int x2,int y2)
+        {
+            return (Color)0;
+        }
+        private GoodsType GetGoodsType(int x1, int y1, int x2, int y2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private int GetStarLevel(int x1, int y1, int x2, int y2)
+        {
+            throw new NotImplementedException();
+        }
+        private TaskResult RunStep8(TaskContext arg)
+        {
+            Role role = (Role)Role;
+            Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenWindowMenu("集市"),
+                               () => Dm.Delay(1000));
+            Delegater.WaitTrue(() =>
+            {
+               if(Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25"))
+                {
+                    List<Goods> list = new List<Goods>();
+                    Dictionary<int,int[]> dict = new Dictionary<int,int[]>();
+                    dict.Add(1, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    dict.Add(2, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    dict.Add(3, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    dict.Add(4, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    dict.Add(5, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    dict.Add(6, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    for (int i = 1; i <= 6; i++)
+                    {
+                        var color1 = GetGoodsColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
+                        var starLevel1 = GetStarLevel(dict[i][4], dict[i][5], dict[i][6], dict[i][7]);
+                        var type1 = GetGoodsType(dict[i][8], dict[i][9], dict[i][10], dict[i][11]);
+                        list.Add(new Goods() { Pos = 1, StarLevel = starLevel1, Color = color1, Buypos = new Tuple<int, int>(0, 0) });
+                    }
+                  
+                  
+                }
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
+                    return true;
+                }
+                //出现适合装备
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                }
+                //出现稀有物品
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                }
+                return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
+            }, () => Dm.Delay(500));
+            role.CloseWindow();
+            return TaskResult.Success;
+        }
+
+   
 
         private TaskResult RunStep7(TaskContext arg)
         {
@@ -100,8 +198,8 @@ namespace Liuliu.MouseClicker.Tasks
 
         class Resource
         {
-            public int Pos { get; set; }
-           public ResourceColor Color { get; set; }
+           public int Pos { get; set; }
+           public Color Color { get; set; }
            public ResourceType Type { get; set; }
            public Tuple<int, int> Buypos { get; set; }
         }
@@ -114,7 +212,7 @@ namespace Liuliu.MouseClicker.Tasks
             木材,
             募兵令,
         }
-        enum ResourceColor
+        enum Color
         {
             无法识别 = -1,
             白,
@@ -131,7 +229,7 @@ namespace Liuliu.MouseClicker.Tasks
            // Dm.DebugPrint("资源类型：" + type.ToString());
             return (ResourceType)type;
         }
-        private ResourceColor GetResourceColor(int x1, int y1, int x2, int y2)
+        private Color GetResourceColor(int x1, int y1, int x2, int y2)
         {
             int 白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9,false);
             int 蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9, false);
@@ -142,7 +240,7 @@ namespace Liuliu.MouseClicker.Tasks
             int[] 颜色数量 = new int[] { 白色数量, 蓝色数量, 绿色数量, 黄色数量,红色数量, 紫色数量 };
             int max = 颜色数量.Max();
             
-            return (ResourceColor)颜色数量.ToList().IndexOf(max);
+            return (Color)颜色数量.ToList().IndexOf(max);
         }
      
         private TaskResult RunStep6(TaskContext arg)
