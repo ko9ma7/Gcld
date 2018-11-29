@@ -257,7 +257,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 return TaskResult.Jump;
             }
-
+            return TaskResult.Jump;
             Delegater.WaitTrue(() => role.OpenActivityBoard("探宝寻踪"),
                              () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
                              () => Dm.Delay(1000));

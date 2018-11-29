@@ -32,9 +32,9 @@ namespace Liuliu.MouseClicker.Tasks
              {
                 new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="领取俸禄",Order=3,RunFunc=RunStep3 },
+                new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="领取恭贺奖励",Order=5,RunFunc=RunStep5 },
+                new TaskStep() {Name="领取俸禄",Order=5,RunFunc=RunStep3 },
                 new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
                 new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
                 new TaskStep() {Name="购买装备",Order=8,RunFunc=RunStep8 },
@@ -75,10 +75,7 @@ namespace Liuliu.MouseClicker.Tasks
               帅旗,
               图纸,
     }
-        private Color GetGoodsColor(int x1,int y1,int x2,int y2)
-        {
-            return (Color)0;
-        }
+    
         private GoodsType GetGoodsType(int x1, int y1, int x2, int y2)
         {
             throw new NotImplementedException();
@@ -86,34 +83,34 @@ namespace Liuliu.MouseClicker.Tasks
 
         private int GetStarLevel(int x1, int y1, int x2, int y2)
         {
-            throw new NotImplementedException();
+            return Dm.GetPicCount(x1,y1,x2,y2,@"\bmp\星星1.bmp");
         }
         private TaskResult RunStep8(TaskContext arg)
         {
             Role role = (Role)Role;
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
-            Delegater.WaitTrue(() => role.OpenWindowMenu("集市"),
+            Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
                                () => Dm.Delay(1000));
             Delegater.WaitTrue(() =>
             {
-               if(Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25"))
+                List<Goods> list = new List<Goods>();
+                Dictionary<int, int[]> dict = new Dictionary<int, int[]>();
+                dict.Add(1, new int[] { 115, 134, 217, 174, 104, 272, 212, 312, 165, 369, 0, 0 });
+                dict.Add(2, new int[] { 235, 135, 350, 173, 233, 271, 344, 311, 296, 369, 0, 0 });
+                dict.Add(3, new int[] { 365, 135, 475, 174, 361, 273, 464, 313, 418, 369, 0, 0 });
+                dict.Add(4, new int[] { 488, 133, 604, 176, 486, 276, 581, 311, 551, 374, 0, 0 });
+                dict.Add(5, new int[] { 614, 131, 732, 175, 614, 270, 721, 314, 675, 369, 0, 0 });
+                dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
+                for (int i = 1; i <= 6; i++)
                 {
-                    List<Goods> list = new List<Goods>();
-                    Dictionary<int,int[]> dict = new Dictionary<int,int[]>();
-                    dict.Add(1, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-                    dict.Add(2, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-                    dict.Add(3, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-                    dict.Add(4, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-                    dict.Add(5, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-                    dict.Add(6, new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-                    for (int i = 1; i <= 6; i++)
-                    {
-                        var color1 = GetGoodsColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
-                        var starLevel1 = GetStarLevel(dict[i][4], dict[i][5], dict[i][6], dict[i][7]);
-                        var type1 = GetGoodsType(dict[i][8], dict[i][9], dict[i][10], dict[i][11]);
-                        list.Add(new Goods() { Pos = 1, StarLevel = starLevel1, Color = color1, Buypos = new Tuple<int, int>(0, 0) });
-                    }
-                  
+                    var color1 = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
+                    var starLevel1 = GetStarLevel(dict[i][4], dict[i][5], dict[i][6], dict[i][7]);
+                    // var type1 = GetGoodsType(dict[i][8], dict[i][9], dict[i][10], dict[i][11]);
+                    list.Add(new Goods() { Pos = 1, StarLevel = starLevel1, Color = color1, Buypos = new Tuple<int, int>(0, 0) });
+                }
+
+                if (Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25"))
+                {
                   
                 }
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
@@ -155,15 +152,15 @@ namespace Liuliu.MouseClicker.Tasks
                            {
                                Dm.StartWatch();
                                var rt1 = GetResourceType(160, 129, 346, 377);
-                               var rc1 = GetResourceColor(176, 119, 328, 178);
+                               var rc1 = GetColor(176, 119, 328, 178);
                                Dm.DebugPrint("第一个资源：" + rt1.ToString() + ",颜色：" + rc1.ToString());
 
                                var rt2 = GetResourceType(395, 132, 573, 373);
-                               var rc2 = GetResourceColor(409, 129, 566, 175);
+                               var rc2 = GetColor(409, 129, 566, 175);
                                Dm.DebugPrint("第二个资源：" + rt2.ToString() + ",颜色：" + rc2.ToString());
 
                                var rt3 = GetResourceType(630, 131, 810, 377);
-                               var rc3 = GetResourceColor(633, 124, 804, 180);
+                               var rc3 = GetColor(633, 124, 804, 180);
                                Dm.DebugPrint("第三个资源：" + rt3.ToString() + ",颜色：" + rc3.ToString());
                                Dm.StopWatch();
                                Dm.StartWatch();
@@ -229,7 +226,7 @@ namespace Liuliu.MouseClicker.Tasks
            // Dm.DebugPrint("资源类型：" + type.ToString());
             return (ResourceType)type;
         }
-        private Color GetResourceColor(int x1, int y1, int x2, int y2)
+        private Color GetColor(int x1, int y1, int x2, int y2)
         {
             int 白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9,false);
             int 蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9, false);

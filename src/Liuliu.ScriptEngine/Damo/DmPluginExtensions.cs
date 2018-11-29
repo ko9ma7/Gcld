@@ -288,7 +288,22 @@ namespace Liuliu.ScriptEngine.Damo
             sw.Stop();
             return sw.ElapsedMilliseconds <=time;
         }
-
+        /// <summary>
+        /// 获取某个区域相同图片个数
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="picname"></param>
+        /// <param name="sim"></param>
+        /// <returns></returns>
+        public static int GetPicCount(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname,double sim = 0.8)
+        {
+            string result=_dm.FindPicE(x1, y1, x2, y2, picname, "202020", sim, 0);
+            return result.Length;
+        }
 
     }
 }
