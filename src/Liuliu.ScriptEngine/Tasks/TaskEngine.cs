@@ -374,7 +374,8 @@ namespace Liuliu.ScriptEngine.Tasks
                             {
                                 Logger.Error("切换角色失败!");
                                 OutMessage("切换角色失败!");
-                                break;
+                                if(AutoLogin!=null)
+                                     break;
                             }
                         }
                         else

@@ -615,6 +615,65 @@ namespace Liuliu.MouseClicker
                 return false;
             }, () => _dm.Delay(1000),10);
         }
+
+        private bool GoToFighting(string area, bool isSkip = false)
+        {
+             GoToMap("副本");
+            // role.GoToFubenArea(area);
+            _dm.Swipe(670, 427, 93, 425);
+
+            Delegater.WaitTrue(() =>
+            {
+                if (_dm.IsExistPic(116, 72, 936, 351, @"\bmp\战斗.bmp"))
+                    return true;
+                _dm.FindPicAndClick(395, 311, 574, 393, @"\bmp\上阵.bmp");
+                return false;
+            }, () => _dm.Delay(500), 10);
+
+            if (Delegater.WaitTrue(() =>
+            {
+                _dm.FindPicAndClick(395, 311, 574, 393, @"\bmp\上阵.bmp");
+                _dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp");
+                if (_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp"))
+                {
+                    //补充兵力
+                    _dm.MoveToClick(612, 122);
+                    _dm.Delay(1000);
+
+                    _dm.MoveToClick(749, 128);
+                    _dm.Delay(1000);
+                    _dm.MoveToClick(807, 259); //点击战斗
+                }
+                if (!_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp") && _dm.IsExistPic(762, 4, 953, 87, @"\bmp\返回.bmp") && isSkip)
+                {
+                    _dm.MoveToClick(840, 43); //点击跳过
+                    _dm.Delay(3000);
+                }
+
+                if (_dm.IsExistPic(330, 45, 639, 184, @"\bmp\胜利.bmp"))
+                {
+                    _dm.MoveToClick(916, 45); //点击返回
+                    _dm.Delay(1000);
+                    return true;
+                }
+                if (_dm.IsExistPic(318, 36, 637, 195, @"\bmp\失败.bmp"))
+                {
+                    _dm.MoveToClick(916, 45); //点击返回
+                    _dm.Delay(1000);
+                    return true;
+                }
+                return false;
+            }, () => _dm.Delay(1000), 10))
+            {
+                return true;
+            }
+            else
+            {
+                return GoToFighting(area, true);
+            }
+
+        }
+
     }
 
     enum  当前位置

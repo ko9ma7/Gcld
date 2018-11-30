@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 1;
+            return 8;
         }
      
 
@@ -34,13 +34,24 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
-              //  new TaskStep() {Name="领取俸禄",Order=5,RunFunc=RunStep3 },
-              // new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-               // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
-              //  new TaskStep() {Name="购买装备",Order=8,RunFunc=RunStep8 },
-             };
+                new TaskStep() {Name="领取俸禄",Order=5,RunFunc=RunStep3 },
+                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+                new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name="购买装备",Order=8,RunFunc=RunStep8 },
+                new TaskStep() {Name="自动副本",Order=9,RunFunc=RunStep9 },
+            };
             return steps;
         }
+
+        private TaskResult RunStep9(TaskContext arg)
+        {
+            Role role = (Role)Role;
+            role.GoToMap("副本");
+
+
+            return TaskResult.Success;
+        }
+
         class Goods
         {
             /// <summary>
@@ -81,15 +92,12 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)Role;
             Dm.UseDict(1);
-            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30",0.9);
+            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30",0.8);
             Dm.UseDict(0);
             //获取所需装备件数
             //Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("武将"), () => Dm.Delay(1000));
             //Delegater.WaitTrue(() => role.OpenWindowMenu("武将"),
             //                   () => Dm.Delay(1000));
-
-
-
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
             Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
                                () => Dm.Delay(1000));
@@ -104,6 +112,7 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() =>
             {
                 List<Goods> list = new List<Goods>();
+                Dm.StartWatch();
                 for (int i = 1; i <= 6; i++)
                 {
                     var color = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
@@ -111,6 +120,7 @@ namespace Liuliu.MouseClicker.Tasks
                     list.Add(new Goods() { Pos = i, StarLevel = starLevel, Color = color, Buypos = new Tuple<int, int>(dict[i][8], dict[i][9]) });
                     Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
                 }
+                Dm.StopWatch();
                 List<Goods> buyList = null;
                 if(level>=16&&level<28) //蓝
                 {
@@ -262,16 +272,30 @@ namespace Liuliu.MouseClicker.Tasks
         }
         private Color GetColor(int x1, int y1, int x2, int y2)
         {
-            int 白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9,false);
-            int 蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9, false);
-            int 绿色数量 = Dm.GetColorNum(x1, y1, x2, y2, "5CB52C-15290B", 0.9, false);
-            int 黄色数量 = Dm.GetColorNum(x1, y1, x2, y2, "CD9735-31250D", 0.9, false);
-            int 红色数量 = Dm.GetColorNum(x1, y1, x2, y2, "C44C4C-341414", 0.9, false);
-            int 紫色数量 = Dm.GetColorNum(x1, y1, x2, y2, "A85EC2-2A1730", 0.9, false);
-            int[] 颜色数量 = new int[] { 白色数量, 蓝色数量, 绿色数量, 黄色数量,红色数量, 紫色数量 };
-            int max = 颜色数量.Max();
-            
-            return (Color)颜色数量.ToList().IndexOf(max);
+            int intX, intY;
+           // int 白色数量=0, 蓝色数量=0, 绿色数量=0, 黄色数量=0, 红色数量=0, 紫色数量=0;
+            if (Dm.FindColor(x1, y1, x2, y2, "D1D1D1-303030", 1.0, 0, out intX, out intY))
+                return Color.白;
+            //白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "698EC6-111821", 1.0, 0, out intX, out intY))
+                return Color.蓝;
+            //蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "5CB52C-15290B", 1.0, 0, out intX, out intY))
+                return Color.绿;
+            // 绿色数量 = Dm.GetColorNum(x1, y1, x2, y2, "5CB52C-15290B", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "CD9735-31250D", 1.0, 0, out intX, out intY))
+                return Color.黄;
+           // 黄色数量 = Dm.GetColorNum(x1, y1, x2, y2, "CD9735-31250D", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "C44C4C-341414", 1.0, 0, out intX, out intY))
+                return Color.红;
+            //红色数量 = Dm.GetColorNum(x1, y1, x2, y2, "C44C4C-341414", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "A85EC2-2A1730", 1.0, 0, out intX, out intY))
+                return Color.紫;
+            //紫色数量 = Dm.GetColorNum(x1, y1, x2, y2, "A85EC2-2A1730", 0.9, true);
+           // int[] 颜色数量 = new int[] { 白色数量, 蓝色数量, 绿色数量, 黄色数量,红色数量, 紫色数量 };
+           // int max = 颜色数量.Max();
+            // return (Color)颜色数量.ToList().IndexOf(max);
+            return Color.无法识别;
         }
      
         private TaskResult RunStep6(TaskContext arg)

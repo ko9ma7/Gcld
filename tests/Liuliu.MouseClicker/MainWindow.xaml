@@ -96,14 +96,14 @@
                                     <DataTemplate>
                                         <StackPanel>
                                             <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
-                                                <ComboBoxItem Content="日常任务"></ComboBoxItem>
+                                                <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
                                                 <ComboBoxItem Content="活动任务"></ComboBoxItem>
                                                 <ComboBoxItem Content="自动洗练"></ComboBoxItem>
                                                 <ComboBoxItem Content="指定洗练"></ComboBoxItem>
                                                 <ComboBoxItem Content="自动兵器"></ComboBoxItem>
                                                 <ComboBoxItem Content="自动建筑"></ComboBoxItem>
                                                 <ComboBoxItem Content="购买装备"></ComboBoxItem>
-                                                <ComboBoxItem IsSelected="True" Content="自动主线"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动主线"></ComboBoxItem>
                                                 <ComboBoxItem Content="刷新装备"></ComboBoxItem>
                                             </ComboBox>
                                         </StackPanel>
