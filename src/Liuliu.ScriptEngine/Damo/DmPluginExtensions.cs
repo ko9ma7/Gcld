@@ -221,6 +221,7 @@ namespace Liuliu.ScriptEngine.Damo
         public static int GetOcrNumber(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,double sim=0.8)
         {
             string ocr = _dm.Ocr(x1, y1, x2, y2, color, sim);
+            _dm.DebugPrint("获取到的数字：" + ocr);
             if (ocr == "")
                 return -1;
             int result;
@@ -301,8 +302,10 @@ namespace Liuliu.ScriptEngine.Damo
         /// <returns></returns>
         public static int GetPicCount(this DmPlugin _dm, int x1, int y1, int x2, int y2, string picname,double sim = 0.8)
         {
-            string result=_dm.FindPicE(x1, y1, x2, y2, picname, "202020", sim, 0);
-            return result.Length;
+            string result=_dm.FindPicEx(x1, y1, x2, y2, picname, "202020", sim, 0);
+            if (result == "")
+                return 0;
+            return result.Split('|').Length;
         }
 
     }

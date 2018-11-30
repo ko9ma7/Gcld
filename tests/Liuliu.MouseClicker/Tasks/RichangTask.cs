@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker.Tasks
         protected override int GetStepIndex(TaskContext context)
         {
            
-            return 8;
+            return 1;
         }
      
 
@@ -34,10 +34,10 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="领取俸禄",Order=5,RunFunc=RunStep3 },
-                new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
-                new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
-                new TaskStep() {Name="购买装备",Order=8,RunFunc=RunStep8 },
+              //  new TaskStep() {Name="领取俸禄",Order=5,RunFunc=RunStep3 },
+              // new TaskStep() {Name="领取礼包",Order=6,RunFunc=RunStep6 },
+               // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+              //  new TaskStep() {Name="购买装备",Order=8,RunFunc=RunStep8 },
              };
             return steps;
         }
@@ -75,44 +75,78 @@ namespace Liuliu.MouseClicker.Tasks
               帅旗,
               图纸,
     }
-    
-        private GoodsType GetGoodsType(int x1, int y1, int x2, int y2)
-        {
-            throw new NotImplementedException();
-        }
 
-        private int GetStarLevel(int x1, int y1, int x2, int y2)
-        {
-            return Dm.GetPicCount(x1,y1,x2,y2,@"\bmp\星星1.bmp");
-        }
+
         private TaskResult RunStep8(TaskContext arg)
         {
             Role role = (Role)Role;
+            Dm.UseDict(1);
+            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30",0.9);
+            Dm.UseDict(0);
+            //获取所需装备件数
+            //Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("武将"), () => Dm.Delay(1000));
+            //Delegater.WaitTrue(() => role.OpenWindowMenu("武将"),
+            //                   () => Dm.Delay(1000));
+
+
+
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
             Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
                                () => Dm.Delay(1000));
+          
+            Dictionary<int, int[]> dict = new Dictionary<int, int[]>();
+            dict.Add(1, new int[] { 115, 134, 217, 174, 104, 272, 212, 312, 165, 369, 0, 0 });
+            dict.Add(2, new int[] { 235, 135, 350, 173, 233, 271, 344, 311, 296, 369, 0, 0 });
+            dict.Add(3, new int[] { 365, 135, 475, 174, 361, 273, 464, 313, 418, 369, 0, 0 });
+            dict.Add(4, new int[] { 488, 133, 604, 176, 486, 276, 581, 311, 551, 374, 0, 0 });
+            dict.Add(5, new int[] { 614, 131, 732, 175, 614, 270, 721, 314, 675, 369, 0, 0 });
+            dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
             Delegater.WaitTrue(() =>
             {
                 List<Goods> list = new List<Goods>();
-                Dictionary<int, int[]> dict = new Dictionary<int, int[]>();
-                dict.Add(1, new int[] { 115, 134, 217, 174, 104, 272, 212, 312, 165, 369, 0, 0 });
-                dict.Add(2, new int[] { 235, 135, 350, 173, 233, 271, 344, 311, 296, 369, 0, 0 });
-                dict.Add(3, new int[] { 365, 135, 475, 174, 361, 273, 464, 313, 418, 369, 0, 0 });
-                dict.Add(4, new int[] { 488, 133, 604, 176, 486, 276, 581, 311, 551, 374, 0, 0 });
-                dict.Add(5, new int[] { 614, 131, 732, 175, 614, 270, 721, 314, 675, 369, 0, 0 });
-                dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
                 for (int i = 1; i <= 6; i++)
                 {
-                    var color1 = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
-                    var starLevel1 = GetStarLevel(dict[i][4], dict[i][5], dict[i][6], dict[i][7]);
-                    // var type1 = GetGoodsType(dict[i][8], dict[i][9], dict[i][10], dict[i][11]);
-                    list.Add(new Goods() { Pos = 1, StarLevel = starLevel1, Color = color1, Buypos = new Tuple<int, int>(0, 0) });
+                    var color = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
+                    var starLevel = Dm.GetPicCount(dict[i][4], dict[i][5], dict[i][6], dict[i][7],@"\bmp\星星1.bmp");
+                    list.Add(new Goods() { Pos = i, StarLevel = starLevel, Color = color, Buypos = new Tuple<int, int>(dict[i][8], dict[i][9]) });
+                    Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
+                }
+                List<Goods> buyList = null;
+                if(level>=16&&level<28) //蓝
+                {
+                    buyList=list.Where(x => x.Color == Color.蓝).ToList();
+                }else if(level>=28&&level<36) //绿
+                {
+                    buyList = list.Where(x => x.Color == Color.绿).ToList();
+                }
+                else if(level>=36&&level<53)//黄
+                {
+                    buyList = list.Where(x => x.Color == Color.黄&&x.StarLevel==1).ToList();
+                }
+                else if(level>=53&&level<70)//红
+                {
+                    buyList = list.Where(x => x.Color == Color.红&&x.StarLevel==2).ToList();
+                }
+                else if(level>=70)//紫
+                {
+                    buyList = list.Where(x => x.Color == Color.紫&&x.StarLevel==3).ToList();
+                }
+                else
+                {
+                    Dm.DebugPrint("人物等级无法识别！"+level);
+                    return true;
+                }
+                if(buyList!=null)
+                {
+                    foreach (var goods in buyList)
+                    {
+                        Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
+                        Dm.Delay(1000);
+                    }
                 }
 
-                if (Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25"))
-                {
-                  
-                }
+                Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
+                Dm.Delay(500);
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
                 {
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
@@ -121,7 +155,7 @@ namespace Liuliu.MouseClicker.Tasks
                 //出现适合装备
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
                 {
-                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                   // Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
                 }
                 //出现稀有物品
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
@@ -329,7 +363,7 @@ namespace Liuliu.MouseClicker.Tasks
             if (Dm.FindPicAndClick(114, 142, 827, 489, @"\bmp\恭贺奖励.bmp", 30, 0))
             {
                 Dm.Delay(1000);
-                int count = 13;
+                int count = 20;
                 while (true)
                 {
                     while (Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp")&&count!=0)
@@ -338,7 +372,7 @@ namespace Liuliu.MouseClicker.Tasks
                         Dm.Delay(300);
                         count--;
                     }
-                    Dm.Delay(2000);
+                    Dm.Delay(1000);
                     if (!Dm.IsExistPic(339, 76, 577, 146, @"\bmp\恭贺.bmp"))
                         break;
                     if (count == 0)

@@ -124,7 +124,7 @@ namespace Liuliu.MouseClicker.ViewModels
 
                     List<TaskBase> tasks = new List<TaskBase>();
 
-                   // engine.AutoLogin = () => AutoLogin(context);
+                    engine.AutoLogin = () => AutoLogin(context);
                     engine.ChangeRole = () => role.ChangeRole();
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
@@ -275,7 +275,7 @@ namespace Liuliu.MouseClicker.ViewModels
                                 return true;
                             }
                             return false;
-                            },() => Dm.Delay(1000), 20);
+                            },() => Dm.Delay(1000), 25);
 
 
                     }
@@ -283,16 +283,16 @@ namespace Liuliu.MouseClicker.ViewModels
 
                 case Platform.楚游:
                     CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell am start -n com.regin.gcld.sy/.gcld");
-                    Delegater.WaitTrue(() => Dm.IsExistPic(207,516,334,559, @"\bmp\07073_立即登录.bmp", 0.9), () => Dm.Delay(1000), 20);
+                    Delegater.WaitTrue(() => Dm.GetColorNum(113, 288, 193, 317, "f6c246-202020", 0.9) > 1000, () => Dm.Delay(1000), 20);
                     Dm.Delay(1000);
-                    if (Dm.IsExistPic(207, 516, 334, 559, @"\bmp\07073_立即登录.bmp", 0.9))
+                    if (Dm.GetColorNum(113,288,193,317,"f6c246-202020",0.9)>1000)
                     {
                         Dm.Delay(1000);
-                        Dm.MoveToClick(407, 356);
+                        Dm.MoveToClick(233, 203);
                         Dm.Delay(500);
                         for (int i = 0; i < 20; i++)
                         {
-                            if (Dm.GetColorNum(125, 324, 383, 383, "242424-202030", 0.9) > 5)
+                            if (Dm.GetColorNum(67, 187, 210, 216, "242424-202030", 0.9) > 5)
                             {
                                 CmdHelper.ExecuteCmd(string.Format("{0}nox_adb -s {1} shell input keyevent 67", noxPath, ysSimulator.AdbDevicesId));
                                 Dm.Delay(200);
@@ -303,11 +303,11 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                         CmdHelper.ExecuteCmd(noxPath + @"nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.UserName + "\"");
                         Dm.Delay(1000);
-                        Dm.MoveToClick(412, 434);
+                        Dm.MoveToClick(235, 246);
                         Dm.Delay(500);
                         for (int i = 0; i < 20; i++)
                         {
-                            if (Dm.GetColorNum(127, 403, 367, 464, "242424-202030", 0.9) > 5)
+                            if (Dm.GetColorNum(70, 230, 209, 263, "242424-202030", 0.9) > 5)
                             {
                                 CmdHelper.ExecuteCmd(string.Format("{0}nox_adb -s {1} shell input keyevent 67", noxPath, ysSimulator.AdbDevicesId));
                                 Dm.Delay(200);
@@ -318,7 +318,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                         CmdHelper.ExecuteCmd(noxPath + "nox_adb -s " + ysSimulator.AdbDevicesId + " shell input text \"" + account.Password + "\"");
                         Dm.Delay(500);
-                        Dm.FindPicAndClick(212, 515, 327, 562, @"\bmp\07073_立即登录.bmp");
+                        Dm.MoveToClick(149, 302);
 
                         return Delegater.WaitTrue(() => {
                             if (Dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") || Dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
@@ -332,7 +332,7 @@ namespace Liuliu.MouseClicker.ViewModels
                                 return true;
                             }
                             return false;
-                        }, () => Dm.Delay(1000), 20);
+                        }, () => Dm.Delay(1000), 25);
 
 
                     }
