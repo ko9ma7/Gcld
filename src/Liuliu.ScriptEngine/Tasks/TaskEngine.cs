@@ -314,7 +314,7 @@ namespace Liuliu.ScriptEngine.Tasks
                 {
                     throw new Exception("角色绑定失败，请添加杀软信任，右键以管理员身份运行，Win7系统请确保电脑账户为“Administrator”");
                 }
-                dm.DownCpu(20);
+               // dm.DownCpu(20);
                 while (true)
                 {
                     Cycle = 0;

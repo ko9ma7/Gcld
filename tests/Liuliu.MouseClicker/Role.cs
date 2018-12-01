@@ -624,37 +624,67 @@ namespace Liuliu.MouseClicker
                 _dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp");
                 if (_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp"))
                 {
-                    _dm.MoveToClick(64, 50);//清除教程提示
-                    //补充兵力
-                    if (_dm.GetColorNum(696, 156, 792, 180, "BF6C61-202020", 1.0) < 50)
-                        _dm.MoveToClick(747, 112);
-                    if (_dm.GetColorNum(564, 154, 658, 180, "BF6C61-202020", 1.0) < 50)
-                        _dm.MoveToClick(610, 118);
-                    if (_dm.GetColorNum(433, 156, 531, 179, "BF6C61-202020", 1.0) < 50)
-                        _dm.MoveToClick(485, 111);
-                    if (_dm.GetColorNum(304, 157, 395, 178, "BF6C61-202020", 1.0) < 50)
-                        _dm.MoveToClick(355, 106);
-                    if (_dm.GetColorNum(175, 157, 263, 180, "BF6C61-202020", 1.0) < 50)
-                        _dm.MoveToClick(219, 111);
                     _dm.Delay(500);
-                    _dm.MoveToClick(807, 259); //点击战斗
+                    _dm.MoveToClick(64, 50);//清除教程提示
+                    Delegater.WaitTrue(() => {
+                        //补充兵力
+                        if (_dm.GetColorNum(696, 156, 792, 180, "BF6C61-202020", 1.0) < 50)
+                        {
+                            _dm.MoveToClick(747, 112);
+                            _dm.Delay(500);
+                        }
+                        if (_dm.GetColorNum(564, 154, 658, 180, "BF6C61-202020", 1.0) < 50)
+                        {
+                            _dm.MoveToClick(610, 118);
+                            _dm.Delay(500);
+                        }
+                        if (_dm.GetColorNum(433, 156, 531, 179, "BF6C61-202020", 1.0) < 50)
+                        {
+                            _dm.MoveToClick(485, 111);
+                            _dm.Delay(500);
+                        }
+                        if (_dm.GetColorNum(304, 157, 395, 178, "BF6C61-202020", 1.0) < 50)
+                        {
+                            _dm.MoveToClick(355, 106);
+                            _dm.Delay(500);
+                        }
+                        if (_dm.GetColorNum(175, 157, 263, 180, "BF6C61-202020", 1.0) < 50)
+                        {
+                            _dm.MoveToClick(219, 111);
+                            _dm.Delay(500);
+                        }
+                        _dm.Delay(500);
+                        _dm.MoveToClick(807, 259);
+                        _dm.Delay(1000);
+                        if (_dm.IsExistPic(319, 197, 448, 247, @"\bmp\兵力不足.bmp"))
+                        {
+                            _dm.MoveToClick(548, 360);
+                            _dm.Delay(1000);
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }, () => _dm.IsExistPic(5, 40, 48, 102, @"\bmp\攻方.bmp", 0.7), 
+                       () => _dm.Delay(1000));  //点击战斗
 
                     战术 tactics, recentTactics=战术.无法识别;
                     while (true)
                     {
-                        if (!_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp") && _dm.IsExistPic(762, 4, 953, 87, @"\bmp\返回.bmp") && isSkip)
+                        if (!_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp",0.8,false) && _dm.IsExistPic(762, 4, 953, 87, @"\bmp\返回.bmp", 0.8, false) && isSkip)
                         {
                             _dm.MoveToClick(840, 43); //点击跳过
                             _dm.Delay(3000);
                         }
-                        if (_dm.IsExistPic(330, 45, 639, 184, @"\bmp\胜利.bmp"))
+                        if (_dm.IsExistPic(330, 45, 639, 184, @"\bmp\胜利.bmp", 0.8, false))
                             return true;
-                        if (_dm.IsExistPic(318, 36, 637, 195, @"\bmp\失败.bmp"))
+                        if (_dm.IsExistPic(318, 36, 637, 195, @"\bmp\失败.bmp", 0.8, false))
                             return true;
                         tactics = GetLastTactics();  //获取战术
                         if (tactics >= 0)
                             recentTactics = tactics;
-                        if (_dm.IsExistPic(310, 132, 445, 295, @"\bmp\战斗选择.bmp"))
+                        if (_dm.IsExistPic(310, 132, 445, 295, @"\bmp\战斗选择.bmp",0.8,false))
                         {
                             switch(recentTactics)
                             {
@@ -673,10 +703,11 @@ namespace Liuliu.MouseClicker
                             }
                        
                         }
+                        _dm.Delay(1000);
                       
                     }
                 }
-               return true;
+               return false;
             });
             if (_dm.IsExistPic(330, 45, 639, 184, @"\bmp\胜利.bmp"))
             {
@@ -688,6 +719,8 @@ namespace Liuliu.MouseClicker
             {
                 _dm.MoveToClick(916, 45); //点击返回
                 _dm.Delay(1000);
+                _dm.MoveToClick(916, 45); //点击返回
+                _dm.Delay(1000);
                 return false;
             }
             return false;
@@ -695,17 +728,17 @@ namespace Liuliu.MouseClicker
 
             private 战术 GetLastTactics()
             {
-                if(_dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗防御.bmp")|| _dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗强化防御.bmp"))
+                if(_dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗防御.bmp", 0.8, false) || _dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗强化防御.bmp", 0.8, false))
                 {
                   _dm.DebugPrint("对方使用防御!");
                   return 战术.防御;
                 }
-                if (_dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗突击.bmp") || _dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗强化突击.bmp"))
+                if (_dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗突击.bmp", 0.8, false) || _dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗强化突击.bmp", 0.8, false))
                 {
                     _dm.DebugPrint("对方使用突击!");
                     return 战术.突击;
                 }
-                if (_dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗攻击.bmp") || _dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗强化攻击.bmp"))
+                if (_dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗攻击.bmp", 0.8, false) || _dm.IsExistPic(393, 0, 577, 62, @"\bmp\战斗强化攻击.bmp", 0.8, false))
                 {
                     _dm.DebugPrint("对方使用攻击!");
                     return 战术.攻击;
