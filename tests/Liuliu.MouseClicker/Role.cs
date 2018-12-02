@@ -717,10 +717,9 @@ namespace Liuliu.MouseClicker
             }
             if (_dm.IsExistPic(318, 36, 637, 195, @"\bmp\失败.bmp"))
             {
-                _dm.MoveToClick(916, 45); //点击返回
-                _dm.Delay(1000);
-                _dm.MoveToClick(916, 45); //点击返回
-                _dm.Delay(1000);
+                Delegater.WaitTrue(() => _dm.MoveToClick(916, 45),
+                    () => _dm.IsExistPic(818, 281, 953, 447, @"\bmp\主城.bmp") || _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"),
+                    ()=>_dm.Delay(1000));
                 return false;
             }
             return false;

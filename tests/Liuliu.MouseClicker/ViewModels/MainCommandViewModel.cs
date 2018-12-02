@@ -125,7 +125,7 @@ namespace Liuliu.MouseClicker.ViewModels
                     List<TaskBase> tasks = new List<TaskBase>();
 
                    // engine.AutoLogin = () => AutoLogin(context);
-                   // engine.ChangeRole = () => role.ChangeRole();
+                    engine.ChangeRole = () => role.ChangeRole();
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
                         tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));

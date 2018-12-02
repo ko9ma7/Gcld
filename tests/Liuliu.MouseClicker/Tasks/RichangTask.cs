@@ -47,10 +47,12 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)Role;
             role.GoToMap("副本");
+            int count = 0;
             while(true)
             {
                 if (Dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp"))
                 {
+                    count = 0;
                     if(role.GoToFighting()==false)
                     {
                         Dm.DebugPrint("装备不够好或等级不够，提升实力再来！");
@@ -58,6 +60,9 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                 }else
                 {
+                    count++;
+                    if (count > 10)
+                        break;
                     Dm.Swipe(670, 427, 93, 427); //向右划
                     Dm.Delay(1000);
                 }
