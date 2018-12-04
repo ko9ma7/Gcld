@@ -153,6 +153,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 return TaskResult.Jump;
             }
+            return TaskResult.Jump;
             Delegater.WaitTrue(() => role.OpenActivityBoard("天降神剑"),
                  () => Dm.IsExistPic(395, 81, 535, 151, @"\bmp\神剑.bmp"),
                  () => Dm.Delay(1000));
@@ -640,7 +641,7 @@ namespace Liuliu.MouseClicker.Tasks
                  {
                      if (Dm.FindPicAndClick(568, 452, 742, 521, @"\bmp\前往下层.bmp"))
                      {
-                         if (Dm.IsExistPic(305, 230, 655, 458, @"\bmp\进入下层.bmp"))
+                         if (Dm.IsExistPic(462, 195, 568, 241, @"\bmp\进入下层.bmp",0.7))
                          {
                              Dm.FindPicAndClick(305, 230, 655, 458, @"\bmp\确定.bmp");
                          }

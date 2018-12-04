@@ -384,9 +384,9 @@ namespace Liuliu.ScriptEngine.Tasks
                             _workThread = null;
                             return;
                         }
-                        Thread.Sleep(3000);
+                        Thread.Sleep(5000);
                     }
-                    Thread.Sleep(3000);
+                    Thread.Sleep(5000);
                 }
                 WaitForUnBind();
                 _workThread = null;

@@ -190,11 +190,13 @@ namespace Liuliu.MouseClicker
          public bool OpenTeshushijian()
         {
             OutSubMessage("打开特殊事件...");
-            //int intX, intY;
+            int intX, intY;
             //_dm.FindMultiColor(258, 34, 854, 218, "d69f5a", "-8|5|3a3327,5|13|d5c484,21|14|cfbf80,29|6|2f2a1e,-10|1|352d20,-5|-2|c89b60,2|22|1f0201", 0.9, 0, out intX, out intY);
- 
-            if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp",37,15,0.7))
+            _dm.FindMultiColor(258, 34, 854, 218, "ce9f61", "3|-1|e5be72,7|-15|30281c,-9|2|2f291d,-3|7|362f22,-1|-10|fce4a1,32|7|302a1e,7|17|e3d188,3|13|ecde96", 0.8, 0, out intX, out intY);
+            //if (_dm.FindPicAndClick(258, 34, 854, 218,@"\bmp\特殊事件.bmp",37,15,0.7))
+            if(intX>0&&intY>0)
             {
+                _dm.MoveToClick(intX, intY);
                 _dm.Delay(1000);
                 OutSubMessage("打开成功!");
                 return true;

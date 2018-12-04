@@ -23,43 +23,26 @@ namespace Liuliu.MouseClicker.Tasks
             try
             {
                 if (context.Settings.IsAutoWeapon)
-                {
                     return 1;
-                }
-            } catch{ }
-            try
-            {
-                if (context.Settings.IsAutoClear)
-                {
-                    return 3;
-                }
-            }
-            catch { }
-            try
-            {
                 if (context.Settings.IsAutoBuilding)
-                {
                     return 2;
-                }
-            }
-            catch { }
-            try
-            {
+                if (context.Settings.IsAutoClear)
+                    return 3;
                 if (context.Settings.IsRefreshEquipment)
-                {
                     return 4;
-                }
-            }
-            catch { }
-            try
-            {
                 if (context.Settings.IsAutoClear2)
                 {
                     equipmentTypeDict = context.Settings.EquipmentTypeDict;
                     return 5;
                 }
+                if (context.Settings.IsBuyEquipment)
+                    return 6;
+                if (context.Settings.IsAutoFuben)
+                    return 7;
+            } catch(Exception ex)
+            {
+                Dm.DebugPrint(ex.Message);
             }
-            catch { }
             return 1;
         }
         private Dictionary<int,List<bool?>> equipmentTypeDict = null;
@@ -72,10 +55,209 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="自动洗练",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="刷新装备",Order=4,RunFunc=RunStep4 },
                 new TaskStep() {Name="指定洗练",Order=5,RunFunc=RunStep5 },
+                new TaskStep() {Name="购买装备",Order=6,RunFunc=RunStep6 },
+                new TaskStep() {Name="自动副本",Order=7,RunFunc=RunStep7 },
+
 
              };
             return steps;
         }
+
+
+        private TaskResult RunStep7(TaskContext arg)
+        {
+            Role role = (Role)Role;
+            role.GoToMap("副本");
+            int count = 0;
+            while (true)
+            {
+                if (Dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp"))
+                {
+                    count = 0;
+                    if (role.GoToFighting() == false)
+                    {
+                        Dm.DebugPrint("装备不够好或等级不够，提升实力再来！");
+                        break;
+                    }
+                }
+                else
+                {
+                    count++;
+                    if (count > 10)
+                        break;
+                    Dm.Swipe(670, 427, 93, 427); //向右划
+                    Dm.Delay(1000);
+                }
+                Dm.Delay(2000);
+            }
+            role.CloseWindow();
+            return TaskResult.Success;
+        }
+
+
+        class Goods
+        {
+            /// <summary>
+            /// 物品位置序号
+            /// </summary>
+            public int Pos { get; set; }
+            /// <summary>
+            /// 物品颜色
+            /// </summary>
+            public Color Color { get; set; }
+            /// <summary>
+            /// 星星等级
+            /// </summary>
+            public int StarLevel { get; set; }
+            /// <summary>
+            /// 物品类型
+            /// </summary>
+            public GoodsType Type { get; set; }
+            /// <summary>
+            /// 物品购买坐标
+            /// </summary>
+            public Tuple<int, int> Buypos { get; set; }
+        }
+        enum GoodsType
+        {
+            无法识别 = -1,
+            枪,
+            甲,
+            符,
+            马,
+            披风,
+            帅旗,
+            图纸,
+        }
+        enum Color
+        {
+            无法识别 = -1,
+            白,
+            蓝,
+            绿,
+            黄,
+            红,
+            紫,
+        }
+        private Color GetColor(int x1, int y1, int x2, int y2)
+        {
+            int intX, intY;
+            // int 白色数量=0, 蓝色数量=0, 绿色数量=0, 黄色数量=0, 红色数量=0, 紫色数量=0;
+            if (Dm.FindColor(x1, y1, x2, y2, "D1D1D1-303030", 1.0, 0, out intX, out intY))
+                return Color.白;
+            //白色数量 = Dm.GetColorNum(x1, y1, x2, y2, "D1D1D1-2D2D2D", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "698EC6-111821", 1.0, 0, out intX, out intY))
+                return Color.蓝;
+            //蓝色数量 = Dm.GetColorNum(x1, y1, x2, y2, "698EC6-111821", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "5CB52C-15290B", 1.0, 0, out intX, out intY))
+                return Color.绿;
+            // 绿色数量 = Dm.GetColorNum(x1, y1, x2, y2, "5CB52C-15290B", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "CD9735-31250D", 1.0, 0, out intX, out intY))
+                return Color.黄;
+            // 黄色数量 = Dm.GetColorNum(x1, y1, x2, y2, "CD9735-31250D", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "C44C4C-341414", 1.0, 0, out intX, out intY))
+                return Color.红;
+            //红色数量 = Dm.GetColorNum(x1, y1, x2, y2, "C44C4C-341414", 0.9, true);
+            if (Dm.FindColor(x1, y1, x2, y2, "A85EC2-2A1730", 1.0, 0, out intX, out intY))
+                return Color.紫;
+            //紫色数量 = Dm.GetColorNum(x1, y1, x2, y2, "A85EC2-2A1730", 0.9, true);
+            // int[] 颜色数量 = new int[] { 白色数量, 蓝色数量, 绿色数量, 黄色数量,红色数量, 紫色数量 };
+            // int max = 颜色数量.Max();
+            // return (Color)颜色数量.ToList().IndexOf(max);
+            return Color.无法识别;
+        }
+
+        private TaskResult RunStep6(TaskContext arg)
+        {
+            Role role = (Role)Role;
+            Dm.UseDict(1);
+            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30", 0.8);
+            Dm.UseDict(0);
+            //获取所需装备件数
+            //Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("武将"), () => Dm.Delay(1000));
+            //Delegater.WaitTrue(() => role.OpenWindowMenu("武将"),
+            //                   () => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
+                               () => Dm.Delay(1000));
+
+            Dictionary<int, int[]> dict = new Dictionary<int, int[]>();
+            dict.Add(1, new int[] { 115, 134, 217, 174, 104, 272, 212, 312, 165, 369, 0, 0 });
+            dict.Add(2, new int[] { 235, 135, 350, 173, 233, 271, 344, 311, 296, 369, 0, 0 });
+            dict.Add(3, new int[] { 365, 135, 475, 174, 361, 273, 464, 313, 418, 369, 0, 0 });
+            dict.Add(4, new int[] { 488, 133, 604, 176, 486, 276, 581, 311, 551, 374, 0, 0 });
+            dict.Add(5, new int[] { 614, 131, 732, 175, 614, 270, 721, 314, 675, 369, 0, 0 });
+            dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
+            Delegater.WaitTrue(() =>
+            {
+                List<Goods> list = new List<Goods>();
+                Dm.StartWatch();
+                for (int i = 1; i <= 6; i++)
+                {
+                    var color = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
+                    var starLevel = Dm.GetPicCount(dict[i][4], dict[i][5], dict[i][6], dict[i][7], @"\bmp\星星1.bmp");
+                    list.Add(new Goods() { Pos = i, StarLevel = starLevel, Color = color, Buypos = new Tuple<int, int>(dict[i][8], dict[i][9]) });
+                    Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
+                }
+                Dm.StopWatch();
+                List<Goods> buyList = null;
+                if (level >= 16 && level < 28) //蓝
+                {
+                    buyList = list.Where(x => x.Color == Color.蓝).ToList();
+                }
+                else if (level >= 28 && level < 36) //绿
+                {
+                    buyList = list.Where(x => x.Color == Color.绿).ToList();
+                }
+                else if (level >= 36 && level < 53)//黄
+                {
+                    buyList = list.Where(x => x.Color == Color.黄 && x.StarLevel == 1).ToList();
+                }
+                else if (level >= 53 && level < 70)//红
+                {
+                    buyList = list.Where(x => x.Color == Color.红 && x.StarLevel == 2).ToList();
+                }
+                else if (level >= 70)//紫
+                {
+                    buyList = list.Where(x => x.Color == Color.紫 && x.StarLevel == 3).ToList();
+                }
+                else
+                {
+                    Dm.DebugPrint("人物等级无法识别！" + level);
+                    return true;
+                }
+                if (buyList != null)
+                {
+                    foreach (var goods in buyList)
+                    {
+                        Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
+                        Dm.Delay(1000);
+                    }
+                }
+
+                Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
+                Dm.Delay(500);
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
+                    return true;
+                }
+                //出现适合装备
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
+                {
+                    // Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                }
+                //出现稀有物品
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
+                {
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                }
+                return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
+            }, () => Dm.Delay(500));
+            role.CloseWindow();
+            return TaskResult.Success;
+        }
+
         enum EquipmentType
         {
             未知类型 = -1,
