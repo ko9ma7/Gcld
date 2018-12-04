@@ -31,6 +31,10 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             get { return ServiceLocator.Current.GetInstance<MainCommandViewModel>(); }
         }
+        public AccountViewModel Accounts
+        {
+            get { return ServiceLocator.Current.GetInstance<AccountViewModel>(); }
+        }
 
         public SettingsViewModel Settings
         {
@@ -69,6 +73,7 @@ namespace Liuliu.MouseClicker.ViewModels
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<ClickSettingsViewModel>();
             SimpleIoc.Default.Register<RoleSettingViewModel>();
+            SimpleIoc.Default.Register<AccountViewModel>();
         }
     }
 }

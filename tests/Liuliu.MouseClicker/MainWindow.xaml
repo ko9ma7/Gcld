@@ -51,7 +51,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <!--<MenuItem Header="角色设置" Command="{Binding OpenRoleSettingFlyoutCommand}">
+                        <MenuItem Header="帐号管理" Command="{Binding OpenAccountFlyoutCommand}">
                             <MenuItem.Icon>
                                 <Rectangle Width="14" Height="14" Margin="0">
                                     <Rectangle.Fill>
@@ -59,7 +59,7 @@
                                     </Rectangle.Fill>
                                 </Rectangle>
                             </MenuItem.Icon>
-                        </MenuItem>-->
+                        </MenuItem>
 
                     </ContextMenu>
                 </Button.ContextMenu>
@@ -71,6 +71,7 @@
             <flyouts:SettingsFlyout x:Name="SettingsFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:RoleSettingFlyout x:Name="RoleSettingFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:XilianFlyout x:Name="XilianFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
+            <flyouts:AccountFlyout x:Name="AccountFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
         </mah:FlyoutsControl>
 
     </mah:MetroWindow.Flyouts>

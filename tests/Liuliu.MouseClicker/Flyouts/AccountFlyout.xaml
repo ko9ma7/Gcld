@@ -1,0 +1,34 @@
+﻿<mah:Flyout x:Class="Liuliu.MouseClicker.Flyouts.AccountFlyout"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    mc:Ignorable="d" Theme="Light"
+    d:DesignHeight="360" d:DesignWidth="640"
+    Position="Bottom" DataContext="{Binding Source={StaticResource Locator}, Path=Accounts}">
+    <Grid>
+        <DataGrid x:Name="dataGrid" AutoGenerateColumns="False" HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding AccountList}"
+                  LoadingRow="dataGrid_LoadingRow" HeadersVisibility="All" RowHeaderWidth="30"  Height="360" Margin="-14,0,1,0" Width="578">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding UserName}" Header="用户名" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Password}" Header="密码" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Platform}" Header="平台" Width="60"/>
+                <DataGridTextColumn Binding="{Binding IsWorking}" Header="是否工作" Width="70"/>
+                <DataGridTextColumn Binding="{Binding IsFinished}" Header="是否完成" Width="70"/>
+                <DataGridTemplateColumn Header="操作">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="开始" Margin="3" Command="{Binding DataContext.StartCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}"></Button>
+                                <Button Content="停止" Margin="3" Command="{Binding DataContext.StopCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}"></Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</mah:Flyout>

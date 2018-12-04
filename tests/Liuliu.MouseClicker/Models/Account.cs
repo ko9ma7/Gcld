@@ -28,6 +28,9 @@ namespace Liuliu.MouseClicker.Models
         /// 是否正在工作
         /// </summary>
         public bool IsWorking { get; set; }
+        /// 是否自动登陆
+        /// </summary>
+        public bool IsAutoLogin { get; set; }
     }
 
     public enum Platform
@@ -36,6 +39,8 @@ namespace Liuliu.MouseClicker.Models
         楚游,
         九游,
         TT,
-        偶玩
+        偶玩,
+        豌豆荚,
+        百度
     }
 }

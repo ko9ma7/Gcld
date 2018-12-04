@@ -42,7 +42,17 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-
+        
+        public ICommand OpenAccountFlyoutCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Messenger.Default.Send("OpenAccountFlyout", "AccountFlyout");
+                });
+            }
+        }
         public ICommand OpenRoleSettingFlyoutCommand
         {
             get

@@ -125,6 +125,9 @@
     <Compile Include="Converters\FontWeightConverter.cs" />
     <Compile Include="Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Flyouts\AccountFlyout.xaml.cs">
+      <DependentUpon>AccountFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Flyouts\RoleSettingFlyout.xaml.cs">
       <DependentUpon>RoleSettingFlyout.xaml</DependentUpon>
     </Compile>
@@ -146,12 +149,17 @@
     <Compile Include="UserControls\ClickSettingsView.xaml.cs">
       <DependentUpon>ClickSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\RoleSettingViewModel.cs" />
     <Compile Include="ViewModels\ClickSettingViewModel.cs" />
     <Compile Include="ViewModels\MainCommandViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Page Include="Flyouts\AccountFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Flyouts\RoleSettingFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
