@@ -51,7 +51,7 @@
                                 </Rectangle>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="帐号管理" Command="{Binding OpenAccountFlyoutCommand}">
+                        <MenuItem Header="帐号管理" Command="{Binding OpenAllAccountFlyoutCommand}">
                             <MenuItem.Icon>
                                 <Rectangle Width="14" Height="14" Margin="0">
                                     <Rectangle.Fill>
@@ -92,11 +92,11 @@
                             <GridViewColumn Header="当前帐号" Width="70" DisplayMemberBinding="{Binding AccountName,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
                             <GridViewColumn Header="运行状态" Width="70" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
                             <GridViewColumn Header="循环次数" Width="70" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
-                            <GridViewColumn Header="任务配置" Width="140">
+                            <GridViewColumn Header="任务配置" Width="110">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
+                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding Setting}">
                                                 <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
                                                 <ComboBoxItem Content="活动任务"></ComboBoxItem>
                                                 <ComboBoxItem Content="自动洗练"></ComboBoxItem>
@@ -114,13 +114,14 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="操作" Width="180">
+                            <GridViewColumn Header="操作" Width="200">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Margin="5" Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button Margin="5" Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button Margin="5" Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button  Content="帐号" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding ShowAccountCommand}" CommandParameter="{Binding Hwnd}"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

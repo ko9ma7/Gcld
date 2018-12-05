@@ -1,6 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Liuliu.MouseClicker.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,25 +29,38 @@ namespace Liuliu.MouseClicker.Flyouts
             RegisterMessengers();
            
         }
+        Role _role = null;
         private void RegisterMessengers()
         {
-            Messenger.Default.Register<string>(this, "AccountFlyout",
-               async msg =>
+            
+            Messenger.Default.Register<Role>(this, "OpenAccountFlyout",
+                (role) =>
                {
-                   switch (msg)
-                   {
-                       case "OpenAccountFlyout":
-                           OpenAccountFlyout();
-                           break;
-                   }
+                   _role = role;
+                   OpenAccountFlyout();     
                });
+            Messenger.Default.Register<Role>(this, "OpenAllAccountFlyout",
+             (role) =>
+             {
+                 _role = role;
+                 OpenAllAccountFlyout();
+             });
+        }
 
+        private void OpenAllAccountFlyout()
+        {
+            if (!IsOpen)
+            {
+                SoftContext.Locator.Accounts.AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
+                IsOpen = true;
+            }
         }
 
         private void OpenAccountFlyout()
         {
             if (!IsOpen)
             {
+                SoftContext.Locator.Accounts.AccountList=new ObservableCollection<Account>(SoftContext.AccountList.Where(x => x.IsFinished == false));
                 IsOpen = true;
             }
         }

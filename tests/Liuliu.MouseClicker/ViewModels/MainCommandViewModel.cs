@@ -43,13 +43,13 @@ namespace Liuliu.MouseClicker.ViewModels
             }
         }
         
-        public ICommand OpenAccountFlyoutCommand
+        public ICommand OpenAllAccountFlyoutCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand<Role>((role) =>
                 {
-                    Messenger.Default.Send("OpenAccountFlyout", "AccountFlyout");
+                    Messenger.Default.Send(role, "OpenAllAccountFlyout");
                 });
             }
         }
@@ -62,6 +62,17 @@ namespace Liuliu.MouseClicker.ViewModels
                     // Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
                     
                     Messenger.Default.Send(role, "XilianFlyout");
+                });
+            }
+        }
+        
+        public ICommand ShowAccountCommand
+        {
+            get
+            {
+                return new RelayCommand<Role>((role) =>
+                {
+                    Messenger.Default.Send<Role>(role, "OpenAccountFlyout");
                 });
             }
         }

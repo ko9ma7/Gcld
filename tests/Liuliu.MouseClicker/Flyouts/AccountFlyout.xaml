@@ -9,13 +9,14 @@
     Position="Bottom" DataContext="{Binding Source={StaticResource Locator}, Path=Accounts}">
     <Grid>
         <DataGrid x:Name="dataGrid" AutoGenerateColumns="False" HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding AccountList}"
-                  LoadingRow="dataGrid_LoadingRow" HeadersVisibility="All" RowHeaderWidth="30"  Height="360" Margin="-14,0,1,0" Width="578">
+                  LoadingRow="dataGrid_LoadingRow" HeadersVisibility="All" RowHeaderWidth="30"  Height="360" Margin="-14,0,1,0" Width="578" CanUserAddRows="False"
+                  SelectionMode="Single">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding UserName}" Header="用户名" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Password}" Header="密码" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Platform}" Header="平台" Width="60"/>
-                <DataGridTextColumn Binding="{Binding IsWorking}" Header="是否工作" Width="70"/>
-                <DataGridTextColumn Binding="{Binding IsFinished}" Header="是否完成" Width="70"/>
+                <DataGridTextColumn Binding="{Binding UserName}" IsReadOnly="True" Header="用户名" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Password}" IsReadOnly="True" Header="密码" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Platform}" IsReadOnly="True" Header="平台" Width="60"/>
+                <DataGridCheckBoxColumn Binding="{Binding IsWorking}" IsReadOnly="True" Header="工作中" Width="60"/>
+                <DataGridCheckBoxColumn Binding="{Binding IsFinished,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="是否完成" Width="70"/>
                 <DataGridTemplateColumn Header="操作">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
