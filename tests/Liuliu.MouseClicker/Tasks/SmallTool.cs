@@ -22,22 +22,22 @@ namespace Liuliu.MouseClicker.Tasks
         {
             try
             {
-                if (context.Settings.IsAutoWeapon)
+                if (context.Settings.StepName== "自动兵器")
                     return 1;
-                if (context.Settings.IsAutoBuilding)
+                if (context.Settings.StepName== "自动建筑")
                     return 2;
-                if (context.Settings.IsAutoClear)
+                if (context.Settings.StepName== "自动洗练")
                     return 3;
-                if (context.Settings.IsRefreshEquipment)
+                if (context.Settings.StepName== "刷新装备")
                     return 4;
-                if (context.Settings.IsAutoClear2)
+                if (context.Settings.StepName== "指定洗练")
                 {
                     equipmentTypeDict = context.Settings.EquipmentTypeDict;
                     return 5;
                 }
-                if (context.Settings.IsBuyEquipment)
+                if (context.Settings.StepName== "购买装备")
                     return 6;
-                if (context.Settings.IsAutoFuben)
+                if (context.Settings.StepName=="自动副本")
                     return 7;
             } catch(Exception ex)
             {

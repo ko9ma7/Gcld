@@ -134,7 +134,7 @@ namespace Liuliu.MouseClicker.ViewModels
 
                     List<TaskBase> tasks = new List<TaskBase>();
 
-                    engine.AutoLogin = () => AutoLogin(context);
+                  //  engine.AutoLogin = () => AutoLogin(context);
                     engine.ChangeRole = () => role.ChangeRole();
                     if (role.SelectedItemTask.Content.ToString() == "日常任务")
                     {
@@ -148,27 +148,27 @@ namespace Liuliu.MouseClicker.ViewModels
                     {
                         engine.AutoLogin = null;
                         engine.ChangeRole = null;
-                        context.Settings.IsAutoWeapon = true;
+                        context.Settings.StepName = "自动兵器";
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动洗练")
                     {
                         engine.AutoLogin = null;
                         engine.ChangeRole = null;
-                        context.Settings.IsAutoClear = true;
+                        context.Settings.StepName = "自动洗练";
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "指定洗练")
                     {
                         engine.AutoLogin = null;
                         engine.ChangeRole = () => { return false; };
-                        context.Settings.IsAutoClear2 = true;
+                        context.Settings.StepName = "指定洗练";
                         context.Settings.EquipmentType = role.SelectedIndex;
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动建筑")
                     {
-                        context.Settings.IsAutoBuilding = true;
+                        context.Settings.StepName = "自动建筑";
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动主线")
@@ -178,19 +178,19 @@ namespace Liuliu.MouseClicker.ViewModels
 
                     if (role.SelectedItemTask.Content.ToString() == "刷新装备")
                     {
-                        context.Settings.IsRefreshEquipment = true;
+                        context.Settings.StepName = "刷新装备";
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "购买装备")
                     {
                         engine.AutoLogin = null;
-                        context.Settings.IsBuyEquipment = true;
+                        context.Settings.StepName = "购买装备";
                         tasks.Add(new SmallTool(context));
                     }
                     if (role.SelectedItemTask.Content.ToString() == "自动副本")
                     {
                         engine.AutoLogin = null;
-                        context.Settings.IsAutoFuben = true;
+                        context.Settings.StepName = "自动副本";
                         tasks.Add(new SmallTool(context));
                     }
                     try
