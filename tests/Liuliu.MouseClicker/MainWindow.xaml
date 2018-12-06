@@ -96,7 +96,7 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding Setting}">
+                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
                                                 <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
                                                 <ComboBoxItem Content="活动任务"></ComboBoxItem>
                                                 <ComboBoxItem Content="自动洗练"></ComboBoxItem>
@@ -121,7 +121,7 @@
                                             <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button  Content="帐号" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding ShowAccountCommand}" CommandParameter="{Binding Hwnd}"></Button>
+                                            <Button  Content="帐号" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding ShowAccountCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

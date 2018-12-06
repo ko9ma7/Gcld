@@ -7,6 +7,15 @@ using System.Linq;
 using System.Windows.Input;
 using System;
 using System.Collections.Generic;
+using Liuliu.ScriptEngine.Models;
+using Liuliu.ScriptEngine.Tasks;
+using Liuliu.MouseClicker.Contexts;
+using System.IO;
+using Liuliu.ScriptEngine;
+using Liuliu.ScriptEngine.Damo;
+using Liuliu.MouseClicker.Tasks;
+using GalaSoft.MvvmLight.Messaging;
+using Newtonsoft.Json;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -14,7 +23,20 @@ namespace Liuliu.MouseClicker.ViewModels
     {
         public AccountViewModel()
         {
-            _mylist = new ObservableCollection<Account>(SoftContext.AccountList.Where(x=>x.IsFinished==false));
+            Messenger.Default.Register<string>(this, Notifications.AccountViewModel,
+             (msg) =>
+             {
+                 switch (msg)
+                 {
+                     case "OpenAccountFlyout":
+                         AccountList = new ObservableCollection<Account>(SoftContext.AccountList.Where(x => x.IsFinished == false));
+                         break;
+                     case "OpenAllAccountFlyout":
+                         AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
+                         break;
+                 }
+             });
+
         }
 
         ObservableCollection<Account> _mylist;
@@ -24,30 +46,58 @@ namespace Liuliu.MouseClicker.ViewModels
             set { SetProperty(ref _mylist, value, () => AccountList); }
         }
 
-
+        [JsonIgnore]
         public ICommand StartCommand
         {
             get
             {
                 return new RelayCommand<Account>((account) =>
                 {
-                    if (account != null)
-                        Debug.WriteLine(account.UserName);
-                    
+                    Messenger.Default.Send(new SendData<Account>() { Message = "Login", Data = account }, Notifications.MainCommandViewModel);
                 });
             }
         }
-
+        [JsonIgnore]
         public ICommand StopCommand
         {
             get
             {
                 return new RelayCommand<Account>((account) =>
                 {
-                    if (account != null)
-                        Debug.WriteLine(account.UserName);
+                    Messenger.Default.Send(new SendData<Account>() { Message = "Stop", Data = account }, Notifications.MainCommandViewModel);
                 });
             }
+        }
+        public string TodayTime { get; set; }
+        /// <summary>
+        /// 从本地数据初始化
+        /// </summary>
+        public void InitFromLocal()
+        {
+            var model = LocalDataHandler.GetData<AccountViewModel>("data.db", "accounts");
+            if (model != null)
+            {
+                if (model.TodayTime != DateTime.Now.ToString("yyyy-MM-dd"))
+                {
+                    AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
+                    TodayTime = DateTime.Now.ToString("yyyy-MM-dd");
+                }
+                else
+                {
+                    AccountList = model.AccountList;
+                    SoftContext.AccountList = model.AccountList.ToList();
+                    TodayTime = model.TodayTime;
+                }
+            } 
+        }
+
+        /// <summary>
+        /// 保存数据到本地
+        /// </summary>
+        public void SaveToLocal()
+        {
+            AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
+            LocalDataHandler.SetData("data.db", "accounts", this);
         }
     }
 }

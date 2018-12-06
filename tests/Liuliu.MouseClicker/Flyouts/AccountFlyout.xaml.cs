@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Liuliu.MouseClicker.Contexts;
 using Liuliu.MouseClicker.Models;
+using Liuliu.MouseClicker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,31 +29,29 @@ namespace Liuliu.MouseClicker.Flyouts
         {
             InitializeComponent();
             RegisterMessengers();
-           
+            IsOpenChanged += async (sender, e) => await AccountFlyout_IsOpenChanged(sender, e);
         }
-        Role _role = null;
         private void RegisterMessengers()
         {
-            
-            Messenger.Default.Register<Role>(this, "OpenAccountFlyout",
-                (role) =>
+            Messenger.Default.Register<string>(this, Notifications.AccountFlyout,
+                (msg) =>
                {
-                   _role = role;
-                   OpenAccountFlyout();     
+                   switch(msg)
+                   {
+                       case "OpenAccountFlyout":
+                           OpenAccountFlyout();
+                           break;
+                       case "OpenAllAccountFlyout":
+                           OpenAllAccountFlyout();
+                           break;
+                   }
                });
-            Messenger.Default.Register<Role>(this, "OpenAllAccountFlyout",
-             (role) =>
-             {
-                 _role = role;
-                 OpenAllAccountFlyout();
-             });
         }
 
         private void OpenAllAccountFlyout()
         {
             if (!IsOpen)
             {
-                SoftContext.Locator.Accounts.AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
                 IsOpen = true;
             }
         }
@@ -60,9 +60,20 @@ namespace Liuliu.MouseClicker.Flyouts
         {
             if (!IsOpen)
             {
-                SoftContext.Locator.Accounts.AccountList=new ObservableCollection<Account>(SoftContext.AccountList.Where(x => x.IsFinished == false));
                 IsOpen = true;
             }
+        }
+
+        private async Task AccountFlyout_IsOpenChanged(object sender, RoutedEventArgs e)
+        {
+            AccountViewModel model = SoftContext.Locator.Accounts;
+            if (IsOpen)
+            {
+                model.InitFromLocal();
+                return;
+            }
+            model.SaveToLocal();
+            SoftContext.Locator.Main.StatusBar = "帐号信息保存成功";
         }
 
         private void dataGrid_LoadingRow(object sender, DataGridRowEventArgs e)

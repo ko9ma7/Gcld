@@ -33,7 +33,13 @@ namespace Liuliu.MouseClicker.ViewModels
         }
         public AccountViewModel Accounts
         {
-            get { return ServiceLocator.Current.GetInstance<AccountViewModel>(); }
+            get
+            {   
+                var model= ServiceLocator.Current.GetInstance<AccountViewModel>();
+                if(model.AccountList==null)
+                    model.InitFromLocal();
+                return model;
+            }
         }
 
         public SettingsViewModel Settings

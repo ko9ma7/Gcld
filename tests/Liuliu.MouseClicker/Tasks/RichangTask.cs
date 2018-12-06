@@ -30,10 +30,10 @@ namespace Liuliu.MouseClicker.Tasks
             TaskStep[] steps =
              {
                 new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
-                new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
-                new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="领取礼包",Order=5,RunFunc=RunStep6 },
+               // new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
+               // new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
+               // new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
+               // new TaskStep() {Name="领取礼包",Order=5,RunFunc=RunStep6 },
                 //new TaskStep() {Name="领取俸禄",Order=6,RunFunc=RunStep3 },
               
                // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
@@ -305,6 +305,7 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep1(TaskContext context)
         {
+            return TaskResult.Finished;
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
            

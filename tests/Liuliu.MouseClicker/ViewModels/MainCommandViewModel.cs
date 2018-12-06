@@ -32,6 +32,27 @@ namespace Liuliu.MouseClicker.ViewModels
 {
     public class MainCommandViewModel : ViewModelExBase
     {
+        public MainCommandViewModel()
+        {
+            Messenger.Default.Register<SendData<Account>>(this, Notifications.MainCommandViewModel,
+               (sendData) =>
+               {
+                   Account account = sendData.Data;
+                   switch (sendData.Message)
+                   {
+                       case "Login":
+                           Start(_role,account);
+                           break;
+                       case "Stop":
+                           _role.TaskEngine.Stop();
+                           break;
+                   }
+               });
+        }
+
+        private Role _role;
+      
+
         public ICommand OpenSettingsFlyoutCommand
         {
             get
@@ -43,16 +64,7 @@ namespace Liuliu.MouseClicker.ViewModels
             }
         }
         
-        public ICommand OpenAllAccountFlyoutCommand
-        {
-            get
-            {
-                return new RelayCommand<Role>((role) =>
-                {
-                    Messenger.Default.Send(role, "OpenAllAccountFlyout");
-                });
-            }
-        }
+
         public ICommand OpenRoleSettingFlyoutCommand
         {
             get
@@ -65,14 +77,27 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-        
+        public ICommand OpenAllAccountFlyoutCommand
+        {
+            get
+            {
+                return new RelayCommand<Role>((role) =>
+                {
+                    _role = role;
+                    Messenger.Default.Send("OpenAllAccountFlyout", Notifications.AccountFlyout);
+                    Messenger.Default.Send("OpenAllAccountFlyout", Notifications.AccountViewModel);
+                });
+            }
+        }
         public ICommand ShowAccountCommand
         {
             get
             {
                 return new RelayCommand<Role>((role) =>
                 {
-                    Messenger.Default.Send<Role>(role, "OpenAccountFlyout");
+                    _role = role;
+                    Messenger.Default.Send("OpenAccountFlyout", Notifications.AccountFlyout);
+                    Messenger.Default.Send("OpenAccountFlyout", Notifications.AccountViewModel);
                 });
             }
         }
@@ -134,105 +159,120 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             get
             {
-                return new RelayCommand<Role>((role) =>
-                {
-
-                    Function func = new Function();
-                    func.Name = "任务";
-
-                    TaskContext context = new TaskContext(role, func);
-                    TaskEngine engine = role.TaskEngine;
-
-                    List<TaskBase> tasks = new List<TaskBase>();
-
-                  //  engine.AutoLogin = () => AutoLogin(context);
-                    engine.ChangeRole = () => role.ChangeRole();
-                    if (role.SelectedItemTask.Content.ToString() == "日常任务")
-                    {
-                        tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "活动任务")
-                    {
-                        tasks.Add(new HuodongTask(new TaskContext(role, new Function() { Name = "活动任务" })));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "自动兵器")
-                    {
-                        engine.AutoLogin = null;
-                        engine.ChangeRole = null;
-                        context.Settings.StepName = "自动兵器";
-                        tasks.Add(new SmallTool(context));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "自动洗练")
-                    {
-                        engine.AutoLogin = null;
-                        engine.ChangeRole = null;
-                        context.Settings.StepName = "自动洗练";
-                        tasks.Add(new SmallTool(context));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "指定洗练")
-                    {
-                        engine.AutoLogin = null;
-                        engine.ChangeRole = () => { return false; };
-                        context.Settings.StepName = "指定洗练";
-                        context.Settings.EquipmentType = role.SelectedIndex;
-                        tasks.Add(new SmallTool(context));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "自动建筑")
-                    {
-                        context.Settings.StepName = "自动建筑";
-                        tasks.Add(new SmallTool(context));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "自动主线")
-                    {
-                        tasks.Add(new AutoLevel(context));
-                    }
-
-                    if (role.SelectedItemTask.Content.ToString() == "刷新装备")
-                    {
-                        context.Settings.StepName = "刷新装备";
-                        tasks.Add(new SmallTool(context));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "购买装备")
-                    {
-                        engine.AutoLogin = null;
-                        context.Settings.StepName = "购买装备";
-                        tasks.Add(new SmallTool(context));
-                    }
-                    if (role.SelectedItemTask.Content.ToString() == "自动副本")
-                    {
-                        engine.AutoLogin = null;
-                        context.Settings.StepName = "自动副本";
-                        tasks.Add(new SmallTool(context));
-                    }
-                    try
-                    {
-                        engine.Start(tasks.ToArray());
-                    }
-                    catch (Exception ex)
-                    {
-                        role.OutMessage(ex.Message);
-                    }
-
-
-                });
+                return new RelayCommand<Role>((role) => {
+                    Start(role, null);
+                }); 
             }
         }
-        public bool AutoLogin(TaskContext context)
+
+        public void Start(Role role,Account account)
         {
-            Role role = (Role)context.Role;
-            Account account = SoftContext.GetAccount();
+            Function func = new Function();
+            func.Name = "任务";
+
+            TaskContext context = new TaskContext(role, func);
+            TaskEngine engine = role.TaskEngine;
+
+            List<TaskBase> tasks = new List<TaskBase>();
+
+            engine.AutoLogin = () => AutoLogin(role, account);
+            engine.ChangeRole = () => role.ChangeRole();
+            if (role.SelectedItemTask.Content.ToString() == "日常任务")
+            {
+                tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "活动任务")
+            {
+                tasks.Add(new HuodongTask(new TaskContext(role, new Function() { Name = "活动任务" })));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "自动兵器")
+            {
+                engine.AutoLogin = null;
+                engine.ChangeRole = null;
+                context.Settings.StepName = "自动兵器";
+                tasks.Add(new SmallTool(context));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "自动洗练")
+            {
+                engine.AutoLogin = null;
+                engine.ChangeRole = null;
+                context.Settings.StepName = "自动洗练";
+                tasks.Add(new SmallTool(context));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "指定洗练")
+            {
+                engine.AutoLogin = null;
+                engine.ChangeRole = () => { return false; };
+                context.Settings.StepName = "指定洗练";
+                context.Settings.EquipmentType = role.SelectedIndex;
+                tasks.Add(new SmallTool(context));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "自动建筑")
+            {
+                context.Settings.StepName = "自动建筑";
+                tasks.Add(new SmallTool(context));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "自动主线")
+            {
+                tasks.Add(new AutoLevel(context));
+            }
+
+            if (role.SelectedItemTask.Content.ToString() == "刷新装备")
+            {
+                context.Settings.StepName = "刷新装备";
+                tasks.Add(new SmallTool(context));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "购买装备")
+            {
+                engine.AutoLogin = null;
+                context.Settings.StepName = "购买装备";
+                tasks.Add(new SmallTool(context));
+            }
+            if (role.SelectedItemTask.Content.ToString() == "自动副本")
+            {
+                engine.AutoLogin = null;
+                context.Settings.StepName = "自动副本";
+                tasks.Add(new SmallTool(context));
+            }
+            try
+            {
+                engine.Start(tasks.ToArray());
+            }
+            catch (Exception ex)
+            {
+                role.OutMessage(ex.Message);
+            }
+        }
+        public bool AutoLogin(Role role,Account account)
+        {
             if (account == null)
             {
-                Debug.WriteLine("所有帐号已经执行完毕!");
-                return false;
+                 account= SoftContext.GetAccount();
+                if (account == null)
+                {
+                    Debug.WriteLine("所有帐号已经执行完毕!");
+                    return false;
+                }
             }
+            if (role == null)
+                return false;
             role.AccountName = account.UserName;
+            account.IsWorking = true;
+            bool result = false;
             switch (account.Platform)
             {
                 case Platform.飞流:
-                    return FeiliuLogin(account, role);
+                    result = FeiliuLogin(account, role);
+                    break;
                 case Platform.楚游:
-                    return FeiliuLogin(account, role);
+                    result = FeiliuLogin(account, role);
+                    break;
+            }
+            if(result)
+            {
+                account.IsFinished = true;
+               // account = null;
+                return true;
             }
             return false;
         }

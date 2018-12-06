@@ -112,6 +112,7 @@
     </ApplicationDefinition>
     <Compile Include="Contexts\CmdHelper.cs" />
     <Compile Include="Contexts\LocalDataHandler.cs" />
+    <Compile Include="Contexts\Notifications.cs" />
     <Compile Include="Contexts\OperationHelper.cs" />
     <Compile Include="Contexts\ADBCommand.cs" />
     <Compile Include="Contexts\SoftContext.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Hook\Main.cs" />
     <Compile Include="Hook\SocketInterFace.cs" />
     <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\SendData.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Tasks\AutoLevel.cs" />
