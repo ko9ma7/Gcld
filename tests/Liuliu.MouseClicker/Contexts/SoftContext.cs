@@ -29,31 +29,8 @@ namespace Liuliu.MouseClicker
         {
             Version = GetVersion();
             YeShenSimulatorList= new List<YeShenSimulator>();
-            AccountList = new List<Account>()
-                    {
-                        new Account() {UserName="rhjv99",Password="rhjv99",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="rhjv88",Password="rhjv88",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="rhjv77",Password="rhjv77",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="rhjv66",Password="rhjv66",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="rhjv55",Password="rhjv55",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="rhjv44",Password="rhjv44",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf99",Password="daipf99",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf88",Password="daipf88",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf77",Password="daipf77",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf66",Password="daipf66",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf55",Password="daipf55",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf44",Password="daipf44",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf33",Password="daipf33",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf22",Password="daipf22",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf11",Password="daipf11",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="daipf00",Password="daipf00",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="huang99",Password="huang99",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="huang88",Password="huang88",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                        new Account() {UserName="huang77",Password="huang77",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
-                    };
+        
         }
-
-        public static List<Account> AccountList { get; set; }
 
         public static MainWindow MainWindow { get; set; }
 
@@ -261,10 +238,9 @@ namespace Liuliu.MouseClicker
         {
             lock(_locker)
             {
-                var account = AccountList.FirstOrDefault(x => x.IsFinished == false&&x.IsWorking==false);
+                var account = Locator.Accounts.AccountList.FirstOrDefault(x => x.IsFinished == false&&x.IsWorking==false);
                 if (account!=null)
                 {
-                    account.IsWorking = true;
                     return account;
                 }
                 return null;

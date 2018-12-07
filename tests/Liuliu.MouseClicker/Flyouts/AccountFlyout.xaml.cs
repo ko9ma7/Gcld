@@ -39,23 +39,19 @@ namespace Liuliu.MouseClicker.Flyouts
                    switch(msg)
                    {
                        case "OpenAccountFlyout":
+                           isShowAll = false;
                            OpenAccountFlyout();
-                           break;
-                       case "OpenAllAccountFlyout":
-                           OpenAllAccountFlyout();
                            break;
                    }
                });
+            Messenger.Default.Register<bool>(this, Notifications.AccountFlyout,
+               (isShow) =>
+               {
+                   isShowAll = isShow;
+                   OpenAccountFlyout();
+               });
         }
-
-        private void OpenAllAccountFlyout()
-        {
-            if (!IsOpen)
-            {
-                IsOpen = true;
-            }
-        }
-
+        private bool isShowAll = false;
         private void OpenAccountFlyout()
         {
             if (!IsOpen)
@@ -69,7 +65,7 @@ namespace Liuliu.MouseClicker.Flyouts
             AccountViewModel model = SoftContext.Locator.Accounts;
             if (IsOpen)
             {
-                model.InitFromLocal();
+                model.InitFromLocal(isShowAll);
                 return;
             }
             model.SaveToLocal();

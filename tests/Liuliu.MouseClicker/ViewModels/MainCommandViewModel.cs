@@ -45,6 +45,7 @@ namespace Liuliu.MouseClicker.ViewModels
                            break;
                        case "Stop":
                            _role.TaskEngine.Stop();
+                           account.IsWorking = false;
                            break;
                    }
                });
@@ -77,6 +78,7 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
+        
         public ICommand OpenAllAccountFlyoutCommand
         {
             get
@@ -84,12 +86,11 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand<Role>((role) =>
                 {
                     _role = role;
-                    Messenger.Default.Send("OpenAllAccountFlyout", Notifications.AccountFlyout);
-                    Messenger.Default.Send("OpenAllAccountFlyout", Notifications.AccountViewModel);
+                    Messenger.Default.Send(true, Notifications.AccountFlyout);
                 });
             }
         }
-        public ICommand ShowAccountCommand
+        public ICommand OpenAccountFlyoutCommand
         {
             get
             {
@@ -97,7 +98,6 @@ namespace Liuliu.MouseClicker.ViewModels
                 {
                     _role = role;
                     Messenger.Default.Send("OpenAccountFlyout", Notifications.AccountFlyout);
-                    Messenger.Default.Send("OpenAccountFlyout", Notifications.AccountViewModel);
                 });
             }
         }
@@ -256,9 +256,11 @@ namespace Liuliu.MouseClicker.ViewModels
             }
             if (role == null)
                 return false;
+            if (account.IsFinished == true)
+                return false;
             role.AccountName = account.UserName;
-            account.IsWorking = true;
             bool result = false;
+            account.IsWorking = true;
             switch (account.Platform)
             {
                 case Platform.飞流:
@@ -270,7 +272,6 @@ namespace Liuliu.MouseClicker.ViewModels
             }
             if(result)
             {
-                account.IsFinished = true;
                // account = null;
                 return true;
             }
@@ -423,7 +424,7 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand<Role>((role) =>
                 {
                     role.TaskEngine.Stop();
-                    Account account=SoftContext.AccountList.FirstOrDefault(x=>x.UserName==role.AccountName);
+                    Account account=SoftContext.Locator.Accounts.AccountList.FirstOrDefault(x=>x.UserName==role.AccountName);
                     if (account != null)
                         account.IsWorking = false;
                 });

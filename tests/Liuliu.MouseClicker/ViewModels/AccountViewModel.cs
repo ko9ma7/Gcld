@@ -23,21 +23,30 @@ namespace Liuliu.MouseClicker.ViewModels
     {
         public AccountViewModel()
         {
-            Messenger.Default.Register<string>(this, Notifications.AccountViewModel,
-             (msg) =>
-             {
-                 switch (msg)
-                 {
-                     case "OpenAccountFlyout":
-                         AccountList = new ObservableCollection<Account>(SoftContext.AccountList.Where(x => x.IsFinished == false));
-                         break;
-                     case "OpenAllAccountFlyout":
-                         AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
-                         break;
-                 }
-             });
-
+            allList = new List<Account>()
+            {
+                   new Account() {UserName="rhjv99",Password="rhjv99",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="rhjv88",Password="rhjv88",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="rhjv77",Password="rhjv77",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="rhjv66",Password="rhjv66",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="rhjv55",Password="rhjv55",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="rhjv44",Password="rhjv44",Platform=Platform.飞流,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf99",Password="daipf99",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf88",Password="daipf88",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf77",Password="daipf77",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf66",Password="daipf66",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf55",Password="daipf55",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf44",Password="daipf44",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf33",Password="daipf33",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf22",Password="daipf22",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf11",Password="daipf11",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="daipf00",Password="daipf00",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="huang99",Password="huang99",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="huang88",Password="huang88",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+                        new Account() {UserName="huang77",Password="huang77",Platform=Platform.楚游,IsFinished=false,IsWorking=false },
+            }; 
         }
+        private List<Account> allList = null;
 
         ObservableCollection<Account> _mylist;
         public ObservableCollection<Account> AccountList
@@ -72,20 +81,25 @@ namespace Liuliu.MouseClicker.ViewModels
         /// <summary>
         /// 从本地数据初始化
         /// </summary>
-        public void InitFromLocal()
+        public void InitFromLocal(bool showAll=false)
         {
             var model = LocalDataHandler.GetData<AccountViewModel>("data.db", "accounts");
             if (model != null)
             {
                 if (model.TodayTime != DateTime.Now.ToString("yyyy-MM-dd"))
                 {
-                    AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
+                    //不是当天日期,初始化所有数据
+                    AccountList = new ObservableCollection<Account>(allList);  //新建一个对象
                     TodayTime = DateTime.Now.ToString("yyyy-MM-dd");
                 }
                 else
                 {
-                    AccountList = model.AccountList;
-                    SoftContext.AccountList = model.AccountList.ToList();
+                    //是当天日期,从本地加载数据
+                    allList = model.AccountList.ToList();
+                    if(showAll==false)
+                        AccountList = new ObservableCollection<Account>(allList.Where(x => x.IsFinished == false));
+                    else
+                        AccountList = new ObservableCollection<Account>(allList);
                     TodayTime = model.TodayTime;
                 }
             } 
@@ -96,7 +110,8 @@ namespace Liuliu.MouseClicker.ViewModels
         /// </summary>
         public void SaveToLocal()
         {
-            AccountList = new ObservableCollection<Account>(SoftContext.AccountList);
+            AccountList = new ObservableCollection<Account>(allList);
+            
             LocalDataHandler.SetData("data.db", "accounts", this);
         }
     }

@@ -29,6 +29,8 @@ using System.Threading;
 using Liuliu.MouseClicker.Contexts;
 using System.IO;
 using PacketDotNet;
+using Liuliu.MouseClicker.Models;
+using System.Collections.ObjectModel;
 
 namespace Liuliu.MouseClicker
 {
@@ -101,6 +103,20 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            List<Account> list = new List<Account>() { new Account() { UserName = "aa", Password = "bb" },new Account() { UserName="mm",Password="pp"} };
+            List<Account> list2 = new List<Account>() { new Account() { UserName = "aa", Password = "ee" }, new Account() { UserName = "mm", Password = "pp" } };
+            List<Account> a = null;
+            ObservableCollection<Account> b = null;
+            List<Account> c = null;
+            a = list2;
+            b = new ObservableCollection<Account>(list2.Where(x=>x.UserName=="aa"));
+            c = b.ToList();
+            list = list2;
+            b[0].Password = "cc";
+
+           Debug.WriteLine(c[0].Password);
+
+            return;
             var bytes = new byte[] { 0xE5, 0xBC, 0xBA };
             Debug.WriteLine(Encoding.UTF8.GetString(bytes));
             var tokenSource = new CancellationTokenSource();

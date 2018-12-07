@@ -255,9 +255,12 @@ namespace Liuliu.MouseClicker
                 _dm.DebugPrint("该角色已经执行过!切换失败");
                 _dm.Delay(500);
                 _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
-                Account account = SoftContext.AccountList.FirstOrDefault(x => x.UserName == AccountName);
+                Account account = SoftContext.Locator.Accounts.AccountList.FirstOrDefault(x => x.UserName == AccountName);
                 if (account != null)
-                    account.IsFinished =true;
+                {
+                    account.IsWorking = false;
+                    account.IsFinished = true;
+                }
                 return false;
             }
             else

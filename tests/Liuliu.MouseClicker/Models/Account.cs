@@ -1,4 +1,5 @@
 ﻿using Liuliu.MouseClicker.Mvvm;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace Liuliu.MouseClicker.Models
         /// <summary>
         /// 是否正在工作
         /// </summary>
+        [JsonIgnore]
         public bool IsWorking
         {
             get { return _isWorking; }
