@@ -166,6 +166,62 @@ namespace Liuliu.MouseClicker.Tasks
             // return (Color)颜色数量.ToList().IndexOf(max);
             return Color.无法识别;
         }
+        int[] needs = new int[] { 0, 0, 0, 0, 0, 0 };
+        private int GetSelectedGeneral()
+        {
+            if(Dm.FindColorBlockAndClick(83, 68, 180, 151, "DDDDDD-222222",100,25,50))
+            {
+                Dm.MoveToClick(465, 177);
+                if (IsOptimalColor(640, 77, 799, 117, 1)==false)
+                    needs[0] += 1;
+                Dm.MoveToClick(535, 179);
+                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                    needs[1] += 1;
+                Dm.MoveToClick(467, 250);
+                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                    needs[2] += 1;
+                Dm.MoveToClick(536, 251);
+                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                    needs[3] += 1;
+                Dm.MoveToClick(468, 319);
+                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                    needs[4] += 1;
+                Dm.MoveToClick(538, 322);
+                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                    needs[5] += 1;
+            }
+            return 1;
+        }
+
+        private bool IsOptimalColor(int x1,int y1,int x2,int y2,int level)
+        {
+            var color = GetColor(x1, y1, x2, y2);
+            if (level >= 16 && level < 28) //蓝
+            {
+                return color>=Color.蓝;
+            }
+            else if (level >= 28 && level < 36) //绿
+            {
+                return color >= Color.绿;
+            }
+            else if (level >= 36 && level < 53)//黄
+            {
+                return color >= Color.黄;
+            }
+            else if (level >= 53 && level < 70)//红
+            {
+                return color >= Color.红;
+            }
+            else if (level >= 70)//紫
+            {
+                return color >= Color.紫;
+            }
+            else
+            {
+                Dm.DebugPrint("人物等级无法识别！" + level);
+                return false;
+            }
+        }
 
         private TaskResult RunStep6(TaskContext arg)
         {

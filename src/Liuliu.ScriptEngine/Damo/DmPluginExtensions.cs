@@ -307,6 +307,31 @@ namespace Liuliu.ScriptEngine.Damo
                 return 0;
             return result.Split('|').Length;
         }
+        /// <summary>
+        /// 查找色块并点击
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="color"></param>
+        /// <param name="count"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="sim"></param>
+        /// <returns></returns>
+        public static bool FindColorBlockAndClick(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,int count,int width,int height,double sim= 0.9)
+        {
+            int intX, intY;
+            bool result=_dm.FindColorBlock(x1, y1, x2, y2, color, sim, count, width, height, out intX, out intY);
+            if(intX>0&&intY>0)
+            {
+                _dm.MoveToClick(intX, intY);
+                _dm.Delay(50);
+            }
+            return result;
+        }
 
     }
 }
