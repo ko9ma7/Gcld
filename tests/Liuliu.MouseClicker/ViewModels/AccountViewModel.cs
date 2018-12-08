@@ -77,6 +77,9 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
+
+
+
         public string TodayTime { get; set; }
         /// <summary>
         /// 从本地数据初始化

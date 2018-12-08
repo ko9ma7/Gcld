@@ -166,73 +166,83 @@ namespace Liuliu.MouseClicker.Tasks
             // return (Color)颜色数量.ToList().IndexOf(max);
             return Color.无法识别;
         }
-        int[] needs = new int[] { 0, 0, 0, 0, 0, 0 };
-        private int GetSelectedGeneral()
+        int[] needs = new int[] { 0, 0, 0, 0, 0, 0 };//枪甲符马袍旗
+        private void GetSelectedGeneralEquipment(int x1,int y1,int x2,int y2,int level)
         {
-            if(Dm.FindColorBlockAndClick(83, 68, 180, 151, "DDDDDD-222222",100,25,50))
+            if(Dm.FindColorBlockAndClick(x1, y1,x2,y2, "DDDDDD-222222",100,25,50))
             {
-                Dm.MoveToClick(465, 177);
-                if (IsOptimalColor(640, 77, 799, 117, 1)==false)
+                Dm.Delay(1000);
+                Dm.MoveToClick(465, 177);  //枪
+                Dm.Delay(1000);
+                if (IsOptimalColor(640, 77, 799, 117, level) ==false)
                     needs[0] += 1;
-                Dm.MoveToClick(535, 179);
-                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
-                    needs[1] += 1;
-                Dm.MoveToClick(467, 250);
-                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
-                    needs[2] += 1;
-                Dm.MoveToClick(536, 251);
-                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                Dm.MoveToClick(535, 179); //马
+                Dm.Delay(1000);
+                if (IsOptimalColor(640, 77, 799, 117, level) == false)
                     needs[3] += 1;
-                Dm.MoveToClick(468, 319);
-                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                Dm.MoveToClick(467, 250); //甲
+                Dm.Delay(1000);
+                if (IsOptimalColor(640, 77, 799, 117, level) == false)
+                    needs[1] += 1;
+                Dm.MoveToClick(536, 251);  //披风
+                Dm.Delay(1000);
+                if (IsOptimalColor(640, 77, 799, 117, level) == false)
                     needs[4] += 1;
-                Dm.MoveToClick(538, 322);
-                if (IsOptimalColor(640, 77, 799, 117, 1) == false)
+                Dm.MoveToClick(468, 319);  //帅印
+                Dm.Delay(1000);
+                if (IsOptimalColor(640, 77, 799, 117, level) == false)
+                    needs[2] += 1;
+                Dm.MoveToClick(538, 322);  //旗子
+                Dm.Delay(1000);
+                if (IsOptimalColor(640, 77, 799, 117, level) == false)
                     needs[5] += 1;
             }
-            return 1;
         }
-
+        Color MaxColor = Color.无法识别;
         private bool IsOptimalColor(int x1,int y1,int x2,int y2,int level)
         {
             var color = GetColor(x1, y1, x2, y2);
-            if (level >= 16 && level < 28) //蓝
-            {
-                return color>=Color.蓝;
-            }
-            else if (level >= 28 && level < 36) //绿
-            {
-                return color >= Color.绿;
-            }
-            else if (level >= 36 && level < 53)//黄
-            {
-                return color >= Color.黄;
-            }
-            else if (level >= 53 && level < 70)//红
-            {
-                return color >= Color.红;
-            }
-            else if (level >= 70)//紫
-            {
-                return color >= Color.紫;
-            }
-            else
-            {
-                Dm.DebugPrint("人物等级无法识别！" + level);
-                return false;
-            }
+            Dm.DebugPrint(color.ToString());
+            if (color > MaxColor)
+                MaxColor = color;
+            return color >= MaxColor;
         }
-
+   
         private TaskResult RunStep6(TaskContext arg)
         {
             Role role = (Role)Role;
             Dm.UseDict(1);
             int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30", 0.8);
             Dm.UseDict(0);
+            if (level >= 16 && level < 28) //蓝
+                MaxColor = Color.蓝;
+            else if (level >= 28 && level < 36) //绿
+                MaxColor = Color.绿;
+            else if (level >= 36 && level < 53)//黄
+                MaxColor = Color.黄;
+            else if (level >= 53 && level < 70)//红
+                MaxColor = Color.红;
+            else if (level >= 70)//紫
+                MaxColor = Color.紫;
+            else
+            {
+                Dm.DebugPrint("人物等级无法识别！" + level);
+                return TaskResult.Finished;
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                needs[i] = 0;
+            }
             //获取所需装备件数
-            //Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("武将"), () => Dm.Delay(1000));
-            //Delegater.WaitTrue(() => role.OpenWindowMenu("武将"),
-            //                   () => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
+                               () => Dm.Delay(1000));
+            GetSelectedGeneralEquipment(86, 68, 177, 149, level);
+            GetSelectedGeneralEquipment(86, 156, 173, 241, level);
+            GetSelectedGeneralEquipment(84, 244, 176, 326, level);
+            GetSelectedGeneralEquipment(83, 332, 174, 417, level);
+            Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+            role.CloseWindow();
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
             Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
                                () => Dm.Delay(1000));
@@ -246,51 +256,6 @@ namespace Liuliu.MouseClicker.Tasks
             dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
             Delegater.WaitTrue(() =>
             {
-                List<Goods> list = new List<Goods>();
-                Dm.StartWatch();
-                for (int i = 1; i <= 6; i++)
-                {
-                    var color = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
-                    var starLevel = Dm.GetPicCount(dict[i][4], dict[i][5], dict[i][6], dict[i][7], @"\bmp\星星1.bmp");
-                    list.Add(new Goods() { Pos = i, StarLevel = starLevel, Color = color, Buypos = new Tuple<int, int>(dict[i][8], dict[i][9]) });
-                    Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
-                }
-                Dm.StopWatch();
-                List<Goods> buyList = null;
-                if (level >= 16 && level < 28) //蓝
-                {
-                    buyList = list.Where(x => x.Color == Color.蓝).ToList();
-                }
-                else if (level >= 28 && level < 36) //绿
-                {
-                    buyList = list.Where(x => x.Color == Color.绿).ToList();
-                }
-                else if (level >= 36 && level < 53)//黄
-                {
-                    buyList = list.Where(x => x.Color == Color.黄 && x.StarLevel == 1).ToList();
-                }
-                else if (level >= 53 && level < 70)//红
-                {
-                    buyList = list.Where(x => x.Color == Color.红 && x.StarLevel == 2).ToList();
-                }
-                else if (level >= 70)//紫
-                {
-                    buyList = list.Where(x => x.Color == Color.紫 && x.StarLevel == 3).ToList();
-                }
-                else
-                {
-                    Dm.DebugPrint("人物等级无法识别！" + level);
-                    return true;
-                }
-                if (buyList != null)
-                {
-                    foreach (var goods in buyList)
-                    {
-                        Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
-                        Dm.Delay(1000);
-                    }
-                }
-
                 Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
                 Dm.Delay(500);
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
@@ -301,7 +266,63 @@ namespace Liuliu.MouseClicker.Tasks
                 //出现适合装备
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
                 {
-                    // Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
+                    List<Goods> list = new List<Goods>();
+                    Dm.StartWatch();
+                    for (int i = 1; i <= 6; i++)
+                    {
+                        var color = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
+                        var starLevel = Dm.GetPicCount(dict[i][4], dict[i][5], dict[i][6], dict[i][7], @"\bmp\星星1.bmp");
+                        list.Add(new Goods() { Pos = i, StarLevel = starLevel, Color = color, Buypos = new Tuple<int, int>(dict[i][8], dict[i][9]) });
+                        Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
+                    }
+                    Dm.StopWatch();
+                    List<Goods> buyList = null;
+                    if (level >= 16 && level < 28) //蓝
+                    {
+                        buyList = list.Where(x => x.Color == Color.蓝).ToList();
+                    }
+                    else if (level >= 28 && level < 36) //绿
+                    {
+                        buyList = list.Where(x => x.Color == Color.绿).ToList();
+                    }
+                    else if (level >= 36 && level < 53)//黄
+                    {
+                        buyList = list.Where(x => x.Color == Color.黄 && x.StarLevel == 1).ToList();
+                    }
+                    else if (level >= 53 && level < 70)//红
+                    {
+                        buyList = list.Where(x => x.Color == Color.红 && x.StarLevel == 2).ToList();
+                    }
+                    else if (level >= 70)//紫
+                    {
+                        buyList = list.Where(x => x.Color == Color.紫 && x.StarLevel == 3).ToList();
+                    }
+                    else
+                    {
+                        Dm.DebugPrint("人物等级无法识别！" + level);
+                        return true;
+                    }
+                    if (buyList != null)
+                    {
+                        foreach (var goods in buyList)
+                        {
+                            for (int j = 0; j < 6; j++)
+                            {
+                                if (needs[j] != 0 && goods.Pos == j + 1)
+                                {
+                                    needs[j] -= 1;
+                                    Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
+                                    Dm.Delay(1000);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
+                    Dm.Delay(1000);
+                    if(Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
+                         Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
                 }
                 //出现稀有物品
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
@@ -310,8 +331,9 @@ namespace Liuliu.MouseClicker.Tasks
                 }
                 return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
             }, () => Dm.Delay(500));
+            Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
             role.CloseWindow();
-            return TaskResult.Success;
+            return TaskResult.Finished;
         }
 
         enum EquipmentType
@@ -604,6 +626,9 @@ namespace Liuliu.MouseClicker.Tasks
             DmPlugin dm = role.Window.Dm;
             role.OutMessage("打开兵器界面");
 
+            role.OpenMenu("兵器");
+            dm.Delay(2000);
+
             Delegater.WaitTrue(() =>
             {
                 int a = Dm.GetColorNum(113, 83, 173, 135, "e25858 - 202020", 0.9);
@@ -679,6 +704,7 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.MoveToClick(785, 470);
                 Dm.Delay(200);
             });
+            role.CloseWindow();
 
             return TaskResult.Finished;
             

@@ -188,7 +188,6 @@ namespace Liuliu.MouseClicker.ViewModels
             if (role.SelectedItemTask.Content.ToString() == "自动兵器")
             {
                 engine.AutoLogin = null;
-                engine.ChangeRole = null;
                 context.Settings.StepName = "自动兵器";
                 tasks.Add(new SmallTool(context));
             }
