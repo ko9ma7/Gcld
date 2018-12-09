@@ -221,7 +221,7 @@ namespace Liuliu.MouseClicker
         public bool ChangeRole()
         {
             OutMessage("切换角色中...");
-            Delegater.WaitTrue(() => _dm.MoveToClick(29, 51),()=>IsExistWindowMenu("角色"),() => _dm.Delay(1000));
+            Delegater.WaitTrue(() => _dm.MoveToClick(29, 51),()=>IsExistWindowMenu("角色"),() => { _dm.Delay(1000); CloseWindow(); });
                 Delegater.WaitTrue(()=>
                 {
                     OpenWindowMenu("角色");

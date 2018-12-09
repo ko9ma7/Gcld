@@ -167,41 +167,74 @@ namespace Liuliu.MouseClicker.Tasks
             return Color.无法识别;
         }
         int[] needs = new int[] { 0, 0, 0, 0, 0, 0 };//枪甲符马袍旗
-        private void GetSelectedGeneralEquipment(int x1,int y1,int x2,int y2,int level)
+
+        private void GetEquipmentProperty(int x,int y,int i)
+        {
+            Dm.Delay(1000);
+            Dm.MoveToClick(x, y);  
+            Dm.Delay(1000);
+            int count = Dm.GetColorNum(205, 448, 264, 499, "201a19-202020", 0.9);
+            if (Dm.GetColorNum(584, 76, 633, 114, "edd1a9 -202020|a49074-202020", 0.9) > 100 )
+            {
+                if (count > 2000)
+                {
+                    needs[i] += 1;
+                    return;
+                }
+                else
+                {
+                    Dm.MoveToClick(234, 469);
+                    Dm.Delay(1000);
+                    Dm.MoveToClick(x, y);
+                    Dm.Delay(1000);
+                }
+            }
+           
+                if (IsOptimalColor() == false)
+                {
+                    if (count > 2000)
+                        needs[i] += 1;
+                    else
+                    {
+                        Dm.MoveToClick(234, 469);
+                        Dm.Delay(1000);
+                        if (IsOptimalColor() == false)
+                            needs[i] += 1;
+                        else
+                            Delegater.WaitTrue(() =>
+                            {
+                                if (Dm.FindPicAndClick(658, 437, 782, 491, @"\bmp\穿上装备.bmp"))
+                                {
+                                    Dm.Delay(1000);
+                                    if (Dm.IsExistPic(537, 194, 669, 277, @"\bmp\兵力损失.bmp"))
+                                        Dm.MoveToClick(415, 359);
+                                    return true;
+                                }
+                                return false;
+                            }, () => Dm.Delay(1000));
+
+                    }
+
+                }
+         
+          
+        }
+        private void GetSelectedGeneralEquipment(int x1,int y1,int x2,int y2)
         {
             if(Dm.FindColorBlockAndClick(x1, y1,x2,y2, "DDDDDD-222222",100,25,50))
-            {
-                Dm.Delay(1000);
-                Dm.MoveToClick(465, 177);  //枪
-                Dm.Delay(1000);
-                if (IsOptimalColor(640, 77, 799, 117, level) ==false)
-                    needs[0] += 1;
-                Dm.MoveToClick(535, 179); //马
-                Dm.Delay(1000);
-                if (IsOptimalColor(640, 77, 799, 117, level) == false)
-                    needs[3] += 1;
-                Dm.MoveToClick(467, 250); //甲
-                Dm.Delay(1000);
-                if (IsOptimalColor(640, 77, 799, 117, level) == false)
-                    needs[1] += 1;
-                Dm.MoveToClick(536, 251);  //披风
-                Dm.Delay(1000);
-                if (IsOptimalColor(640, 77, 799, 117, level) == false)
-                    needs[4] += 1;
-                Dm.MoveToClick(468, 319);  //帅印
-                Dm.Delay(1000);
-                if (IsOptimalColor(640, 77, 799, 117, level) == false)
-                    needs[2] += 1;
-                Dm.MoveToClick(538, 322);  //旗子
-                Dm.Delay(1000);
-                if (IsOptimalColor(640, 77, 799, 117, level) == false)
-                    needs[5] += 1;
+            { 
+                GetEquipmentProperty(465, 177, 0);//枪
+                GetEquipmentProperty(467, 250, 1);//甲
+                GetEquipmentProperty(468, 319, 2);//帅印
+                GetEquipmentProperty(535, 179, 3);//马
+                GetEquipmentProperty(536, 251, 4); //披风
+                GetEquipmentProperty(538, 322, 5);//旗子
             }
         }
         Color MaxColor = Color.无法识别;
-        private bool IsOptimalColor(int x1,int y1,int x2,int y2,int level)
+        private bool IsOptimalColor()
         {
-            var color = GetColor(x1, y1, x2, y2);
+            var color = GetColor(640, 77, 799, 117);
             Dm.DebugPrint(color.ToString());
             if (color > MaxColor)
                 MaxColor = color;
@@ -227,6 +260,7 @@ namespace Liuliu.MouseClicker.Tasks
             else
             {
                 Dm.DebugPrint("人物等级无法识别！" + level);
+                MaxColor = Color.无法识别;
                 return TaskResult.Finished;
             }
             for (int i = 0; i < 6; i++)
@@ -237,10 +271,10 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
             Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
                                () => Dm.Delay(1000));
-            GetSelectedGeneralEquipment(86, 68, 177, 149, level);
-            GetSelectedGeneralEquipment(86, 156, 173, 241, level);
-            GetSelectedGeneralEquipment(84, 244, 176, 326, level);
-            GetSelectedGeneralEquipment(83, 332, 174, 417, level);
+            GetSelectedGeneralEquipment(86, 68, 177, 149);
+            GetSelectedGeneralEquipment(86, 156, 173, 241);
+            GetSelectedGeneralEquipment(84, 244, 176, 326);
+            GetSelectedGeneralEquipment(83, 332, 174, 417);
             Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
             role.CloseWindow();
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
@@ -257,7 +291,7 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() =>
             {
                 Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
-                Dm.Delay(500);
+                Dm.Delay(100);
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
                 {
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
