@@ -244,6 +244,7 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep6(TaskContext arg)
         {
             Role role = (Role)Role;
+            role.CloseWindow();
             Dm.UseDict(1);
             int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30", 0.8);
             Dm.UseDict(0);
@@ -268,15 +269,18 @@ namespace Liuliu.MouseClicker.Tasks
                 needs[i] = 0;
             }
             //获取所需装备件数
-            Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
-            Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
-                               () => Dm.Delay(1000));
-            GetSelectedGeneralEquipment(86, 68, 177, 149);
-            GetSelectedGeneralEquipment(86, 156, 173, 241);
-            GetSelectedGeneralEquipment(84, 244, 176, 326);
-            GetSelectedGeneralEquipment(83, 332, 174, 417);
-            Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
-            role.CloseWindow();
+            if(MaxColor==Color.紫)
+            {
+                Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
+                Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
+                                   () => Dm.Delay(1000));
+                GetSelectedGeneralEquipment(86, 68, 177, 149);
+                GetSelectedGeneralEquipment(86, 156, 173, 241);
+                GetSelectedGeneralEquipment(84, 244, 176, 326);
+                GetSelectedGeneralEquipment(83, 332, 174, 417);
+                Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+                role.CloseWindow();
+            }
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
             Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
                                () => Dm.Delay(1000));
@@ -291,7 +295,6 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() =>
             {
                 Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
-                Dm.Delay(100);
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
                 {
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
@@ -312,23 +315,24 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                     Dm.StopWatch();
                     List<Goods> buyList = null;
-                    if (level >= 16 && level < 28) //蓝
+                    if(list.Max(x=>x.Color)!=MaxColor)
                     {
-                        buyList = list.Where(x => x.Color == Color.蓝).ToList();
+                        Dm.DebugPrint("最大颜色错误:" + list.Max(x => x.Color) + "maxcolor:" + MaxColor.ToString());
+                        MaxColor = list.Max(x => x.Color);
                     }
-                    else if (level >= 28 && level < 36) //绿
+                    if(MaxColor==Color.白||MaxColor==Color.蓝||MaxColor==Color.绿)
                     {
-                        buyList = list.Where(x => x.Color == Color.绿).ToList();
+                        buyList = list.Where(x => x.Color == MaxColor).ToList();
                     }
-                    else if (level >= 36 && level < 53)//黄
+                    else if (MaxColor==Color.黄)//黄
                     {
                         buyList = list.Where(x => x.Color == Color.黄 && x.StarLevel == 1).ToList();
                     }
-                    else if (level >= 53 && level < 70)//红
+                    else if (MaxColor==Color.红)//红
                     {
                         buyList = list.Where(x => x.Color == Color.红 && x.StarLevel == 2).ToList();
                     }
-                    else if (level >= 70)//紫
+                    else if (MaxColor==Color.紫)//紫
                     {
                         buyList = list.Where(x => x.Color == Color.紫 && x.StarLevel == 3).ToList();
                     }
@@ -341,15 +345,24 @@ namespace Liuliu.MouseClicker.Tasks
                     {
                         foreach (var goods in buyList)
                         {
-                            for (int j = 0; j < 6; j++)
+                            if(MaxColor>=Color.紫)
                             {
-                                if (needs[j] != 0 && goods.Pos == j + 1)
+                                for (int j = 0; j < 6; j++)
                                 {
-                                    needs[j] -= 1;
-                                    Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
-                                    Dm.Delay(1000);
-                                    break;
+                                    if (needs[j] != 0 && goods.Pos == j + 1)
+                                    {
+                                        needs[j] -= 1;
+                                        Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
+                                        Dm.Delay(1000);
+                                        break;
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
+                                Dm.Delay(1000);
+                                break;
                             }
                         }
                     }
@@ -364,7 +377,7 @@ namespace Liuliu.MouseClicker.Tasks
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
                 }
                 return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
-            }, () => Dm.Delay(500));
+            }, () => Dm.Delay(200));
             Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
             role.CloseWindow();
             return TaskResult.Finished;
