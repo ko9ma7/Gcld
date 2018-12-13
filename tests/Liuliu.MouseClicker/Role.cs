@@ -621,45 +621,38 @@ namespace Liuliu.MouseClicker
             }, () => _dm.Delay(1000),10);
         }
 
+        private bool SupplementarySoldier(int x1,int y1,int x2,int y2,int a,int b)
+        {
+            if (_dm.GetColorNum(x1, y1, x2, y2, "BF6C61-202020", 1.0) < 50)
+            {
+                _dm.MoveToClick(a, b);
+                _dm.Delay(500);
+                return true;
+            }
+            return false;
+        }
         public bool GoToFighting(bool isSkip = false)
         {
           Delegater.WaitTrue(() =>
             {
                 //_dm.FindPicAndClick(395, 311, 574, 393, @"\bmp\上阵.bmp");
-                _dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp");
+                if(!_dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp"))
+                {
+                    _dm.FindMultiColorAndClick(122, 58, 318, 196, "ffb40b", "19|-17|ffb814,35|0|ffb40b-202020,34|-34|fff303-202020,25|-25|ffdd12,26|-4|ff8804,8|-7|ff9907,28|-29|ffe009",-17,59);
+                }
                 if (_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp"))
                 {
                     _dm.Delay(500);
                     _dm.MoveToClick(64, 50);//清除教程提示
                     Delegater.WaitTrue(() => {
                         //补充兵力
-                        if (_dm.GetColorNum(696, 156, 792, 180, "BF6C61-202020", 1.0) < 50)
-                        {
-                            _dm.MoveToClick(747, 112);
-                            _dm.Delay(500);
-                        }
-                        if (_dm.GetColorNum(564, 154, 658, 180, "BF6C61-202020", 1.0) < 50)
-                        {
-                            _dm.MoveToClick(610, 118);
-                            _dm.Delay(500);
-                        }
-                        if (_dm.GetColorNum(433, 156, 531, 179, "BF6C61-202020", 1.0) < 50)
-                        {
-                            _dm.MoveToClick(485, 111);
-                            _dm.Delay(500);
-                        }
-                        if (_dm.GetColorNum(304, 157, 395, 178, "BF6C61-202020", 1.0) < 50)
-                        {
-                            _dm.MoveToClick(355, 106);
-                            _dm.Delay(500);
-                        }
-                        if (_dm.GetColorNum(175, 157, 263, 180, "BF6C61-202020", 1.0) < 50)
-                        {
-                            _dm.MoveToClick(219, 111);
-                            _dm.Delay(500);
-                        }
+                        SupplementarySoldier(696, 156, 792, 180, 747, 112);
+                        SupplementarySoldier(564, 154, 658, 180, 610, 118);
+                        SupplementarySoldier(433, 156, 531, 179, 485, 111);
+                        SupplementarySoldier(304, 157, 395, 178, 355, 106);
+                        SupplementarySoldier(175, 157, 263, 180, 219, 111);
                         _dm.Delay(500);
-                        _dm.MoveToClick(807, 259);
+                        _dm.MoveToClick(807, 259); //点击开战
                         _dm.Delay(1000);
                         if (_dm.IsExistPic(319, 197, 448, 247, @"\bmp\兵力不足.bmp"))
                         {
@@ -668,9 +661,7 @@ namespace Liuliu.MouseClicker
                             return false;
                         }
                         else
-                        {
                             return true;
-                        }
                     }, () => _dm.IsExistPic(5, 40, 48, 102, @"\bmp\攻方.bmp", 0.7), 
                        () => _dm.Delay(1000));  //点击战斗
 
@@ -691,22 +682,25 @@ namespace Liuliu.MouseClicker
                             recentTactics = tactics;
                         if (_dm.IsExistPic(310, 132, 445, 295, @"\bmp\战斗选择.bmp",0.8,false))
                         {
-                            switch(recentTactics)
+                            if (!_dm.FindMultiColorAndClick(330, 119, 637, 416, "828175", "-53|53|a5a5a0,56|42|828274-202020,37|11|443a3b-202020,-42|21|fffeff,57|62|685b5a,-39|18|fffefe,-49|37|dbd8cd", 0, 0, 0.9))
                             {
-                                case 战术.防御:
-                                    _dm.MoveToClick(581, 316);//点击攻击
-                                    break;
-                                case 战术.突击:
-                                    _dm.MoveToClick(370, 318);//点击防御
-                                    break;
-                                case 战术.攻击:
-                                    _dm.MoveToClick(474, 152);//点击突击
-                                    break;
-                                default:
-                                    _dm.DebugPrint("战术无法识别！");
-                                    break;
+                                switch (recentTactics)
+                                {
+                                    case 战术.防御:
+                                        _dm.MoveToClick(581, 316);//点击攻击
+                                        break;
+                                    case 战术.突击:
+                                        _dm.MoveToClick(370, 318);//点击防御
+                                        break;
+                                    case 战术.攻击:
+                                        _dm.MoveToClick(474, 152);//点击突击
+                                        break;
+                                    default:
+                                        _dm.DebugPrint("战术无法识别！");
+                                        break;
+                                }
+
                             }
-                       
                         }
                         _dm.Delay(1000);
                       

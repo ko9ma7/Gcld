@@ -71,7 +71,8 @@ namespace Liuliu.MouseClicker.Tasks
             int count = 0;
             while (true)
             {
-                if (Dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp"))
+                if (Dm.FindPicAndClick(116, 72, 936, 351, @"\bmp\战斗.bmp")|| 
+                    Dm.FindMultiColorAndClick(122, 58, 318, 196, "ffb40b", "19|-17|ffb814,35|0|ffb40b-202020,34|-34|fff303-202020,25|-25|ffdd12,26|-4|ff8804,8|-7|ff9907,28|-29|ffe009",17,59))
                 {
                     count = 0;
                     if (role.GoToFighting() == false)
@@ -83,7 +84,7 @@ namespace Liuliu.MouseClicker.Tasks
                 else
                 {
                     count++;
-                    if (count > 10)
+                    if (count > 5)
                         break;
                     Dm.Swipe(670, 427, 93, 427); //向右划
                     Dm.Delay(1000);
@@ -262,6 +263,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 Dm.DebugPrint("人物等级无法识别！" + level);
                 MaxColor = Color.无法识别;
+                role.CloseWindow();
                 return TaskResult.Finished;
             }
             for (int i = 0; i < 6; i++)

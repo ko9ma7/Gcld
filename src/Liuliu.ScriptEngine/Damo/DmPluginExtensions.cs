@@ -332,6 +332,32 @@ namespace Liuliu.ScriptEngine.Damo
             }
             return result;
         }
+        /// <summary>
+        /// 多点找色并点击
+        /// </summary>
+        /// <param name="_dm"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="firstColor"></param>
+        /// <param name="offsetColor"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="sim"></param>
+        /// <returns></returns>
+        public static bool FindMultiColorAndClick(this DmPlugin _dm,int x1,int y1,int x2,int y2,string firstColor, string offsetColor, int a=0,int b=0,double sim=0.8)
+        {
+            int intX, intY;
+            _dm.FindMultiColor(x1, y1, x2, y2, firstColor, offsetColor, sim, 0, out intX, out intY);
+                if(intX>0&&intY>0)
+                {
+                    _dm.MoveToClick(intX + a, intY + b);
+                    _dm.Delay(50);
+                    return true;
+                }
+            return false;
+        }
 
     }
 }
