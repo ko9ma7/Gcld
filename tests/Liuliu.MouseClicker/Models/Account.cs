@@ -37,7 +37,6 @@ namespace Liuliu.MouseClicker.Models
         /// <summary>
         /// 是否正在工作
         /// </summary>
-        [JsonIgnore]
         public bool IsWorking
         {
             get { return _isWorking; }

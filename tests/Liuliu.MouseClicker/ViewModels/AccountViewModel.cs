@@ -78,34 +78,39 @@ namespace Liuliu.MouseClicker.ViewModels
             }
         }
 
+        public void SetAccountState(Account account)
+        {
+            Account a = AccountList.FirstOrDefault(x => x.UserName == account.UserName);
+            if (a!=null)
+            {
+                a.IsWorking = account.IsWorking;
+                a.IsFinished = account.IsFinished; 
+            }
+            LocalDataHandler.SetData("data.db", "accounts", allList);
+        }
 
-
-        public string TodayTime { get; set; }
+        private string TodayTime { get; set; }
         /// <summary>
         /// 从本地数据初始化
         /// </summary>
         public void InitFromLocal(bool showAll=false)
         {
-            var model = LocalDataHandler.GetData<AccountViewModel>("data.db", "accounts");
-            if (model != null)
+            var time = LocalDataHandler.GetData<string>("data.db", "todayTime");
+            if (time == null|| time != DateTime.Now.ToString("yyyy-MM-dd"))
             {
-                if (model.TodayTime != DateTime.Now.ToString("yyyy-MM-dd"))
-                {
-                    //不是当天日期,初始化所有数据
-                    AccountList = new ObservableCollection<Account>(allList);  //新建一个对象
-                    TodayTime = DateTime.Now.ToString("yyyy-MM-dd");
-                }
-                else
-                {
-                    //是当天日期,从本地加载数据
-                    allList = model.AccountList.ToList();
-                    if(showAll==false)
-                        AccountList = new ObservableCollection<Account>(allList.Where(x => x.IsFinished == false));
-                    else
-                        AccountList = new ObservableCollection<Account>(allList);
-                    TodayTime = model.TodayTime;
-                }
-            } 
+                //不是当天日期,初始化所有数据
+                AccountList = new ObservableCollection<Account>(allList);  //新建一个对象
+                TodayTime = DateTime.Now.ToString("yyyy-MM-dd");
+                return;
+            }
+            var accounts = LocalDataHandler.GetData<List<Account>>("data.db", "accounts");
+            //是当天日期,从本地加载数据
+            allList = accounts;
+            if (showAll == false)
+                AccountList = new ObservableCollection<Account>(allList.Where(x => x.IsFinished == false));
+            else
+                AccountList = new ObservableCollection<Account>(allList);
+            TodayTime = time;
         }
 
         /// <summary>
@@ -113,9 +118,8 @@ namespace Liuliu.MouseClicker.ViewModels
         /// </summary>
         public void SaveToLocal()
         {
-            AccountList = new ObservableCollection<Account>(allList);
-            
-            LocalDataHandler.SetData("data.db", "accounts", this);
+            LocalDataHandler.SetData("data.db", "todayTime", TodayTime);
+            LocalDataHandler.SetData("data.db", "accounts", allList);
         }
     }
 }

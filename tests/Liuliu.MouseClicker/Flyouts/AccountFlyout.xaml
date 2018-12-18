@@ -15,7 +15,7 @@
                 <DataGridTextColumn Binding="{Binding UserName}" IsReadOnly="True" Header="用户名" Width="80"/>
                 <DataGridTextColumn Binding="{Binding Password}" IsReadOnly="True" Header="密码" Width="80"/>
                 <DataGridTextColumn Binding="{Binding Platform}" IsReadOnly="True" Header="平台" Width="60"/>
-                <DataGridCheckBoxColumn Binding="{Binding IsWorking}" IsReadOnly="True" Header="工作中" Width="60"/>
+                <DataGridCheckBoxColumn Binding="{Binding IsWorking}" Header="工作中" Width="60"/>
                 <DataGridCheckBoxColumn Binding="{Binding IsFinished,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="是否完成" Width="70"/>
                 <DataGridTemplateColumn Header="操作">
                     <DataGridTemplateColumn.CellTemplate>
