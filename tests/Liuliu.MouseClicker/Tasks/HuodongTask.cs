@@ -153,60 +153,96 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 return TaskResult.Jump;
             }
-            return TaskResult.Jump;
             Delegater.WaitTrue(() => role.OpenActivityBoard("天降神剑"),
                  () => Dm.IsExistPic(395, 81, 535, 151, @"\bmp\神剑.bmp"),
                  () => Dm.Delay(1000));
-            if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp"))
+            if (Dm.IsExistPic(493, 309, 647, 390, @"\bmp\败.bmp") && !Dm.IsExistPic(429, 431, 543, 485, @"\bmp\神剑继续.bmp"))
             {
                 role.OutSubMessage("神剑正在冷却中!");
                 role.CloseWindow();
                 return TaskResult.Success;
             }
-                while (true)
+            while (true)
             {
-               if(Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀1.bmp|\bmp\点击斩杀3.bmp", 30,-20))
+               if(Dm.FindPicAndClick(429, 431, 543, 485, @"\bmp\神剑继续.bmp"))
                 {
-                    Dm.Delay(800);
-                    if (Dm.GetColorNum(180, 443, 312, 480, "66C031 -0B1C06", 0.9) > 20)
-                        Dm.MoveToClick(245, 380);
-                    if (Dm.GetColorNum(417, 449, 547, 478, "66C031 -0B1C06", 0.9) > 20)
-                        Dm.MoveToClick(483, 379);
-                    if (Dm.GetColorNum(643, 452, 795, 478, "66C031 -0B1C06", 0.9) > 20)
-                        Dm.MoveToClick(725, 374);
+                    Dm.Delay(1500);
                 }
-               else
+                if (Dm.IsExistPic(171, 313, 312, 432, @"\bmp\点击斩杀.bmp",0.7))
                 {
-                    Dm.Delay(2000);
-                    if (!Dm.FindPicAndClick(193, 371, 791, 440, @"\bmp\点击斩杀.bmp|\bmp\点击斩杀1.bmp|\bmp\点击斩杀3.bmp", 30, -20))
+                    int count = 0;
+                    Delegater.WaitTrue(() => 
                     {
-                       while(true)
+                        Dm.MoveToClick(241, 376);
+                        if (Dm.GetColorNum(201, 316, 288, 355, "71dc37-303030", 0.9) > 100&&count>10)
                         {
-                            Dm.FindPicAndClick(157, 431, 819, 497, @"\bmp\领取buff.bmp", 3, -70);
-                            if (Dm.GetColorNum(180, 443, 312, 480, "66C031 -0B1C06", 0.9) > 20)
-                                Dm.MoveToClick(245, 380);
-                            if (Dm.GetColorNum(417, 449, 547, 478, "66C031 -0B1C06", 0.9) > 20)
-                                Dm.MoveToClick(483, 379);
-                            if (Dm.GetColorNum(643, 452, 795, 478, "66C031 -0B1C06", 0.9) > 20)
-                                Dm.MoveToClick(725, 374);
-                            if (Dm.GetColorNum(180, 443, 312, 480, "66C031 -0B1C06", 0.9) < 10 && Dm.GetColorNum(417, 449, 547, 478, "66C031 -0B1C06", 0.9) < 10 && Dm.GetColorNum(643, 452, 795, 478, "66C031 -0B1C06", 0.9) < 10)
-                                break;
                             Dm.Delay(1000);
+                            if(Dm.GetColorNum(201, 316, 288, 355, "71dc37-303030", 0.9) > 100)
+                              return true;
                         }
-                        Dm.Delay(1000);
-                        break;
-                    }
+                        count++;
+                        return false;
+                    },()=> Dm.Delay(100));
                 }
-
+                if (Dm.IsExistPic(408, 355, 566, 433, @"\bmp\点击斩杀.bmp", 0.7))
+                {
+                    int count = 0;
+                    Delegater.WaitTrue(() =>
+                    {
+                        Dm.MoveToClick(484, 373);
+                        if (Dm.GetColorNum(431, 309, 536, 349, "71dc37-303030", 0.9) > 100 && count > 10)
+                        {
+                            Dm.Delay(1000);
+                            if(Dm.GetColorNum(431, 309, 536, 349, "71dc37-303030", 0.9) > 100)
+                              return true;
+                        }
+                        count++;
+                        return false;
+                    }, () => Dm.Delay(100));
+                }
+                if (Dm.IsExistPic(655, 354, 786, 430, @"\bmp\点击斩杀.bmp", 0.7))
+                {
+                    int count = 0;
+                    Delegater.WaitTrue(() =>
+                    {
+                        Dm.MoveToClick(720, 381);
+                        if (Dm.GetColorNum(672, 298, 768, 344, "71dc37-303030", 0.9) > 100&&count>10)
+                        {
+                            Dm.Delay(1000);
+                            if (Dm.GetColorNum(672, 298, 768, 344, "71dc37-303030", 0.9) > 100)
+                                return true;
+                        }
+                        count++;
+                        return false;
+                    }, () => Dm.Delay(100));
+                }
+                if(!Dm.IsExistPic(171, 313, 312, 432, @"\bmp\点击斩杀.bmp", 0.7)&&
+                   !Dm.IsExistPic(408, 355, 566, 433, @"\bmp\点击斩杀.bmp", 0.7)&&
+                   !Dm.IsExistPic(655, 354, 786, 430, @"\bmp\点击斩杀.bmp", 0.7))
+                {
+                    break;
+                }
             }
             Delegater.WaitTrue(()=>
             {
                 if (Dm.FindPicAndClick(370, 454, 583, 536, @"\bmp\挑战.bmp|\bmp\挑战2.bmp"))
                 {
-                    while (Dm.CmpColor(426, 300, "9c1912-202020", 0.9))
+                    int count = 0;
+                    while (true)
                     {
+                        count++;
                         Dm.MoveToClick(477, 407);
                         Dm.Delay(500);
+                        if(Dm.CmpColor(426, 300, "9c1912-202020", 0.9))
+                        {
+                            Dm.Delay(1000);
+                            if(!Dm.CmpColor(426, 300, "9c1912-202020", 0.9))
+                            {
+                                break;
+                            }
+                        }
+                        if (count > 15)
+                            break;
                     }
                     while (Dm.FindColorAndClick(139, 263, 831, 484, "fbd41b-202020"))
                     {

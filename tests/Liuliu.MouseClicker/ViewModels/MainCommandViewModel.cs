@@ -208,6 +208,8 @@ namespace Liuliu.MouseClicker.ViewModels
             }
             if (role.SelectedItemTask.Content.ToString() == "自动建筑")
             {
+                engine.AutoLogin = null;
+                engine.ChangeRole = () => { return false; };
                 context.Settings.StepName = "自动建筑";
                 tasks.Add(new SmallTool(context));
             }
