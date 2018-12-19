@@ -204,7 +204,7 @@ namespace Liuliu.MouseClicker.Tasks
                         else
                             Delegater.WaitTrue(() =>
                             {
-                                if (Dm.FindPicAndClick(658, 437, 782, 491, @"\bmp\穿上装备.bmp"))
+                                if (Dm.FindPicAndClick(658, 437, 782, 491, @"\bmp\穿上装备.bmp",0,0,0.7))
                                 {
                                     Dm.Delay(1000);
                                     if (Dm.IsExistPic(537, 194, 669, 277, @"\bmp\兵力损失.bmp"))
@@ -247,7 +247,7 @@ namespace Liuliu.MouseClicker.Tasks
             Role role = (Role)Role;
             role.CloseWindow();
             Dm.UseDict(1);
-            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30", 0.8);
+            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30");
             Dm.UseDict(0);
             if (level >= 16 && level < 28) //蓝
                 MaxColor = Color.蓝;

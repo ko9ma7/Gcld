@@ -151,6 +151,8 @@ namespace Liuliu.MouseClicker.ViewModels
                             SoftContext.Locator.Main.Roles.Remove(item);
                         }
                     }
+                    SoftContext.Locator.Main.Roles.OrderBy(x => x.WindowTitle);
+
                 });
             }
         }
@@ -174,9 +176,14 @@ namespace Liuliu.MouseClicker.ViewModels
             TaskEngine engine = role.TaskEngine;
 
             List<TaskBase> tasks = new List<TaskBase>();
-
-            engine.AutoLogin = () => AutoLogin(role, account);
-            engine.ChangeRole = () => role.ChangeRole();
+            if (role.IsAutoLogin)
+                engine.AutoLogin = () => AutoLogin(role, account);
+            else
+                engine.AutoLogin = null;
+            if (role.IsChangeRole)
+                engine.ChangeRole = () => role.ChangeRole();
+            else
+                engine.ChangeRole = null;
             if (role.SelectedItemTask.Content.ToString() == "日常任务")
             {
                 tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
@@ -187,29 +194,22 @@ namespace Liuliu.MouseClicker.ViewModels
             }
             if (role.SelectedItemTask.Content.ToString() == "自动兵器")
             {
-                engine.AutoLogin = null;
                 context.Settings.StepName = "自动兵器";
                 tasks.Add(new SmallTool(context));
             }
             if (role.SelectedItemTask.Content.ToString() == "自动洗练")
             {
-                engine.AutoLogin = null;
-                engine.ChangeRole = null;
                 context.Settings.StepName = "自动洗练";
                 tasks.Add(new SmallTool(context));
             }
             if (role.SelectedItemTask.Content.ToString() == "指定洗练")
             {
-                engine.AutoLogin = null;
-                engine.ChangeRole = () => { return false; };
                 context.Settings.StepName = "指定洗练";
                 context.Settings.EquipmentType = role.SelectedIndex;
                 tasks.Add(new SmallTool(context));
             }
             if (role.SelectedItemTask.Content.ToString() == "自动建筑")
             {
-                engine.AutoLogin = null;
-                engine.ChangeRole = () => { return false; };
                 context.Settings.StepName = "自动建筑";
                 tasks.Add(new SmallTool(context));
             }
@@ -225,13 +225,11 @@ namespace Liuliu.MouseClicker.ViewModels
             }
             if (role.SelectedItemTask.Content.ToString() == "购买装备")
             {
-                engine.AutoLogin = null;
                 context.Settings.StepName = "购买装备";
                 tasks.Add(new SmallTool(context));
             }
             if (role.SelectedItemTask.Content.ToString() == "自动副本")
             {
-                engine.AutoLogin = null;
                 context.Settings.StepName = "自动副本";
                 tasks.Add(new SmallTool(context));
             }
@@ -259,9 +257,10 @@ namespace Liuliu.MouseClicker.ViewModels
                 return false;
             if (account.IsFinished == true)
                 return false;
-            role.AccountName = account.UserName;
+            role.CurrentAccount = account;
             bool result = false;
             account.IsWorking = true;
+            SoftContext.Locator.Accounts.SetAccountState(account);
             switch (account.Platform)
             {
                 case Platform.飞流:
@@ -425,9 +424,11 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand<Role>((role) =>
                 {
                     role.TaskEngine.Stop();
-                    Account account=SoftContext.Locator.Accounts.AccountList.FirstOrDefault(x=>x.UserName==role.AccountName);
-                    if (account != null)
-                        account.IsWorking = false;
+                    if (role.CurrentAccount != null)
+                    {
+                        role.CurrentAccount.IsWorking = false;
+                        SoftContext.Locator.Accounts.SetAccountState(role.CurrentAccount);
+                    }
                 });
             }
         }

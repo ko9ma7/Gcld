@@ -218,9 +218,12 @@ namespace Liuliu.ScriptEngine.Damo
         /// <param name="color"></param>
         /// <param name="sim"></param>
         /// <returns>-1为获取失败,否则返回正整数</returns>
-        public static int GetOcrNumber(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color,double sim=0.8)
+        public static int GetOcrNumber(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color)
         {
-            string ocr = _dm.Ocr(x1, y1, x2, y2, color, sim);
+            string ocr = _dm.Ocr(x1, y1, x2, y2, color, 0.85);
+            string ocr2 = _dm.Ocr(x1, y1, x2, y2, color, 0.8);
+            string ocr3= _dm.Ocr(x1, y1, x2, y2, color, 0.75);
+            _dm.DebugPrint(ocr + ocr2 + ocr3);
             _dm.DebugPrint("获取到的数字：" + ocr);
             if (ocr == "")
                 return -1;

@@ -43,7 +43,21 @@ namespace Liuliu.MouseClicker
                 SetProperty(ref _windowTitle, value, () => WindowTitle);
             }
         }
+        private bool _isAutoLogin;
+        public bool IsAutoLogin
+        {
+            get { return _isAutoLogin; }
+            set
+            { SetProperty(ref _isAutoLogin, value, () => IsAutoLogin); }
+        }
 
+        private bool _isChangeRole;
+        public bool IsChangeRole
+        {
+            get { return _isChangeRole; }
+            set
+            { SetProperty(ref _isChangeRole, value, () => IsChangeRole); }
+        }
 
         private int _hwnd;
         public int Hwnd
@@ -54,13 +68,13 @@ namespace Liuliu.MouseClicker
                 SetProperty(ref _hwnd, value, () => Hwnd);
             }
         }
-        private string _accountName;
-        public string AccountName
+        private Account _currentAccount;
+        public Account CurrentAccount
         {
-            get { return _accountName; }
+            get { return _currentAccount; }
             set
             {
-                SetProperty(ref _accountName, value, () => AccountName);
+                SetProperty(ref _currentAccount, value, () => CurrentAccount);
             }
         }
         public string Ac
@@ -255,11 +269,11 @@ namespace Liuliu.MouseClicker
                 _dm.DebugPrint("该角色已经执行过!切换失败");
                 _dm.Delay(500);
                 _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
-                Account account = SoftContext.Locator.Accounts.AccountList.FirstOrDefault(x => x.UserName == AccountName);
-                if (account != null)
+                if (_currentAccount != null)
                 {
-                    account.IsWorking = false;
-                    account.IsFinished = true;
+                    _currentAccount.IsWorking = false;
+                    _currentAccount.IsFinished = true;
+                    SoftContext.Locator.Accounts.SetAccountState(_currentAccount);
                 }
                 return false;
             }
