@@ -84,7 +84,7 @@ namespace Liuliu.MouseClicker
             
         }
 
-        private void Button_Initialized(object sender, System.EventArgs e)
+        private void CmdButton_Initialized(object sender, System.EventArgs e)
         {
             CmdMenuButton.ContextMenu = null;
         }
@@ -93,6 +93,16 @@ namespace Liuliu.MouseClicker
         {
             CmdMenu.PlacementTarget = (UIElement)sender;
             CmdMenu.IsOpen = true;
+        }
+        private void ToolButton_Initialized(object sender, System.EventArgs e)
+        {
+            ToolMenuButton.ContextMenu = null;
+        }
+
+        private void ToolMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToolMenu.PlacementTarget = (UIElement)sender;
+            ToolMenu.IsOpen = true;
         }
 
         private void ClickSettingsView_Loaded(object sender, RoutedEventArgs e)

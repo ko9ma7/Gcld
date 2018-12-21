@@ -22,51 +22,102 @@
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands DataContext="{Binding MainCommand, Source={StaticResource Locator}}">
-            <Button Cursor="Hand" x:Name="CmdMenuButton" Initialized="Button_Initialized" Click="CmdMenuButton_Click">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Rectangle Width="14" Height="14" Margin="5 0">
-                            <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_paper_white}"></VisualBrush>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <TextBlock Text="菜单"/>
-                    </StackPanel>
-                </Button.Content>
-                <Button.ContextMenu>
-                    <ContextMenu x:Name="CmdMenu" FontSize="12" IsOpen="False" Cursor="Hand">
-                        <ContextMenu.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </ContextMenu.Resources>
-                        <MenuItem Header="设置" Command="{Binding OpenSettingsFlyoutCommand}">
-                            <MenuItem.Icon>
-                                <Rectangle Width="14" Height="14" Margin="0">
-                                    <Rectangle.Fill>
-                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}"></VisualBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="帐号管理" Command="{Binding OpenAllAccountFlyoutCommand}">
-                            <MenuItem.Icon>
-                                <Rectangle Width="14" Height="14" Margin="0">
-                                    <Rectangle.Fill>
-                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}"></VisualBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </MenuItem.Icon>
-                        </MenuItem>
+            <StackPanel Orientation="Horizontal">
+                <Button Cursor="Hand" x:Name="CmdMenuButton" Initialized="CmdButton_Initialized" Click="CmdMenuButton_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="14" Height="14" Margin="5 0">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_paper_white}"></VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Text="菜单"/>
+                        </StackPanel>
+                    </Button.Content>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="CmdMenu" FontSize="12" IsOpen="False" Cursor="Hand">
+                            <ContextMenu.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.MergedDictionaries>
+                                        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                                    </ResourceDictionary.MergedDictionaries>
+                                </ResourceDictionary>
+                            </ContextMenu.Resources>
+                            <MenuItem Header="设置" Command="{Binding OpenSettingsFlyoutCommand}">
+                                <MenuItem.Icon>
+                                    <Rectangle Width="14" Height="14" Margin="0">
+                                        <Rectangle.Fill>
+                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}"></VisualBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="帐号管理" Command="{Binding OpenAllAccountFlyoutCommand}">
+                                <MenuItem.Icon>
+                                    <Rectangle Width="14" Height="14" Margin="0">
+                                        <Rectangle.Fill>
+                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}"></VisualBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </MenuItem.Icon>
+                            </MenuItem>
 
-                    </ContextMenu>
-                </Button.ContextMenu>
-            </Button>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Cursor="Hand" x:Name="ToolMenuButton" Initialized="ToolButton_Initialized" Click="ToolMenuButton_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="14" Height="14" Margin="5 0">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_paper_white}"></VisualBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Text="工具"/>
+                        </StackPanel>
+                    </Button.Content>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="ToolMenu" FontSize="12" IsOpen="False" Cursor="Hand">
+                            <ContextMenu.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.MergedDictionaries>
+                                        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                                    </ResourceDictionary.MergedDictionaries>
+                                </ResourceDictionary>
+                            </ContextMenu.Resources>
+                            <MenuItem Header="洗练助手" Command="{Binding OpenSettingsFlyoutCommand}">
+                                <MenuItem.Icon>
+                                    <Rectangle Width="14" Height="14" Margin="0">
+                                        <Rectangle.Fill>
+                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}"></VisualBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="内存助手" Command="{Binding OpenAllAccountFlyoutCommand}">
+                                <MenuItem.Icon>
+                                    <Rectangle Width="14" Height="14" Margin="0">
+                                        <Rectangle.Fill>
+                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource appbar_settings}"></VisualBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
+          
         </mah:WindowCommands>
+
     </mah:MetroWindow.RightWindowCommands>
-    <mah:MetroWindow.Flyouts>
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button Content="色或者"></Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+<mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <flyouts:SettingsFlyout x:Name="SettingsFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:RoleSettingFlyout x:Name="RoleSettingFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
