@@ -21,8 +21,8 @@ namespace Liuliu.MouseClicker.ViewModels
         {
             Offset = 4;
             Number = 500;
-            DataTypes = new List<string>() { "整数型", "浮点型", "文本型" };
-          
+            DataTypes = new List<string>() { "整数型", "浮点型", "文本型","二进制"};
+            InitialAddress = "04FFEE11";
             InitDataList();
             Messenger.Default.Register<string>(this, Notifications.MemHelperViewModel,
               (str) =>
@@ -148,38 +148,40 @@ namespace Liuliu.MouseClicker.ViewModels
                     dm.SetMemoryHwndAsProcessId(true);
                     Debug.WriteLine("选择的进程ID:" + SelectedProcess.Process.Id);
                     Debug.WriteLine("起始地址:" + InitialAddress);
-                    Debug.WriteLine(dm.ReadInt(SelectedProcess.Process.Id, InitialAddress, 0));
                     int initAddress = AnyRadixConvert._16To10(InitialAddress);
                     int pid = SelectedProcess.Process.Id;
                     for (int i = 0; i < Number; i++)
                     {
-                        DataList[i].Offset= AnyRadixConvert._10To16(i * 4);
+                        if ((i - Number / 2)<0)
+                            DataList[i].Offset = "-"+AnyRadixConvert._10To16(Math.Abs((i - Number / 2) * 4));
+                        else
+                            DataList[i].Offset= AnyRadixConvert._10To16((i - Number / 2) * 4);
                         switch (SelectedWriteData)
                         {
                             case 0:
-                                DataList[i].MemData1.Address = AnyRadixConvert._10To16( initAddress+ (i * 4));
-                                DataList[i].MemData1.Offset = AnyRadixConvert._10To16(i*4);
-                                DataList[i].MemData1.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
+                                DataList[i].MemData1.Address = AnyRadixConvert._10To16( initAddress+ ((i-Number/2)* 4));
+                                DataList[i].MemData1.Offset = DataList[i].Offset;
+                                DataList[i].MemData1.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
                                 break;
                             case 1:
-                                DataList[i].MemData2.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
-                                DataList[i].MemData2.Offset = AnyRadixConvert._10To16(i * 4);
-                                DataList[i].MemData2.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
+                                DataList[i].MemData2.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
+                                DataList[i].MemData2.Offset = DataList[i].Offset;
+                                DataList[i].MemData2.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
                                 break;
                             case 2:
-                                DataList[i].MemData3.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
-                                DataList[i].MemData3.Offset = AnyRadixConvert._10To16(i * 4);
-                                DataList[i].MemData3.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
+                                DataList[i].MemData3.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
+                                DataList[i].MemData3.Offset = DataList[i].Offset;
+                                DataList[i].MemData3.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
                                 break;
                             case 3:
-                                DataList[i].MemData4.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
-                                DataList[i].MemData4.Offset = AnyRadixConvert._10To16(i * 4);
-                                DataList[i].MemData4.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
+                                DataList[i].MemData4.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
+                                DataList[i].MemData4.Offset = DataList[i].Offset;
+                                DataList[i].MemData4.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
                                 break;
                             case 4:
-                                DataList[i].MemData5.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
-                                DataList[i].MemData5.Offset = AnyRadixConvert._10To16(i * 4);
-                                DataList[i].MemData5.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
+                                DataList[i].MemData5.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
+                                DataList[i].MemData5.Offset = DataList[i].Offset;
+                                DataList[i].MemData5.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
                                 break;
                         }
                     }
@@ -187,43 +189,6 @@ namespace Liuliu.MouseClicker.ViewModels
 
                 });
             }
-        }
-
-        /// <summary>
-        /// <函数：Encode>
-        /// 作用：将字符串内容转化为16进制数据编码，其逆过程是Decode
-        /// 参数说明：
-        /// strEncode 需要转化的原始字符串
-        /// 转换的过程是直接把字符转换成Unicode字符,比如数字"3"-->0033,汉字"我"-->U+6211
-        /// 函数decode的过程是encode的逆过程.
-        /// </summary>
-        /// <param name="strEncode"></param>
-        /// <returns></returns>
-        public string Encode(string strEncode)
-        {
-            string strReturn = "";//  存储转换后的编码
-            foreach (short shortx in strEncode.ToCharArray())
-            {
-                strReturn += shortx.ToString("X4");
-            }
-            return strReturn;
-        }
-
-
-        /// <summary>
-        /// <函数：Decode>
-        /// 作用：将16进制数据编码转化为字符串，是Encode的逆过程
-        /// </summary>
-        /// <param name="strDecode"></param>
-        /// <returns></returns>
-        public string Decode(string strDecode)
-        {
-            string sResult = "";
-            for (int i = 0; i < strDecode.Length / 4; i++)
-            {
-                sResult += (char)short.Parse(strDecode.Substring(i * 4, 4), global::System.Globalization.NumberStyles.HexNumber);
-            }
-            return sResult;
         }
 
         public ICommand ContrastDataCommand
@@ -243,8 +208,12 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     Debug.WriteLine("清除数据");
-                    string add = "04EEFF11";
-                    Debug.WriteLine((Convert.ToInt32(add, 16)+Convert.ToInt32((4*10).ToString(),16)).ToString("X2"));
+                    if (DataList != null)
+                    {
+                        DataList.Clear();
+                        InitDataList();
+                    }
+
                 });
             }
         }
@@ -273,6 +242,14 @@ namespace Liuliu.MouseClicker.ViewModels
             MemData4 = new MemData();
             MemData5 = new MemData();
         }
+        private string _color;
+        public string Color
+        {
+            get { return _color; }
+            set { SetProperty(ref _color, value, () => Color); }
+        }
+
+
         private int _id;
         public int Id
         {

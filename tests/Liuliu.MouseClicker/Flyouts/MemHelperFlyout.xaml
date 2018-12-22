@@ -23,8 +23,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label x:Name="label1" Content="数据类型：" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <ComboBox x:Name="comboBox1" ItemsSource="{Binding DataTypes}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120"/>
+                        <ComboBox x:Name="comboBox1" ItemsSource="{Binding DataTypes}" SelectedIndex="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120"/>
                     </StackPanel>
+                    <Button Content="对比数据" Width="80" Command="{Binding ContrastDataCommand}"></Button>
                 </StackPanel>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -49,7 +50,6 @@
                         <ComboBoxItem Content="数据5"></ComboBoxItem>
                     </ComboBox>
                     <Button Content="读取数据" Command="{Binding ReadDataCommand}"></Button>
-                    <!--<Button Content="比对数据" Command="{Binding ContrastDataCommand}"></Button>-->
                     <Button Content="清空数据" Command="{Binding ClearDataCommand}"></Button>
                 </StackPanel>
             </StackPanel>
