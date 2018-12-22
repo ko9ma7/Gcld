@@ -85,7 +85,7 @@
                                     </ResourceDictionary.MergedDictionaries>
                                 </ResourceDictionary>
                             </ContextMenu.Resources>
-                            <MenuItem Header="洗练助手" Command="{Binding OpenSettingsFlyoutCommand}">
+                            <MenuItem Header="洗练助手" Command="{Binding OpenXilianFlyoutCommand}">
                                 <MenuItem.Icon>
                                     <Rectangle Width="14" Height="14" Margin="0">
                                         <Rectangle.Fill>
@@ -94,7 +94,7 @@
                                     </Rectangle>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="内存助手" Command="{Binding OpenAllAccountFlyoutCommand}">
+                            <MenuItem Header="内存助手" Command="{Binding OpenMemHelperFlyoutCommand}">
                                 <MenuItem.Icon>
                                     <Rectangle Width="14" Height="14" Margin="0">
                                         <Rectangle.Fill>
@@ -112,17 +112,14 @@
         </mah:WindowCommands>
 
     </mah:MetroWindow.RightWindowCommands>
-    <mah:MetroWindow.LeftWindowCommands>
-        <mah:WindowCommands>
-            <Button Content="色或者"></Button>
-        </mah:WindowCommands>
-    </mah:MetroWindow.LeftWindowCommands>
+    
 <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <flyouts:SettingsFlyout x:Name="SettingsFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:RoleSettingFlyout x:Name="RoleSettingFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:XilianFlyout x:Name="XilianFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:AccountFlyout x:Name="AccountFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
+            <flyouts:MemHelperFlyout x:Name="MemHelperFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
         </mah:FlyoutsControl>
 
     </mah:MetroWindow.Flyouts>
@@ -136,7 +133,7 @@
 
             <Grid>
 
-                <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,0,0,-29">
+                <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,0,0,-29" SelectedItem="{Binding SelectedRole}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="模拟器列表" Width="80" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>

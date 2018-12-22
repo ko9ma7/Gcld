@@ -66,19 +66,30 @@ namespace Liuliu.MouseClicker.ViewModels
         }
         
 
-        public ICommand OpenRoleSettingFlyoutCommand
+        public ICommand OpenXilianFlyoutCommand
         {
             get
             {
-                return new RelayCommand<Role>((role) =>
+                return new RelayCommand(() =>
                 {
                     // Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
-                    
-                    Messenger.Default.Send(role, "XilianFlyout");
+                    Role r = SoftContext.Locator.Main.SelectedRole;
+                    Messenger.Default.Send(r, "XilianFlyout");
                 });
             }
         }
         
+         public ICommand OpenMemHelperFlyoutCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Messenger.Default.Send("OpenMemHelperFlyout",Notifications.MemHelperFlyout);
+                    Messenger.Default.Send("UpdateProcess", Notifications.MemHelperViewModel);
+                });
+            }
+        }
         public ICommand OpenAllAccountFlyoutCommand
         {
             get

@@ -126,6 +126,9 @@
     <Compile Include="Converters\FontWeightConverter.cs" />
     <Compile Include="Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Flyouts\MemHelperFlyout.xaml.cs">
+      <DependentUpon>MemHelperFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Flyouts\AccountFlyout.xaml.cs">
       <DependentUpon>AccountFlyout.xaml</DependentUpon>
     </Compile>
@@ -152,12 +155,17 @@
       <DependentUpon>ClickSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AccountViewModel.cs" />
+    <Compile Include="ViewModels\MemHelperViewModel.cs" />
     <Compile Include="ViewModels\RoleSettingViewModel.cs" />
     <Compile Include="ViewModels\ClickSettingViewModel.cs" />
     <Compile Include="ViewModels\MainCommandViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Page Include="Flyouts\MemHelperFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Flyouts\AccountFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

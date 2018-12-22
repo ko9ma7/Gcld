@@ -36,8 +36,7 @@ namespace Liuliu.MouseClicker.Flyouts
             Messenger.Default.Register<Role>(this, "XilianFlyout",
                 msg =>
                {
-                   if(msg!=null)
-                     OpenXilianFlyout();
+                   OpenXilianFlyout();
                    role = msg;
                });
 
@@ -52,6 +51,11 @@ namespace Liuliu.MouseClicker.Flyouts
 
         private void btnXilian_click(object sender, RoutedEventArgs e)
         {
+            if (role == null)
+            {
+                MessageBox.Show("未选择模拟器！");
+                return;
+            }
             Function func = new Function();
             func.Name = "任务";
 
@@ -59,12 +63,9 @@ namespace Liuliu.MouseClicker.Flyouts
             TaskEngine engine = role.TaskEngine;
 
             List<TaskBase> tasks = new List<TaskBase>();
-
-            //engine.AutoLogin = () => AutoLogin(context);
-            engine.ChangeRole = () => role.ChangeRole();
             engine.AutoLogin = null;
             engine.ChangeRole = null;
-            context.Settings.IsAutoClear2 = true;
+            context.Settings.StepName = "指定洗练";
             Dictionary<int, List<bool?>> dict = new Dictionary<int, List<bool?>>();
             dict.Add(0, new List<bool?>() { T1_1.IsChecked, T1_2.IsChecked, T1_3.IsChecked, T1_4.IsChecked, T1_5.IsChecked, T1_6.IsChecked });
             dict.Add(1, new List<bool?>() { T2_1.IsChecked, T2_2.IsChecked, T2_3.IsChecked, T2_4.IsChecked, T2_5.IsChecked, T2_6.IsChecked });

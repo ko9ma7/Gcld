@@ -11,6 +11,8 @@ namespace Liuliu.MouseClicker.Contexts
         public static readonly string AccountFlyout = Guid.NewGuid().ToString();
         public static readonly string AccountViewModel = Guid.NewGuid().ToString();
         public static readonly string MainCommandViewModel = Guid.NewGuid().ToString();
-        
+        public static readonly string MemHelperFlyout = Guid.NewGuid().ToString();
+        public static readonly string MemHelperViewModel = Guid.NewGuid().ToString();
+
     }
 }

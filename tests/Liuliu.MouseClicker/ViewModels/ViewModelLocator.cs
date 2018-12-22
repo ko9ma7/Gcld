@@ -54,7 +54,13 @@ namespace Liuliu.MouseClicker.ViewModels
                 return model;
             }
         }
-
+        public MemHelperViewModel MemHelper
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<MemHelperViewModel>();  
+            }
+        }
         public ClickSettingsViewModel ClickSettings
         {
             get { return ServiceLocator.Current.GetInstance<ClickSettingsViewModel>(); }
@@ -80,6 +86,7 @@ namespace Liuliu.MouseClicker.ViewModels
             SimpleIoc.Default.Register<ClickSettingsViewModel>();
             SimpleIoc.Default.Register<RoleSettingViewModel>();
             SimpleIoc.Default.Register<AccountViewModel>();
+            SimpleIoc.Default.Register<MemHelperViewModel>();
         }
     }
 }

@@ -53,7 +53,12 @@ namespace Liuliu.MouseClicker.ViewModels
             get { return _roles; }
             set { SetProperty(ref _roles, value, () => Roles); }
         }
-
+        private Role _role;
+        public Role SelectedRole
+        {
+            get { return _role; }
+            set { SetProperty(ref _role, value, () => SelectedRole); }
+        }
     }
   
 }
