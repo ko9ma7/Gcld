@@ -53,16 +53,16 @@
                     <Button Content="清空数据" Command="{Binding ClearDataCommand}"></Button>
                 </StackPanel>
             </StackPanel>
-            <ListView Grid.Row="1" x:Name="listView" HorizontalAlignment="Left" Height="240"  VerticalAlignment="Top" Width="540">
+            <ListView Grid.Row="1" x:Name="listView" ItemsSource="{Binding DataList}" HorizontalAlignment="Left" Height="240"  VerticalAlignment="Top" Width="540">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="序号" Width="45"/>
-                        <GridViewColumn Header="偏移" Width="50"/>
-                        <GridViewColumn Header="数据1" Width="80"/>
-                        <GridViewColumn Header="数据2" Width="80"/>
-                        <GridViewColumn Header="数据3" Width="80"/>
-                        <GridViewColumn Header="数据4" Width="80"/>
-                        <GridViewColumn Header="数据5" Width="80"/>
+                        <GridViewColumn Header="序号" DisplayMemberBinding="{Binding Id}" Width="45"/>
+                        <GridViewColumn Header="偏移" DisplayMemberBinding="{Binding Offset}" Width="50"/>
+                        <GridViewColumn Header="数据1" DisplayMemberBinding="{Binding MemData1.Value}" Width="80"/>
+                        <GridViewColumn Header="数据2" DisplayMemberBinding="{Binding MemData2.Value}" Width="80"/>
+                        <GridViewColumn Header="数据3" DisplayMemberBinding="{Binding MemData3.Value}" Width="80"/>
+                        <GridViewColumn Header="数据4" DisplayMemberBinding="{Binding MemData4.Value}" Width="80"/>
+                        <GridViewColumn Header="数据5" DisplayMemberBinding="{Binding MemData5.Value}" Width="80"/>
                     </GridView>
                 </ListView.View>
             </ListView>

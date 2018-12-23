@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Liuliu.MouseClicker.Contexts;
 using Liuliu.MouseClicker.Mvvm;
 using Liuliu.ScriptEngine;
+using OSharp.Utility.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,7 +43,7 @@ namespace Liuliu.MouseClicker.ViewModels
             DataList = new ObservableCollection<Data>();
             for (int i = 0; i < Number; i++)
             {
-                DataList.Add(new Data());
+                DataList.Add(new Data() { Id=i+1 });
             }
         }
 
@@ -147,37 +148,38 @@ namespace Liuliu.MouseClicker.ViewModels
                     dm.SetMemoryHwndAsProcessId(true);
                     Debug.WriteLine("选择的进程ID:" + SelectedProcess.Process.Id);
                     Debug.WriteLine("起始地址:" + InitialAddress);
-                    Debug.WriteLine(dm.ReadData(SelectedProcess.Process.Id, InitialAddress, 4));
-
-                   // DataList.Add(new Data() { MemData1 = new MemData() { Address = InitialAddress, Offset = "44" } );
+                    Debug.WriteLine(dm.ReadInt(SelectedProcess.Process.Id, InitialAddress, 0));
+                    int initAddress = AnyRadixConvert._16To10(InitialAddress);
+                    int pid = SelectedProcess.Process.Id;
                     for (int i = 0; i < Number; i++)
                     {
-                        switch(SelectedWriteData)
+                        DataList[i].Offset= AnyRadixConvert._10To16(i * 4);
+                        switch (SelectedWriteData)
                         {
                             case 0:
-                                DataList[i].MemData1.Address = Convert.ToInt32(InitialAddress, 16).ToString();
-                                DataList[i].MemData1.Offset = "44";
-                                DataList[i].MemData1.Value = "";// dm.ReadData(SelectedProcess.Process.Id, InitialAddress, 4)
+                                DataList[i].MemData1.Address = AnyRadixConvert._10To16( initAddress+ (i * 4));
+                                DataList[i].MemData1.Offset = AnyRadixConvert._10To16(i*4);
+                                DataList[i].MemData1.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
                                 break;
                             case 1:
-                                DataList[i].MemData2.Address = InitialAddress + (i * 4).ToString();
-                                DataList[i].MemData2.Offset = "44";
-                                DataList[i].MemData2.Value = "";// dm.ReadData(SelectedProcess.Process.Id, InitialAddress, 4)
+                                DataList[i].MemData2.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
+                                DataList[i].MemData2.Offset = AnyRadixConvert._10To16(i * 4);
+                                DataList[i].MemData2.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
                                 break;
                             case 2:
-                                DataList[i].MemData3.Address = InitialAddress + (i * 4).ToString();
-                                DataList[i].MemData3.Offset = "44";
-                                DataList[i].MemData3.Value = "";// dm.ReadData(SelectedProcess.Process.Id, InitialAddress, 4)
+                                DataList[i].MemData3.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
+                                DataList[i].MemData3.Offset = AnyRadixConvert._10To16(i * 4);
+                                DataList[i].MemData3.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
                                 break;
                             case 3:
-                                DataList[i].MemData4.Address = InitialAddress + (i * 4).ToString();
-                                DataList[i].MemData4.Offset = "44";
-                                DataList[i].MemData4.Value = "";// dm.ReadData(SelectedProcess.Process.Id, InitialAddress, 4)
+                                DataList[i].MemData4.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
+                                DataList[i].MemData4.Offset = AnyRadixConvert._10To16(i * 4);
+                                DataList[i].MemData4.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
                                 break;
                             case 4:
-                                DataList[i].MemData5.Address = InitialAddress + (i * 4).ToString();
-                                DataList[i].MemData5.Offset = "44";
-                                DataList[i].MemData5.Value = "";// dm.ReadData(SelectedProcess.Process.Id, InitialAddress, 4)
+                                DataList[i].MemData5.Address = AnyRadixConvert._10To16(initAddress + (i * 4));
+                                DataList[i].MemData5.Offset = AnyRadixConvert._10To16(i * 4);
+                                DataList[i].MemData5.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + (i * 4)), 0);
                                 break;
                         }
                     }
@@ -241,6 +243,8 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     Debug.WriteLine("清除数据");
+                    string add = "04EEFF11";
+                    Debug.WriteLine((Convert.ToInt32(add, 16)+Convert.ToInt32((4*10).ToString(),16)).ToString("X2"));
                 });
             }
         }
@@ -259,7 +263,7 @@ namespace Liuliu.MouseClicker.ViewModels
         public string Show { get; set; }
         public Process Process { get; set; }
     }
-    public class Data
+    public class Data:ViewModelExBase
     {
         public Data()
         {
@@ -269,28 +273,69 @@ namespace Liuliu.MouseClicker.ViewModels
             MemData4 = new MemData();
             MemData5 = new MemData();
         }
-        public MemData MemData1 { get; set; }
-        public MemData MemData2 { get; set; }
-        public MemData MemData3 { get; set; }
-        public MemData MemData4 { get; set; }
-        public MemData MemData5 { get; set; }
-
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set { SetProperty(ref _id, value, () => Id); }
+        }
+        private string _offset;
+        public string Offset
+        {
+            get { return _offset; }
+            set { SetProperty(ref _offset, value, () => Offset); }
+        }
+        private MemData _memData1;
+        public MemData MemData1
+        {
+            get { return _memData1; }
+            set { SetProperty(ref _memData1, value, () => MemData1); }
+        }
+        private MemData _memData2;
+        public MemData MemData2
+        {
+            get { return _memData2; }
+            set { SetProperty(ref _memData2, value, () => MemData2); }
+        }
+        private MemData _memData3;
+        public MemData MemData3
+        {
+            get { return _memData3; }
+            set { SetProperty(ref _memData3, value, () => MemData3); }
+        }
+        private MemData _memData4;
+        public MemData MemData4
+        {
+            get { return _memData4; }
+            set { SetProperty(ref _memData4, value, () => MemData4); }
+        }
+        private MemData _memData5;
+        public MemData MemData5
+        {
+            get { return _memData5; }
+            set { SetProperty(ref _memData5, value, () => MemData5); }
+        }
     }
-    public class MemData
+    public class MemData:ViewModelExBase
     {
-        /// <summary>
-        /// 距离起始地址的偏移
-        /// </summary>
-        public string Offset { get; set; }
-        /// <summary>
-        /// 内存地址
-        /// </summary>
-        public string Address { get; set; }
-        /// <summary>
-        /// 内存值
-        /// </summary>
-        public object Value { get; set; }
-
+        private string _offset;
+        public string Offset
+        {
+            get { return _offset; }
+            set { SetProperty(ref _offset, value, () => Offset); }
+        }
+        private string _address;
+        public string Address
+        {
+            get { return _address; }
+            set { SetProperty(ref _address, value, () => Address); }
+        }
+        private object _value;
+        public object Value
+        {
+            get { return _value; }
+            set { SetProperty(ref _value, value, () => Value); }
+        }
     }
 
 
