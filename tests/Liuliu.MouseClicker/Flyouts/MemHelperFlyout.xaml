@@ -25,7 +25,10 @@
                         <Label x:Name="label1" Content="数据类型：" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                         <ComboBox x:Name="comboBox1" ItemsSource="{Binding DataTypes}" SelectedIndex="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120"/>
                     </StackPanel>
-                    <Button Content="对比数据" Width="80" Command="{Binding ContrastDataCommand}"></Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="对比数据" Width="80" Command="{Binding ContrastDataCommand}"></Button>
+                        <Button Content="恢复数据" Width="80" Command="{Binding RecoveryDataCommand}"></Button>
+                    </StackPanel>
                 </StackPanel>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">

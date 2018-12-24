@@ -99,7 +99,7 @@ namespace Liuliu.ScriptEngine.Damo
         public static bool FindStrAndClick(this DmPlugin _dm, int x1, int y1, int x2, int y2, string str, string color,int a = 0, int b = 0)
         {
             int intX, intY;
-            _dm.FindStr(x1, y1, x2, y2, str, color, 0.9, out intX, out intY);
+            _dm.FindStr(x1, y1, x2, y2, str, color, 0.8, out intX, out intY);
             if (intX > 0 && intY > 0)
             {
                 //Debug.WriteLine("找字[" + str + "]成功!");
@@ -220,10 +220,8 @@ namespace Liuliu.ScriptEngine.Damo
         /// <returns>-1为获取失败,否则返回正整数</returns>
         public static int GetOcrNumber(this DmPlugin _dm,int x1,int y1,int x2,int y2,string color)
         {
-            string ocr = _dm.Ocr(x1, y1, x2, y2, color, 0.85);
-            string ocr2 = _dm.Ocr(x1, y1, x2, y2, color, 0.8);
-            string ocr3= _dm.Ocr(x1, y1, x2, y2, color, 0.75);
-            _dm.DebugPrint(ocr + ocr2 + ocr3);
+            string ocr = _dm.Ocr(x1, y1, x2, y2, color, 0.78);
+            _dm.DebugPrint(ocr);
             _dm.DebugPrint("获取到的数字：" + ocr);
             if (ocr == "")
                 return -1;

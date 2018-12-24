@@ -162,26 +162,31 @@ namespace Liuliu.MouseClicker.ViewModels
                                 DataList[i].MemData1.Address = AnyRadixConvert._10To16( initAddress+ ((i-Number/2)* 4));
                                 DataList[i].MemData1.Offset = DataList[i].Offset;
                                 DataList[i].MemData1.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
+                                DataList[i].MemData1.IsHaveData = true;
                                 break;
                             case 1:
                                 DataList[i].MemData2.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
                                 DataList[i].MemData2.Offset = DataList[i].Offset;
                                 DataList[i].MemData2.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
+                                DataList[i].MemData2.IsHaveData = true;
                                 break;
                             case 2:
                                 DataList[i].MemData3.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
                                 DataList[i].MemData3.Offset = DataList[i].Offset;
                                 DataList[i].MemData3.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
+                                DataList[i].MemData3.IsHaveData = true;
                                 break;
                             case 3:
                                 DataList[i].MemData4.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
                                 DataList[i].MemData4.Offset = DataList[i].Offset;
                                 DataList[i].MemData4.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
+                                DataList[i].MemData4.IsHaveData = true;
                                 break;
                             case 4:
                                 DataList[i].MemData5.Address = AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4));
                                 DataList[i].MemData5.Offset = DataList[i].Offset;
                                 DataList[i].MemData5.Value = dm.ReadInt(pid, AnyRadixConvert._10To16(initAddress + ((i-Number/2)* 4)), 0);
+                                DataList[i].MemData5.IsHaveData = true;
                                 break;
                         }
                     }
@@ -190,7 +195,7 @@ namespace Liuliu.MouseClicker.ViewModels
                 });
             }
         }
-
+        List<Data> tempList = new List<Data>();
         public ICommand ContrastDataCommand
         {
             get
@@ -198,6 +203,43 @@ namespace Liuliu.MouseClicker.ViewModels
                 return new RelayCommand(() =>
                 {
                     Debug.WriteLine("对比数据");
+
+                    List<Data> list = new List<Data>();
+                    tempList = DataList.ToList();
+                    foreach (var data in DataList)
+                    {
+                        List<int> l = new List<int>();
+                        if (data.MemData1.IsHaveData)
+                            l.Add(Convert.ToInt32(data.MemData1.Value));
+                        if (data.MemData2.IsHaveData)
+                            l.Add(Convert.ToInt32(data.MemData2.Value));
+                        if (data.MemData3.IsHaveData)
+                            l.Add(Convert.ToInt32(data.MemData3.Value));
+                        if (data.MemData4.IsHaveData)
+                            l.Add(Convert.ToInt32(data.MemData4.Value));
+                        if (data.MemData5.IsHaveData)
+                            l.Add(Convert.ToInt32(data.MemData5.Value));
+                        HashSet<int> s = new HashSet<int>(l);
+                        if (s.Count == 1)
+                        {
+                            Debug.WriteLine("都相等");
+                            list.Add(data);
+                        }
+                    }
+                    DataList=new ObservableCollection<Data>(list);
+                });
+            }
+        }
+        
+        public ICommand RecoveryDataCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Debug.WriteLine("恢复数据");
+                    DataList = new ObservableCollection<Data>(tempList);
+
                 });
             }
         }
@@ -295,6 +337,12 @@ namespace Liuliu.MouseClicker.ViewModels
     }
     public class MemData:ViewModelExBase
     {
+        private bool _isHaveData;
+        public bool IsHaveData
+        {
+            get { return _isHaveData; }
+            set { SetProperty(ref _isHaveData, value, () => IsHaveData); }
+        }
         private string _offset;
         public string Offset
         {
