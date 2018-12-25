@@ -28,8 +28,6 @@ namespace Liuliu.MouseClicker.Tasks
                     return 2;
                 if (context.Settings.StepName== "自动洗练")
                     return 3;
-                if (context.Settings.StepName== "刷新装备")
-                    return 4;
                 if (context.Settings.StepName== "指定洗练")
                 {
                     equipmentTypeDict = context.Settings.EquipmentTypeDict;
@@ -396,10 +394,10 @@ namespace Liuliu.MouseClicker.Tasks
             强壮,
             强攻
         }
-        private EquipmentType GetEquipmentType()
+        private EquipmentType GetEquipmentType(int x1,int y1,int x2,int y2)
         {
             int intX, intY;
-            int result = Dm.FindPic(781, 315, 861, 402, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "404040", 0.6, 0, out intX, out intY);
+            int result = Dm.FindPic(x1, y1, x2, y2, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "404040", 0.6, 0, out intX, out intY);
             return (EquipmentType)result;
         }
         class Equipment
@@ -468,14 +466,98 @@ namespace Liuliu.MouseClicker.Tasks
             Delegater.WaitTrue(() =>
             {
               Dm.MoveToClick(631, 448);
-              Dm.Delay(500);
-              if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp",0.8,false))
+              if(!Dm.IsDisplayDead(614, 472, 706, 506, 2)) //2s内图像
               {
-                Dm.Delay(500);
-               }
-               if(Dm.IsExistPic(379,213,475,255,@"\bmp\隐藏技能.bmp",0.8,false))
+                    if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp", 0.8, false))
+                    {
+                        Dm.Delay(500);
+                    }
+                    EquipmentType type1=EquipmentType.未知类型, type2 = EquipmentType.未知类型, type3 = EquipmentType.未知类型;
+                    Delegater.WaitTrue(() =>
+                    {
+                        type1 = GetEquipmentType(566, 318, 637, 393);
+                        type2 = GetEquipmentType(634, 315, 703, 400);
+                        type3 = GetEquipmentType(701, 315, 776, 408);
+                        if (type1!=EquipmentType.未知类型&&type2!=EquipmentType.未知类型&&type3!=EquipmentType.未知类型)
+                        {
+                            Dm.DebugPrint("属性：" + type1.ToString()+" "+type2.ToString()+" "+type3.ToString());
+                            return true;
+                        }
+                        return false;
+                    });
+                    if (type1 == type2 && type2 == type3)
+                    {
+                        Dm.DebugPrint("所有类型相同！" + type1.ToString());
+                        string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
+                        Dm.DebugPrint(ocr);
+                        if (ocr == "")
+                        {
+                            Dm.DebugPrint("未能识别装备类型.");
+                            return true;
+                        }
+
+                        套装 taozhuang = null;
+                        if (ocr.Contains("双枪"))
+                        {
+                            taozhuang = List.FirstOrDefault(x => x.麒麟双枪.类型 == type1 && x.麒麟双枪.IsHave == false);
+                            if (taozhuang != null)
+                            {
+                                taozhuang.麒麟双枪.IsHave = true;
+                                return true;
+                            }
+                        }
+                        if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
+                        {
+                            taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type1 && x.麒麟.IsHave == false);
+                            if (taozhuang != null)
+                            {
+                                taozhuang.麒麟.IsHave = true;
+                                return true;
+                            }
+                        }
+                        if (ocr.Contains("三昧纯阳铠"))
+                        {
+                            taozhuang = List.FirstOrDefault(x => x.三昧纯阳铠.类型 == type1 && x.三昧纯阳铠.IsHave == false);
+                            if (taozhuang != null)
+                            {
+                                taozhuang.三昧纯阳铠.IsHave = true;
+                                return true;
+                            }
+                        }
+                        if (ocr.Contains("蝶凤舞阳"))
+                        {
+                            taozhuang = List.FirstOrDefault(x => x.蝶凤舞阳.类型 == type1 && x.蝶凤舞阳.IsHave == false);
+                            if (taozhuang != null)
+                            {
+                                taozhuang.蝶凤舞阳.IsHave = true;
+                                return true;
+                            }
+                        }
+                        if (ocr.Contains("伏龙帅印"))
+                        {
+                            taozhuang = List.FirstOrDefault(x => x.伏龙帅印.类型 == type1 && x.伏龙帅印.IsHave == false);
+                            if (taozhuang != null)
+                            {
+                                taozhuang.伏龙帅印.IsHave = true;
+                                return true;
+                            }
+                        }
+                        if (ocr.Contains("蟠龙华盖"))
+                        {
+                            taozhuang = List.FirstOrDefault(x => x.蟠龙华盖.类型 == type1 && x.蟠龙华盖.IsHave == false);
+                            if (taozhuang != null)
+                            {
+                                taozhuang.蟠龙华盖.IsHave = true;
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                }
+                if (Dm.IsExistPic(379,213,475,255,@"\bmp\隐藏技能.bmp",0.8,false))
                 {
-                    var type = GetEquipmentType();
+                    var type = GetEquipmentType(781, 315, 861, 402);
                    // Dm.DebugPrint("需要的类型:" + ((EquipmentType)equipmentType).ToString());
                     Dm.DebugPrint("当前类型:" + type.ToString());
                     string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);

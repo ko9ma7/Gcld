@@ -33,18 +33,30 @@ namespace Liuliu.MouseClicker.Tasks
                 new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
                 new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
                 new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
-               new TaskStep() {Name="领取礼包",Order=5,RunFunc=RunStep6 },
-                //new TaskStep() {Name="领取俸禄",Order=6,RunFunc=RunStep3 },
-              
-               // new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name="领取礼包",Order=5,RunFunc=RunStep6 },
+                new TaskStep() {Name="领取俸禄",Order=6,RunFunc=RunStep3 },
+                new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name="自动宴会",Order=8,RunFunc=RunStep8 },
             };
             return steps;
         }
+        private TaskResult RunStep8(TaskContext arg)
+        {
+            return TaskResult.Jump;
+            Role role = (Role)Role;
+            Dm.UseDict(0);
+            Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("宴会"), () => Dm.Delay(1000));
+            Delegater.WaitTrue(() => role.OpenWindowMenu("宴会"),
+                               () => Dm.Delay(1000));
 
+         
+            return TaskResult.Success;
+        }
 
 
         private TaskResult RunStep7(TaskContext arg)
         {
+            return TaskResult.Jump;
                 Role role = (Role)Role;
                 Dm.UseDict(0);
                 Delegater.WaitTrue(() => role.OpenMenu("资源"), () => role.IsExistWindowMenu("集市"), () => Dm.Delay(1000));
@@ -272,6 +284,7 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep3(TaskContext arg)
         {
+            return TaskResult.Jump;
             Role role = (Role)Role;
             role.OpenRemind();
             if (Dm.FindPicAndClick(102, 132, 836, 494, @"\bmp\领取俸禄.bmp"))
