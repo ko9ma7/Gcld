@@ -1,4 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Liuliu.MouseClicker.Contexts;
+using Liuliu.MouseClicker.Models;
 using Liuliu.MouseClicker.Tasks;
 using Liuliu.ScriptEngine.Models;
 using Liuliu.ScriptEngine.Tasks;
@@ -29,43 +31,26 @@ namespace Liuliu.MouseClicker.Flyouts
         {
             InitializeComponent();
             RegisterMessengers();
+            IsOpenChanged += async (sender, e) => await XilianFlyout_IsOpenChanged(sender, e);
         }
         Role role = null;
         private void RegisterMessengers()
         {
-            Messenger.Default.Register<Role>(this, "XilianFlyout",
+            Messenger.Default.Register<string>(this, Notifications.XilianFlyout,
                 msg =>
                {
-                   OpenXilianFlyout();
-                   role = msg;
+                   if(msg== "OpenXilianFlyout")
+                      OpenXilianFlyout();
                });
 
         }
-        private void OpenXilianFlyout()
+        private async Task XilianFlyout_IsOpenChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsOpen)
+            if (IsOpen)
             {
-                IsOpen = true;
-            }
-        }
-
-        private void btnXilian_click(object sender, RoutedEventArgs e)
-        {
-            if (role == null)
-            {
-                MessageBox.Show("未选择模拟器！");
+                Reset();
                 return;
             }
-            Function func = new Function();
-            func.Name = "任务";
-
-            TaskContext context = new TaskContext(role, func);
-            TaskEngine engine = role.TaskEngine;
-
-            List<TaskBase> tasks = new List<TaskBase>();
-            engine.AutoLogin = null;
-            engine.ChangeRole = null;
-            context.Settings.StepName = "指定洗练";
             Dictionary<int, List<bool?>> dict = new Dictionary<int, List<bool?>>();
             dict.Add(0, new List<bool?>() { T1_1.IsChecked, T1_2.IsChecked, T1_3.IsChecked, T1_4.IsChecked, T1_5.IsChecked, T1_6.IsChecked });
             dict.Add(1, new List<bool?>() { T2_1.IsChecked, T2_2.IsChecked, T2_3.IsChecked, T2_4.IsChecked, T2_5.IsChecked, T2_6.IsChecked });
@@ -77,13 +62,18 @@ namespace Liuliu.MouseClicker.Flyouts
             dict.Add(7, new List<bool?>() { T8_1.IsChecked, T8_2.IsChecked, T8_3.IsChecked, T8_4.IsChecked, T8_5.IsChecked, T8_6.IsChecked });
             dict.Add(8, new List<bool?>() { T9_1.IsChecked, T9_2.IsChecked, T9_3.IsChecked, T9_4.IsChecked, T9_5.IsChecked, T9_6.IsChecked });
             dict.Add(9, new List<bool?>() { T10_1.IsChecked, T10_2.IsChecked, T10_3.IsChecked, T10_4.IsChecked, T10_5.IsChecked, T10_6.IsChecked });
-        
-            context.Settings.EquipmentTypeDict =dict;
-            tasks.Add(new SmallTool(context));
-            role.TaskEngine.Start(tasks.ToArray());
+            Messenger.Default.Send(new SendData<Dictionary<int, List<bool?>>>() { Message="XilianMessage",Data=dict }, Notifications.MainCommandViewModel);
         }
 
-        private void btnReset_click(object sender, RoutedEventArgs e)
+        private void OpenXilianFlyout()
+        {
+            if (!IsOpen)
+            {
+                IsOpen = true;
+            }
+        }
+
+        private void Reset()
         {
             this.T1.IsChecked = true;
             this.T2.IsChecked = true;
@@ -106,11 +96,6 @@ namespace Liuliu.MouseClicker.Flyouts
             this.T8.IsChecked = false;
             this.T9.IsChecked = false;
             this.T10.IsChecked = false;
-        }
-
-        private void btnStop_click(object sender, RoutedEventArgs e)
-        {
-            role.TaskEngine.Stop();
         }
     }
 }

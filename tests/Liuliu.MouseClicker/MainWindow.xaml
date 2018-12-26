@@ -140,21 +140,21 @@
                             <GridViewColumn Header="当前帐号" Width="65" DisplayMemberBinding="{Binding CurrentAccount.UserName,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
                             <GridViewColumn Header="运行状态" Width="65" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
                             <GridViewColumn Header="循环次数" Width="65" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
-                            <GridViewColumn Header="自动登陆" Width="65">
+                            <GridViewColumn Header="登陆" Width="40">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding IsAutoLogin,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="切换角色" Width="65">
+                            <GridViewColumn Header="切换" Width="40">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding IsChangeRole,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="任务配置" Width="80">
+                            <GridViewColumn Header="任务配置" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel>
@@ -179,8 +179,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <!--<Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>-->
-                                            <Button  Content="帐号" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenAccountFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>

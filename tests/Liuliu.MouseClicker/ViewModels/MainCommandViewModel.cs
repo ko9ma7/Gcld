@@ -49,10 +49,21 @@ namespace Liuliu.MouseClicker.ViewModels
                            break;
                    }
                });
+       Messenger.Default.Register<SendData<Dictionary<int, List<bool?>>>>(this, Notifications.MainCommandViewModel,
+       (sendData) =>
+       {
+           switch (sendData.Message)
+           { 
+               case "XilianMessage":
+                   xilianDict = sendData.Data;
+                   break;
+           }
+       });
+
         }
 
         private Role _role;
-      
+        private Dictionary<int, List<bool?>> xilianDict = null;
 
         public ICommand OpenSettingsFlyoutCommand
         {
@@ -66,15 +77,21 @@ namespace Liuliu.MouseClicker.ViewModels
         }
         
 
-        public ICommand OpenXilianFlyoutCommand
+        public ICommand OpenRoleSettingFlyoutCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand<Role>((role) =>
                 {
-                    // Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
-                    Role r = SoftContext.Locator.Main.SelectedRole;
-                    Messenger.Default.Send(r, "XilianFlyout");
+                    if (role.SelectedItemTask.Content.ToString() == "自动洗练")
+                    {
+                        Messenger.Default.Send("OpenXilianFlyout", Notifications.XilianFlyout);
+                    }
+                   if (role.SelectedItemTask.Content.ToString() == "活动任务")
+                    {
+                        Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
+                    }
+                    
                 });
             }
         }
@@ -211,14 +228,12 @@ namespace Liuliu.MouseClicker.ViewModels
             if (role.SelectedItemTask.Content.ToString() == "自动洗练")
             {
                 context.Settings.StepName = "自动洗练";
+                if (xilianDict == null)
+                    return;
+                context.Settings.EquipmentTypeDict = xilianDict;
                 tasks.Add(new SmallTool(context));
             }
-            if (role.SelectedItemTask.Content.ToString() == "指定洗练")
-            {
-                context.Settings.StepName = "指定洗练";
-                context.Settings.EquipmentType = role.SelectedIndex;
-                tasks.Add(new SmallTool(context));
-            }
+          
             if (role.SelectedItemTask.Content.ToString() == "自动建筑")
             {
                 context.Settings.StepName = "自动建筑";

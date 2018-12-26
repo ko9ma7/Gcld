@@ -26,8 +26,11 @@ namespace Liuliu.MouseClicker.Tasks
                     return 1;
                 if (context.Settings.StepName== "自动建筑")
                     return 2;
-                if (context.Settings.StepName== "自动洗练")
-                    return 3;
+                if (context.Settings.StepName == "自动洗练")
+                {
+                    equipmentTypeDict = context.Settings.EquipmentTypeDict;
+                    return 5;
+                }
                 if (context.Settings.StepName== "指定洗练")
                 {
                     equipmentTypeDict = context.Settings.EquipmentTypeDict;
@@ -50,9 +53,9 @@ namespace Liuliu.MouseClicker.Tasks
              {
                 new TaskStep() {Name="自动兵器",Order=1,RunFunc=RunStep1 },
                 new TaskStep() {Name="自动建筑",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="自动洗练",Order=3,RunFunc=RunStep3 },
+                new TaskStep() {Name="",Order=3,RunFunc=RunStep3 },
                 new TaskStep() {Name="刷新装备",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="指定洗练",Order=5,RunFunc=RunStep5 },
+                new TaskStep() {Name="自动洗练",Order=5,RunFunc=RunStep5 },
                 new TaskStep() {Name="购买装备",Order=6,RunFunc=RunStep6 },
                 new TaskStep() {Name="自动副本",Order=7,RunFunc=RunStep7 },
 
@@ -481,12 +484,10 @@ namespace Liuliu.MouseClicker.Tasks
                     List[i] = temp;
            
             }
-            foreach (var taozhuang in List)
-            {
-                Dm.DebugPrint(taozhuang.麒麟双枪.IsHave.ToString()+ taozhuang.麒麟.IsHave.ToString()+ taozhuang.三昧纯阳铠.IsHave.ToString()+ taozhuang.蝶凤舞阳.IsHave.ToString()+taozhuang.伏龙帅印.IsHave.ToString()+ taozhuang.蟠龙华盖.IsHave.ToString());
-            }
-           
-
+            //foreach (var taozhuang in List)
+            //{
+            //    Dm.DebugPrint(taozhuang.麒麟双枪.IsHave.ToString()+ taozhuang.麒麟.IsHave.ToString()+ taozhuang.三昧纯阳铠.IsHave.ToString()+ taozhuang.蝶凤舞阳.IsHave.ToString()+taozhuang.伏龙帅印.IsHave.ToString()+ taozhuang.蟠龙华盖.IsHave.ToString());
+            //}
             Delegater.WaitTrue(() =>
             {
                 string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
@@ -500,12 +501,16 @@ namespace Liuliu.MouseClicker.Tasks
                 foreach (var item in t)
                 {
                     string[] p = item.Split(',');
+                    Dm.Delay(1000);
                     Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                    Dm.DebugPrint("点击坐标："+int.Parse(p[1]) + " " + int.Parse(p[2]));
                     Dm.Delay(1000);
                     if (Dm.IsExistPic(707, 382, 734, 404, @"\bmp\星星1.bmp"))
                     {
+                        Dm.DebugPrint("该装备为紫装！");
                         if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
                         {
+                            Dm.DebugPrint("该装备已经4星！");
                             continue;
                         }
                         Delegater.WaitTrue(() =>
@@ -513,31 +518,24 @@ namespace Liuliu.MouseClicker.Tasks
                                 Dm.MoveToClick(631, 448);
                                 if (Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8,false))
                                 {
-                                 
                                     EquipmentType type = EquipmentType.未知类型;
                                     Delegater.WaitTrue(() =>
                                     {
                                         type = GetEquipmentType(781, 315, 861, 402);
                                         if (type != EquipmentType.未知类型)
                                             return true;
-                                        if (!Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
-                                        {
-                                            return true;
-                                        }
                                         return false;
                                     });
                                     Dm.DebugPrint("当前类型:" + type.ToString());
                                     string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
-                                    Dm.DebugPrint(ocr);
+                                    Dm.DebugPrint("装备类型为："+ocr);
                                     if (ocr == "")
                                     {
                                         Dm.DebugPrint("未能识别装备类型.");
-                                        Dm.MoveToClick(550, 361); //点取消
+                                        ClosePopup(550, 361);//点击点取消
                                     }
                                     else
                                     {
-                                        if(type!=EquipmentType.未知类型)
-                                        {
                                             套装 taozhuang = null;
                                             if (ocr.Contains("双枪"))
                                             {
@@ -545,8 +543,9 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (taozhuang != null)
                                                 {
                                                     taozhuang.麒麟双枪.IsHave = true;
-                                                    Dm.MoveToClick(550, 361); //点取消
-                                                    return true;
+
+                                                ClosePopup(550, 361);//点击点取消
+                                                return true;
                                                 }
                                             }
                                             if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
@@ -555,8 +554,8 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (taozhuang != null)
                                                 {
                                                     taozhuang.麒麟.IsHave = true;
-                                                    Dm.MoveToClick(550, 361);
-                                                    return true;
+                                                ClosePopup(550, 361);//点击点取消
+                                                return true;
                                                 }
                                             }
                                             if (ocr.Contains("三昧纯阳铠"))
@@ -565,8 +564,8 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (taozhuang != null)
                                                 {
                                                     taozhuang.三昧纯阳铠.IsHave = true;
-                                                    Dm.MoveToClick(550, 361);
-                                                    return true;
+                                                ClosePopup(550, 361);//点击点取消
+                                                return true;
                                                 }
                                             }
                                             if (ocr.Contains("蝶凤舞阳"))
@@ -575,8 +574,8 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (taozhuang != null)
                                                 {
                                                     taozhuang.蝶凤舞阳.IsHave = true;
-                                                    Dm.MoveToClick(550, 361);
-                                                    return true;
+                                                ClosePopup(550, 361);//点击点取消
+                                                return true;
                                                 }
                                             }
                                             if (ocr.Contains("伏龙帅印"))
@@ -585,8 +584,8 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (taozhuang != null)
                                                 {
                                                     taozhuang.伏龙帅印.IsHave = true;
-                                                    Dm.MoveToClick(550, 361);
-                                                    return true;
+                                                ClosePopup(550, 361);//点击点取消
+                                                return true;
                                                 }
                                             }
                                             if (ocr.Contains("蟠龙华盖"))
@@ -595,27 +594,41 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (taozhuang != null)
                                                 {
                                                     taozhuang.蟠龙华盖.IsHave = true;
-                                                    Dm.MoveToClick(550, 361);
-                                                    return true;
+                                                ClosePopup(550, 361);//点击点取消
+                                                return true;
                                                 }
                                             }
-                                        }
-                                        
+                                        ClosePopup(409, 362);//点击确定
                                     }
-                                    if (type != EquipmentType.未知类型)
-                                        Dm.MoveToClick(409, 362); //点确定
+                                  
                                 }
                                 return false;
                             });
+
                     }
                     Dm.Delay(1000);
                 }
                 Dm.Swipe(515, 438, 515, 220, 50);
+                Dm.Delay(1000);
                 return false;
             });
             return TaskResult.Finished;
         }
 
+        private void ClosePopup(int x,int y)
+        {
+            Delegater.WaitTrue(() => {
+                if (Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8))
+                {
+                    Dm.MoveToClick(x, y); //点取消
+                    Dm.Delay(2000);
+                    if (!Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8))
+                        return true;
+                }
+                return false;
+            });
+           Dm.Delay(1000);
+        }
         private TaskResult RunStep4(TaskContext context)
         {
             Role role = (Role)context.Role;

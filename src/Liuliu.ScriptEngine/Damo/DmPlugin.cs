@@ -3003,11 +3003,15 @@ namespace Liuliu.ScriptEngine
         {
             return _dm.SetPicPwd(pwd) == 1;
         }
-
+        /// <summary>
+        /// 调试输出
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isShow"></param>
         public void DebugPrint(string message,bool isShow=true)
         {
             if(isShow)
-              Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + message);
+              Debug.WriteLine("["+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +"][" + Thread.CurrentThread.ManagedThreadId.ToString() + "]"  + message);
         }
         #endregion
 
