@@ -415,7 +415,29 @@ namespace Liuliu.MouseClicker.Tasks
             public Equipment 蟠龙华盖;
         }
       
-       static List<套装> List { get; set; } 
+       static List<套装> List { get; set; }
+        private Tuple<bool, EquipmentType> IsSameEequipmentType()
+        {
+            EquipmentType type1 = EquipmentType.未知类型, type2 = EquipmentType.未知类型, type3 = EquipmentType.未知类型;
+            Delegater.WaitTrue(() =>
+            {
+                type1 = GetEquipmentType(566, 318, 637, 393);
+                type2 = GetEquipmentType(634, 315, 703, 400);
+                type3 = GetEquipmentType(701, 315, 776, 408);
+                if (type1 != EquipmentType.未知类型 && type2 != EquipmentType.未知类型 && type3 != EquipmentType.未知类型)
+                {
+                    Dm.DebugPrint("属性：" + type1.ToString() + " " + type2.ToString() + " " + type3.ToString());
+                    return true;
+                }
+                return false;
+            });
+            if (type1 == type2 && type2 == type3)
+            {
+                Dm.DebugPrint("所有类型相同！" + type1.ToString());
+                return new Tuple<bool, EquipmentType>(true, type1);
+            }
+            return new Tuple<bool, EquipmentType>(false, type1);
+        }
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
@@ -463,175 +485,132 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 Dm.DebugPrint(taozhuang.麒麟双枪.IsHave.ToString()+ taozhuang.麒麟.IsHave.ToString()+ taozhuang.三昧纯阳铠.IsHave.ToString()+ taozhuang.蝶凤舞阳.IsHave.ToString()+taozhuang.伏龙帅印.IsHave.ToString()+ taozhuang.蟠龙华盖.IsHave.ToString());
             }
+           
+
             Delegater.WaitTrue(() =>
             {
-              Dm.MoveToClick(631, 448);
-              if(!Dm.IsDisplayDead(614, 472, 706, 506, 2)) //2s内图像
-              {
-                    if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp", 0.8, false))
-                    {
-                        Dm.Delay(500);
-                    }
-                    EquipmentType type1=EquipmentType.未知类型, type2 = EquipmentType.未知类型, type3 = EquipmentType.未知类型;
-                    Delegater.WaitTrue(() =>
-                    {
-                        type1 = GetEquipmentType(566, 318, 637, 393);
-                        type2 = GetEquipmentType(634, 315, 703, 400);
-                        type3 = GetEquipmentType(701, 315, 776, 408);
-                        if (type1!=EquipmentType.未知类型&&type2!=EquipmentType.未知类型&&type3!=EquipmentType.未知类型)
-                        {
-                            Dm.DebugPrint("属性：" + type1.ToString()+" "+type2.ToString()+" "+type3.ToString());
-                            return true;
-                        }
-                        return false;
-                    });
-                    if (type1 == type2 && type2 == type3)
-                    {
-                        Dm.DebugPrint("所有类型相同！" + type1.ToString());
-                        string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
-                        Dm.DebugPrint(ocr);
-                        if (ocr == "")
-                        {
-                            Dm.DebugPrint("未能识别装备类型.");
-                            return true;
-                        }
-
-                        套装 taozhuang = null;
-                        if (ocr.Contains("双枪"))
-                        {
-                            taozhuang = List.FirstOrDefault(x => x.麒麟双枪.类型 == type1 && x.麒麟双枪.IsHave == false);
-                            if (taozhuang != null)
-                            {
-                                taozhuang.麒麟双枪.IsHave = true;
-                                return true;
-                            }
-                        }
-                        if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
-                        {
-                            taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type1 && x.麒麟.IsHave == false);
-                            if (taozhuang != null)
-                            {
-                                taozhuang.麒麟.IsHave = true;
-                                return true;
-                            }
-                        }
-                        if (ocr.Contains("三昧纯阳铠"))
-                        {
-                            taozhuang = List.FirstOrDefault(x => x.三昧纯阳铠.类型 == type1 && x.三昧纯阳铠.IsHave == false);
-                            if (taozhuang != null)
-                            {
-                                taozhuang.三昧纯阳铠.IsHave = true;
-                                return true;
-                            }
-                        }
-                        if (ocr.Contains("蝶凤舞阳"))
-                        {
-                            taozhuang = List.FirstOrDefault(x => x.蝶凤舞阳.类型 == type1 && x.蝶凤舞阳.IsHave == false);
-                            if (taozhuang != null)
-                            {
-                                taozhuang.蝶凤舞阳.IsHave = true;
-                                return true;
-                            }
-                        }
-                        if (ocr.Contains("伏龙帅印"))
-                        {
-                            taozhuang = List.FirstOrDefault(x => x.伏龙帅印.类型 == type1 && x.伏龙帅印.IsHave == false);
-                            if (taozhuang != null)
-                            {
-                                taozhuang.伏龙帅印.IsHave = true;
-                                return true;
-                            }
-                        }
-                        if (ocr.Contains("蟠龙华盖"))
-                        {
-                            taozhuang = List.FirstOrDefault(x => x.蟠龙华盖.类型 == type1 && x.蟠龙华盖.IsHave == false);
-                            if (taozhuang != null)
-                            {
-                                taozhuang.蟠龙华盖.IsHave = true;
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-
-                }
-                if (Dm.IsExistPic(379,213,475,255,@"\bmp\隐藏技能.bmp",0.8,false))
+                string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
+                Debug.WriteLine(points);
+                if (points == "")
                 {
-                    var type = GetEquipmentType(781, 315, 861, 402);
-                   // Dm.DebugPrint("需要的类型:" + ((EquipmentType)equipmentType).ToString());
-                    Dm.DebugPrint("当前类型:" + type.ToString());
-                    string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
-                    Dm.DebugPrint(ocr);
-                    if (ocr == "")
-                    {
-                        Dm.DebugPrint("未能识别装备类型.");
-                        return true;
-                    }
-
-                    套装 taozhuang = null;
-                    if(ocr.Contains("双枪"))
-                    {
-                        taozhuang = List.FirstOrDefault(x => x.麒麟双枪.类型 == type && x.麒麟双枪.IsHave == false);
-                        if (taozhuang != null)
-                        {
-                            taozhuang.麒麟双枪.IsHave = true;
-                            Dm.MoveToClick(550, 361);
-                            return true;
-                        }
-                    }
-                    if (ocr.Contains("麒麟")&&!ocr.Contains("双枪"))
-                    {
-                        taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
-                        if (taozhuang != null)
-                        {
-                            taozhuang.麒麟.IsHave = true;
-                            Dm.MoveToClick(550, 361);
-                            return true;
-                        }
-                    }
-                    if (ocr.Contains("三昧纯阳铠"))
-                    {
-                        taozhuang = List.FirstOrDefault(x => x.三昧纯阳铠.类型 == type && x.三昧纯阳铠.IsHave == false);
-                        if (taozhuang != null)
-                        {
-                            taozhuang.三昧纯阳铠.IsHave = true;
-                            Dm.MoveToClick(550, 361);
-                            return true;
-                        }
-                    }
-                    if (ocr.Contains("蝶凤舞阳"))
-                    {
-                        taozhuang = List.FirstOrDefault(x => x.蝶凤舞阳.类型 == type && x.蝶凤舞阳.IsHave == false);
-                        if (taozhuang != null)
-                        {
-                            taozhuang.蝶凤舞阳.IsHave = true;
-                            Dm.MoveToClick(550, 361);
-                            return true;
-                        }
-                    }
-                    if (ocr.Contains("伏龙帅印"))
-                    {
-                        taozhuang = List.FirstOrDefault(x => x.伏龙帅印.类型 == type && x.伏龙帅印.IsHave == false);
-                        if (taozhuang != null)
-                        {
-                            taozhuang.伏龙帅印.IsHave = true;
-                            Dm.MoveToClick(550, 361);
-                            return true;
-                        }
-                    }
-                    if (ocr.Contains("蟠龙华盖"))
-                    {
-                        taozhuang = List.FirstOrDefault(x => x.蟠龙华盖.类型 == type && x.蟠龙华盖.IsHave == false);
-                        if (taozhuang != null)
-                        {
-                            taozhuang.蟠龙华盖.IsHave = true;
-                            Dm.MoveToClick(550, 361);
-                            return true;
-                        }
-                    }
-                    if (type != EquipmentType.未知类型)
-                        Dm.MoveToClick(409, 362);
+                    return true;
                 }
+                string[] t = points.Split('|');
+
+                foreach (var item in t)
+                {
+                    string[] p = item.Split(',');
+                    Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+                    Dm.Delay(1000);
+                    if (Dm.IsExistPic(707, 382, 734, 404, @"\bmp\星星1.bmp"))
+                    {
+                        if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
+                        {
+                            continue;
+                        }
+                        Delegater.WaitTrue(() =>
+                            {
+                                Dm.MoveToClick(631, 448);
+                                if (Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8,false))
+                                {
+                                 
+                                    EquipmentType type = EquipmentType.未知类型;
+                                    Delegater.WaitTrue(() =>
+                                    {
+                                        type = GetEquipmentType(781, 315, 861, 402);
+                                        if (type != EquipmentType.未知类型)
+                                            return true;
+                                        if (!Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp"))
+                                        {
+                                            return true;
+                                        }
+                                        return false;
+                                    });
+                                    Dm.DebugPrint("当前类型:" + type.ToString());
+                                    string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
+                                    Dm.DebugPrint(ocr);
+                                    if (ocr == "")
+                                    {
+                                        Dm.DebugPrint("未能识别装备类型.");
+                                        Dm.MoveToClick(550, 361); //点取消
+                                    }
+                                    else
+                                    {
+                                        if(type!=EquipmentType.未知类型)
+                                        {
+                                            套装 taozhuang = null;
+                                            if (ocr.Contains("双枪"))
+                                            {
+                                                taozhuang = List.FirstOrDefault(x => x.麒麟双枪.类型 == type && x.麒麟双枪.IsHave == false);
+                                                if (taozhuang != null)
+                                                {
+                                                    taozhuang.麒麟双枪.IsHave = true;
+                                                    Dm.MoveToClick(550, 361); //点取消
+                                                    return true;
+                                                }
+                                            }
+                                            if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
+                                            {
+                                                taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
+                                                if (taozhuang != null)
+                                                {
+                                                    taozhuang.麒麟.IsHave = true;
+                                                    Dm.MoveToClick(550, 361);
+                                                    return true;
+                                                }
+                                            }
+                                            if (ocr.Contains("三昧纯阳铠"))
+                                            {
+                                                taozhuang = List.FirstOrDefault(x => x.三昧纯阳铠.类型 == type && x.三昧纯阳铠.IsHave == false);
+                                                if (taozhuang != null)
+                                                {
+                                                    taozhuang.三昧纯阳铠.IsHave = true;
+                                                    Dm.MoveToClick(550, 361);
+                                                    return true;
+                                                }
+                                            }
+                                            if (ocr.Contains("蝶凤舞阳"))
+                                            {
+                                                taozhuang = List.FirstOrDefault(x => x.蝶凤舞阳.类型 == type && x.蝶凤舞阳.IsHave == false);
+                                                if (taozhuang != null)
+                                                {
+                                                    taozhuang.蝶凤舞阳.IsHave = true;
+                                                    Dm.MoveToClick(550, 361);
+                                                    return true;
+                                                }
+                                            }
+                                            if (ocr.Contains("伏龙帅印"))
+                                            {
+                                                taozhuang = List.FirstOrDefault(x => x.伏龙帅印.类型 == type && x.伏龙帅印.IsHave == false);
+                                                if (taozhuang != null)
+                                                {
+                                                    taozhuang.伏龙帅印.IsHave = true;
+                                                    Dm.MoveToClick(550, 361);
+                                                    return true;
+                                                }
+                                            }
+                                            if (ocr.Contains("蟠龙华盖"))
+                                            {
+                                                taozhuang = List.FirstOrDefault(x => x.蟠龙华盖.类型 == type && x.蟠龙华盖.IsHave == false);
+                                                if (taozhuang != null)
+                                                {
+                                                    taozhuang.蟠龙华盖.IsHave = true;
+                                                    Dm.MoveToClick(550, 361);
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                    if (type != EquipmentType.未知类型)
+                                        Dm.MoveToClick(409, 362); //点确定
+                                }
+                                return false;
+                            });
+                    }
+                    Dm.Delay(1000);
+                }
+                Dm.Swipe(515, 438, 515, 220, 50);
                 return false;
             });
             return TaskResult.Finished;
