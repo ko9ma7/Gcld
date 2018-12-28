@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -386,7 +387,7 @@ namespace Liuliu.MouseClicker.Tasks
             return TaskResult.Finished;
         }
 
-        enum EquipmentType
+        enum EquipmentAttrType
         {
             未知类型 = -1,
             攻击,
@@ -397,37 +398,47 @@ namespace Liuliu.MouseClicker.Tasks
             强壮,
             强攻
         }
-        private EquipmentType GetEquipmentType(int x1,int y1,int x2,int y2)
+        enum EquipmentType
+        {
+            未知类型 = -1,
+            麒麟双枪,
+            麒麟,
+            三昧纯阳铠,
+            蝶凤舞阳,
+            伏龙帅印,
+            蟠龙华盖
+        }
+        private EquipmentAttrType GetEquipmentType(int x1,int y1,int x2,int y2)
         {
             int intX, intY;
             int result = Dm.FindPic(x1, y1, x2, y2, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "404040", 0.6, 0, out intX, out intY);
-            return (EquipmentType)result;
+            return (EquipmentAttrType)result;
         }
         class Equipment
         {
-            public EquipmentType 类型;
+            public EquipmentAttrType 类型;
             public bool? IsHave=false;
         }
         class 套装
         {
-            public Equipment 麒麟双枪;
-            public Equipment 麒麟;
-            public Equipment 三昧纯阳铠;
-            public Equipment 蝶凤舞阳;
-            public Equipment 伏龙帅印;
-            public Equipment 蟠龙华盖;
+            public Equipment 麒麟双枪 { get; set; }
+            public Equipment 麒麟 { get; set; }
+            public Equipment 三昧纯阳铠 { get; set; }
+            public Equipment 蝶凤舞阳 { get; set; }
+            public Equipment 伏龙帅印 { get; set; }
+            public Equipment 蟠龙华盖 { get; set; }
         }
       
        static List<套装> List { get; set; }
-        private Tuple<bool, EquipmentType> IsSameEequipmentType()
+        private Tuple<bool, EquipmentAttrType> IsSameEequipmentType()
         {
-            EquipmentType type1 = EquipmentType.未知类型, type2 = EquipmentType.未知类型, type3 = EquipmentType.未知类型;
+            EquipmentAttrType type1 = EquipmentAttrType.未知类型, type2 = EquipmentAttrType.未知类型, type3 = EquipmentAttrType.未知类型;
             Delegater.WaitTrue(() =>
             {
                 type1 = GetEquipmentType(566, 318, 637, 393);
                 type2 = GetEquipmentType(634, 315, 703, 400);
                 type3 = GetEquipmentType(701, 315, 776, 408);
-                if (type1 != EquipmentType.未知类型 && type2 != EquipmentType.未知类型 && type3 != EquipmentType.未知类型)
+                if (type1 != EquipmentAttrType.未知类型 && type2 != EquipmentAttrType.未知类型 && type3 != EquipmentAttrType.未知类型)
                 {
                     Dm.DebugPrint("属性：" + type1.ToString() + " " + type2.ToString() + " " + type3.ToString());
                     return true;
@@ -437,23 +448,50 @@ namespace Liuliu.MouseClicker.Tasks
             if (type1 == type2 && type2 == type3)
             {
                 Dm.DebugPrint("所有类型相同！" + type1.ToString());
-                return new Tuple<bool, EquipmentType>(true, type1);
+                return new Tuple<bool, EquipmentAttrType>(true, type1);
             }
-            return new Tuple<bool, EquipmentType>(false, type1);
+            return new Tuple<bool, EquipmentAttrType>(false, type1);
+        }
+        /// <summary>
+        /// 获取紫装类型
+        /// </summary>
+        /// <returns></returns>
+        private EquipmentType GetEquipmentType()
+        {
+            string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
+           // Dm.DebugPrint("装备类型为：" + ocr);
+            if (ocr == "")
+            {
+                Dm.DebugPrint("未能识别装备类型.");
+                return EquipmentType.未知类型;
+            }
+            if (ocr.Contains("双枪"))
+                return EquipmentType.麒麟双枪;
+            if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
+                return EquipmentType.麒麟;
+            if (ocr.Contains("三昧纯阳铠"))
+                return EquipmentType.三昧纯阳铠;
+            if (ocr.Contains("蝶凤舞阳"))
+                return EquipmentType.蝶凤舞阳;
+            if (ocr.Contains("伏龙帅印"))
+                return EquipmentType.伏龙帅印;
+            if (ocr.Contains("蟠龙华盖"))
+                return EquipmentType.蟠龙华盖;
+            return EquipmentType.未知类型;
         }
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
-            套装 青龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.血量 }, 麒麟 = new Equipment() { 类型 = EquipmentType.血量 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.血量 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.血量 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.血量 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.血量 } };
-            套装 白虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 } };
-            套装 朱雀套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强壮 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强壮 } };
-            套装 鲮鲤套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.掌控 }, 麒麟 = new Equipment() { 类型 = EquipmentType.掌控 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.掌控 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强防 } };
-            套装 玄武套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.防御 }, 麒麟 = new Equipment() { 类型 = EquipmentType.防御 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.防御 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.防御 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.防御 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.防御 } };
-            套装 霸下套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强防 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强防 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 } };
-            套装 驱虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 } };
-            套装 烛龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强防 } };
-            套装 凤凰套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.强攻 } };
-            套装 灵龟套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentType.强攻 }, 麒麟 = new Equipment() { 类型 = EquipmentType.强攻 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentType.掌控 } };
+            套装 青龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.血量 } };
+            套装 白虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强攻 } };
+            套装 朱雀套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强壮 } };
+            套装 鲮鲤套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强防 } };
+            套装 玄武套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.防御 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.防御 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.防御 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.防御 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.防御 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.防御 } };
+            套装 霸下套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.掌控 } };
+            套装 驱虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强攻 } };
+            套装 烛龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强防 } };
+            套装 凤凰套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强攻 } };
+            套装 灵龟套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.掌控 } };
             List = new List<套装>() { 青龙套装, 白虎套装, 朱雀套装, 鲮鲤套装, 玄武套装, 霸下套装, 驱虎套装, 烛龙套装, 凤凰套装, 灵龟套装 };
             for (int i = 0; i < 10; i++)
             {
@@ -490,284 +528,95 @@ namespace Liuliu.MouseClicker.Tasks
             //}
             Delegater.WaitTrue(() =>
             {
-                string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
-                Debug.WriteLine(points);
-                if (points == "")
-                {
-                    return true;
-                }
-                string[] t = points.Split('|');
+            string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
+           // Debug.WriteLine(points);
+            if (points == "")
+            {
+                return true;
+            }
+            string[] t = points.Split('|');
 
-                foreach (var item in t)
+            foreach (var item in t)
+            {
+                string[] p = item.Split(',');
+                Dm.Delay(1000);
+                Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
+              //  Dm.DebugPrint("点击坐标：" + int.Parse(p[1]) + " " + int.Parse(p[2]));
+                Dm.Delay(1000);
+                if (Dm.IsExistPic(707, 382, 734, 404, @"\bmp\星星1.bmp", 0.8, false))
                 {
-                    string[] p = item.Split(',');
-                    Dm.Delay(1000);
-                    Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
-                    Dm.DebugPrint("点击坐标："+int.Parse(p[1]) + " " + int.Parse(p[2]));
-                    Dm.Delay(1000);
-                    if (Dm.IsExistPic(707, 382, 734, 404, @"\bmp\星星1.bmp", 0.8, false))
+                   // Dm.DebugPrint("该装备为紫装！");
+                    if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp", 0.8, false))
                     {
-                        Dm.DebugPrint("该装备为紫装！");
-                        if (Dm.IsExistPic(792, 380, 821, 401, @"\bmp\星星1.bmp",0.8,false))
-                        {
-                            Dm.DebugPrint("该装备已经4星！");
-                            continue;
-                        }
-                        string ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
-                        Dm.DebugPrint("装备类型为：" + ocr);
-                        if (ocr == "")
-                        {
-                            Dm.DebugPrint("未能识别装备类型.");
-                            continue;
-                        }
-                        else
-                        {
-                            if (ocr.Contains("双枪"))
+                      //  Dm.DebugPrint("该装备已经4星！");
+                        continue;
+                    }
+                    var etype = GetEquipmentType();
+                    Dm.DebugPrint("当前装备类型为：" + etype.ToString());
+                    if (etype == EquipmentType.未知类型)
+                        continue;
+                    else
+                    {
+                           int count = List.Count(x => ((Equipment)x.GetType().GetProperty(etype.ToString()).GetValue(x)).IsHave == true);
+                           if (count==10)
                             {
-                                    if (List.Count(x => x.麒麟双枪.IsHave == true) == 10)
-                                    {
-                                        Dm.DebugPrint("麒麟双枪都已洗完！");
-                                    continue;
-                                }
-                                    else
-                                    {
-                                        Dm.DebugPrint("麒麟双枪剩下件数未洗：" + (10 - List.Count(x => x.麒麟双枪.IsHave == true)));
-                                    }
+                                Dm.DebugPrint(etype.ToString()+"都已洗完！");
+                                continue;
                             }
-                            if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
-                            {
-                                    if (List.Count(x => x.麒麟.IsHave == true) == 10)
-                                    {
-                                        Dm.DebugPrint("麒麟都已洗完！");
-                                    continue;
-                                }
-                                    else
-                                    {
-                                        Dm.DebugPrint("麒麟剩下件数未洗：" + (10 - List.Count(x => x.麒麟.IsHave == true)));
-                                    }
-                            }
-                            if (ocr.Contains("三昧纯阳铠"))
-                            {
-                                    if (List.Count(x => x.三昧纯阳铠.IsHave == true) == 10)
-                                    {
-                                        Dm.DebugPrint("三昧纯阳铠都已洗完！");
-                                    continue;
-                                }
-                                    else
-                                    {
-                                        Dm.DebugPrint("三昧纯阳铠剩下件数未洗：" + (10 - List.Count(x => x.三昧纯阳铠.IsHave == true)));
-                                    }
-                            }
-                            if (ocr.Contains("蝶凤舞阳"))
-                            {
-                                    if (List.Count(x => x.蝶凤舞阳.IsHave == true) == 10)
-                                    {
-                                        Dm.DebugPrint("蝶凤舞阳都已洗完！");
-                                    continue;
-                                }
-                                    else
-                                    {
-                                        Dm.DebugPrint("蝶凤舞阳剩下件数未洗：" + (10 - List.Count(x => x.蝶凤舞阳.IsHave == true)));
-                                    }
-                                
-                            }
-                            if (ocr.Contains("伏龙帅印"))
-                            {
-                                    if (List.Count(x => x.伏龙帅印.IsHave == true) == 10)
-                                    {
-                                        Dm.DebugPrint("伏龙帅印都已洗完！");
-                                    continue;
-                                }
-                                    else
-                                    {
-                                        Dm.DebugPrint("伏龙帅印剩下件数未洗：" + (10 - List.Count(x => x.伏龙帅印.IsHave == true)));
-                                    }
-                                
-                            }
-                            if (ocr.Contains("蟠龙华盖"))
-                            {
-                                    if (List.Count(x => x.蟠龙华盖.IsHave == true) == 10)
-                                    {
-                                        Dm.DebugPrint("蟠龙华盖都已洗完！");
-                                    continue;
-                                }
-                                    else
-                                    {
-                                        Dm.DebugPrint("蟠龙华盖剩下件数未洗：" + (10 - List.Count(x => x.蟠龙华盖.IsHave == true)));
-                                    }
-                                
-                            }
+                           else
+                                Dm.DebugPrint(etype.ToString()+"剩下【"+(10 - count)+"】件未洗.");
                         }
                         Delegater.WaitTrue(() =>
                             {
                                 Dm.MoveToClick(631, 448);
                                 Dm.Delay(500);
-                                if (Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8,false))
+                                if (Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8, false))
                                 {
-                                    EquipmentType type = EquipmentType.未知类型;
+                                    EquipmentAttrType atttype = EquipmentAttrType.未知类型;
                                     Delegater.WaitTrue(() =>
                                     {
-                                        type = GetEquipmentType(781, 315, 861, 402);
-                                        if (type != EquipmentType.未知类型)
+                                        atttype = GetEquipmentType(781, 315, 861, 402);
+                                        if (atttype != EquipmentAttrType.未知类型)
                                             return true;
                                         return false;
                                     });
-                                    Dm.DebugPrint("属性类型为:" + type.ToString());
-                                    ocr = Dm.Ocr(645, 121, 787, 168, "AB5BC6-25142B", 0.8);
-                                    Dm.DebugPrint("装备类型为："+ocr);
-                                    if (ocr == "")
-                                    {
-                                        Dm.DebugPrint("未能识别装备类型.");
+                                    var eqtype = GetEquipmentType();
+                                    Dm.DebugPrint("装备【" + eqtype.ToString() + "】洗出属性【" + atttype + "】");
+                                    if (eqtype == EquipmentType.未知类型)
                                         ClosePopup(550, 361);//点击点取消
-                                    }
                                     else
                                     {
-                                       套装 taozhuang = null;
-                                        if (ocr.Contains("双枪"))
-                                        {
-                                            taozhuang = List.FirstOrDefault(x => x.麒麟双枪.类型 == type && x.麒麟双枪.IsHave == false);
+                                        int count = List.Count(x => ((Equipment)x.GetType().GetProperty(eqtype.ToString()).GetValue(x)).IsHave == true);
+                                        套装 taozhuang = List.FirstOrDefault(x => ((Equipment)x.GetType().GetProperty(eqtype.ToString()).GetValue(x)).类型 == atttype && ((Equipment)x.GetType().GetProperty(etype.ToString()).GetValue(x)).IsHave == false);
                                             if (taozhuang != null)
                                             {
-                                                taozhuang.麒麟双枪.IsHave = true;
-                                                Dm.DebugPrint("装备【麒麟双枪】洗出属性【" + type + "】");
-                                                Dm.DebugPrint("麒麟双枪剩下件数未洗：" + (10 - List.Count(x => x.麒麟双枪.IsHave == true)));
+                                                ((Equipment)taozhuang.GetType().GetProperty(eqtype.ToString()).GetValue(taozhuang)).IsHave = true;
+                                               
+                                                string temp = "",temp2="";
+                                                foreach (var it in List)
+                                                {
+                                                   var a =(Equipment) it.GetType().GetProperty(eqtype.ToString()).GetValue(it);
+                                                   if (a.IsHave == false)
+                                                     temp=temp+a.类型.ToString()+" ";
+                                                if (a.IsHave == true)
+                                                    temp2 = temp2 + a.类型.ToString() + " ";
+                                                }
+                                                Dm.DebugPrint("属性【" + atttype.ToString() + "】是装备【" + etype.ToString() + "】需要的属性.  "+eqtype.ToString() + "已有属性：" + temp2+",还剩下属性未洗：" + temp + "  剩下件数未洗：" + (10 - count-1));
                                                 ClosePopup(550, 361);//点击点取消
                                                 return true;
                                             }
                                             else
                                             {
-                                                if (List.Count(x => x.麒麟双枪.IsHave == true) == 10)
+                                                if (count == 10)
                                                 {
-                                                    Dm.DebugPrint("麒麟双枪都已洗完！");
+                                                    Dm.DebugPrint(eqtype.ToString()+"都已洗完！");
                                                     return true;
                                                 }
                                                 else
                                                 {
-                                                    Dm.DebugPrint("麒麟双枪剩下件数未洗：" + (10 - List.Count(x => x.麒麟双枪.IsHave == true)));
+                                                    Dm.DebugPrint("属性【"+atttype.ToString()+"】不是装备【"+etype.ToString()+"】需要的属性.");
                                                 }
                                             }
-                                        }
-                                            if (ocr.Contains("麒麟") && !ocr.Contains("双枪"))
-                                            {
-                                                taozhuang = List.FirstOrDefault(x => x.麒麟.类型 == type && x.麒麟.IsHave == false);
-                                                if (taozhuang != null)
-                                                {
-                                                    taozhuang.麒麟.IsHave = true;
-                                                Dm.DebugPrint("装备【麒麟】洗出属性【" + type + "】");
-                                                Dm.DebugPrint("麒麟剩下件数未洗：" + (10 - List.Count(x => x.麒麟.IsHave == true)));
-                                                ClosePopup(550, 361);//点击点取消
-                                                return true;
-                                                }
-                                            else
-                                            {
-                                                if (List.Count(x => x.麒麟.IsHave == true) == 10)
-                                                {
-                                                    Dm.DebugPrint("麒麟都已洗完！");
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    Dm.DebugPrint("麒麟剩下件数未洗：" + (10 - List.Count(x => x.麒麟.IsHave == true)));
-                                                }
-                                            }
-                                        }
-                                            if (ocr.Contains("三昧纯阳铠"))
-                                            {
-                                                taozhuang = List.FirstOrDefault(x => x.三昧纯阳铠.类型 == type && x.三昧纯阳铠.IsHave == false);
-                                                if (taozhuang != null)
-                                                {
-                                                    taozhuang.三昧纯阳铠.IsHave = true;
-                                                Dm.DebugPrint("装备【三昧纯阳铠】洗出属性【" + type + "】");
-                                                Dm.DebugPrint("三昧纯阳铠剩下件数未洗：" + (10 - List.Count(x => x.三昧纯阳铠.IsHave == true)));
-                                                ClosePopup(550, 361);//点击点取消
-                                                return true;
-                                                }
-                                            else
-                                            {
-                                                if (List.Count(x => x.三昧纯阳铠.IsHave == true) == 10)
-                                                {
-                                                    Dm.DebugPrint("三昧纯阳铠都已洗完！");
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    Dm.DebugPrint("三昧纯阳铠剩下件数未洗：" + (10 - List.Count(x => x.三昧纯阳铠.IsHave == true)));
-                                                }
-                                            }
-                                        }
-                                            if (ocr.Contains("蝶凤舞阳"))
-                                            {
-                                                taozhuang = List.FirstOrDefault(x => x.蝶凤舞阳.类型 == type && x.蝶凤舞阳.IsHave == false);
-                                                if (taozhuang != null)
-                                                {
-                                                    taozhuang.蝶凤舞阳.IsHave = true;
-                                                Dm.DebugPrint("装备【蝶凤舞阳】洗出属性【" + type + "】");
-                                                Dm.DebugPrint("蝶凤舞阳剩下件数未洗：" + (10 - List.Count(x => x.蝶凤舞阳.IsHave == true)));
-                                                ClosePopup(550, 361);//点击点取消
-                                                return true;
-                                                }
-                                            else
-                                            {
-                                                if (List.Count(x => x.蝶凤舞阳.IsHave == true) == 10)
-                                                {
-                                                    Dm.DebugPrint("蝶凤舞阳都已洗完！");
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    Dm.DebugPrint("蝶凤舞阳剩下件数未洗：" + (10 - List.Count(x => x.蝶凤舞阳.IsHave == true)));
-                                                }
-                                            }
-                                        }
-                                            if (ocr.Contains("伏龙帅印"))
-                                            {
-                                                taozhuang = List.FirstOrDefault(x => x.伏龙帅印.类型 == type && x.伏龙帅印.IsHave == false);
-                                                if (taozhuang != null)
-                                                {
-                                                    taozhuang.伏龙帅印.IsHave = true;
-                                                Dm.DebugPrint("装备【伏龙帅印】洗出属性【" + type + "】");
-                                                Dm.DebugPrint("伏龙帅印剩下件数未洗：" + (10 - List.Count(x => x.伏龙帅印.IsHave == true)));
-                                                ClosePopup(550, 361);//点击点取消
-                                                return true;
-                                                }
-                                            else
-                                            {
-                                                if (List.Count(x => x.伏龙帅印.IsHave == true) == 10)
-                                                {
-                                                    Dm.DebugPrint("伏龙帅印都已洗完！");
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    Dm.DebugPrint("伏龙帅印剩下件数未洗：" + (10 - List.Count(x => x.伏龙帅印.IsHave == true)));
-                                                }
-                                            }
-                                        }
-                                            if (ocr.Contains("蟠龙华盖"))
-                                            {
-                                                taozhuang = List.FirstOrDefault(x => x.蟠龙华盖.类型 == type && x.蟠龙华盖.IsHave == false);
-                                                if (taozhuang != null)
-                                                {
-                                                    taozhuang.蟠龙华盖.IsHave = true;
-                                                Dm.DebugPrint("装备【蟠龙华盖】洗出属性【" + type + "】");
-                                                Dm.DebugPrint("蟠龙华盖剩下件数未洗：" + (10 - List.Count(x => x.蟠龙华盖.IsHave == true)));
-                                                ClosePopup(550, 361);//点击点取消
-                                                return true;
-                                                }
-                                            else
-                                            {
-                                                if (List.Count(x => x.蟠龙华盖.IsHave == true) == 10)
-                                                {
-                                                    Dm.DebugPrint("蟠龙华盖都已洗完！");
-                                                    return true;
-                                                }
-                                                else
-                                                {
-                                                    Dm.DebugPrint("蟠龙华盖剩下件数未洗：" + (10 - List.Count(x => x.蟠龙华盖.IsHave == true)));
-                                                }
-                                            }
-                                        }
-                                        
                                         ClosePopup(409, 362);//点击确定
                                     }
                                   
@@ -791,7 +640,7 @@ namespace Liuliu.MouseClicker.Tasks
                 if (Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8,false))
                 {
                     Dm.MoveToClick(x, y); //点确定取消
-                    Dm.DebugPrint("点击坐标：" + x + " " + y);
+                   // Dm.DebugPrint("点击坐标：" + x + " " + y);
                     Dm.Delay(3000);
                     if (!Dm.IsExistPic(379, 213, 475, 255, @"\bmp\隐藏技能.bmp", 0.8,false))
                         return true;
