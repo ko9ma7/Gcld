@@ -140,7 +140,7 @@ namespace Liuliu.MouseClicker
                     i++;
                 }
                 Debug.WriteLine("-- 选择一个网卡抓包: ");
-                i = 0;
+                i = 1;
 
                 var device = devices[i];
 
@@ -171,7 +171,7 @@ namespace Liuliu.MouseClicker
 
               //  while (!token.IsCancellationRequested)
                // {
-                    Thread.Sleep(25000);
+                    Thread.Sleep(250000);
               //  }
                 device.StopCapture();
 
@@ -215,33 +215,36 @@ namespace Liuliu.MouseClicker
                         {
                             byte[] tmpData=null;
                             tmpData = SimpleCipher.cancelHead(tcpPacket.PayloadData);
-                            Debug.WriteLine(BitConverter.ToString(tmpData));
-                            dataBytes = new byte[tmpData.Length - 4 - 4 - 32];
-                            Array.Copy(tmpData, 0, dataLenBytes, 0, 4);
-                            Array.Copy(tmpData, 4, commandBytes, 0, 32);
-                            Array.Copy(tmpData, 4 + 32, unknowBytes, 0, 4);
-                            Array.Copy(tmpData, 4 + 32 + 4, dataBytes, 0, tmpData.Length - 4 - 32 - 4);
-                            if(0x78== dataBytes[0] && 0x9c == dataBytes[1])
+                            if(tmpData!=null)
                             {
-                                int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
-                                string command = Encoding.UTF8.GetString(commandBytes);
-                                int unknow = BitConverter.ToInt32(unknowBytes.Reverse().ToArray(), 0);
-                                Debug.WriteLine("数据长度:" + dataLen + ",命令:" + command.Replace("\0", "") + ",未知4字节:" + unknow);
-                                Debug.WriteLine(Encoding.UTF8.GetString(Zip.DeCompress(dataBytes)));
+                                dataBytes = new byte[tmpData.Length - 4 - 4 - 32];
+                                Array.Copy(tmpData, 0, dataLenBytes, 0, 4); //数据长度4字节
+                                Array.Copy(tmpData, 4, commandBytes, 0, 32); //命令32字节
+                                Array.Copy(tmpData, 4 + 32, unknowBytes, 0, 4);//编号4字节
+                                Array.Copy(tmpData, 4 + 32 + 4, dataBytes, 0, tmpData.Length - 4 - 32 - 4); //压缩数据
+                                if (0x78 == dataBytes[0] && 0x9c == dataBytes[1])
+                                {
+                                    int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
+                                    string command = Encoding.UTF8.GetString(commandBytes);
+                                    int unknow = BitConverter.ToInt32(unknowBytes.Reverse().ToArray(), 0);
+                                    Debug.WriteLine("数据长度:" + dataLen + ",命令:" + command.Replace("\0", "") + ",编号:" + unknow);
+                                    Debug.WriteLine(Encoding.UTF8.GetString(Zip.DeCompress(dataBytes)));
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("数据错误:" + BitConverter.ToString(tcpPacket.PayloadData));
+                                }
                             }
-                           else
+                            else
                             {
-                                Debug.WriteLine("数据错误:"+BitConverter.ToString(tcpPacket.PayloadData));
+                                Debug.WriteLine("未知数据格式："+BitConverter.ToString(tcpPacket.PayloadData));
                             }
+                           
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine(ex.Message);
-                            try { Debug.WriteLine(BitConverter.ToString(tcpPacket.PayloadData)); }catch(Exception exx)
-                            {
-                                Debug.WriteLine(exx.Message);
-                            }
-                           
+                            Debug.WriteLine("发生异常：" + BitConverter.ToString(tcpPacket.PayloadData));
                         }
                     }
                 }
@@ -259,30 +262,6 @@ namespace Liuliu.MouseClicker
         private bool IsHasBytes(byte[] byteshuzu,string bytestr)
         {
             return BitConverter.ToString(byteshuzu).IndexOf(bytestr)>0;
-        }
-
-
-
-        /// <summary>
-        /// 解压缩字节数组
-        /// </summary>
-        /// <param name="str"></param>
-        public static byte[] Decompress(byte[] inputBytes)
-        {
-
-            using (MemoryStream inputStream = new MemoryStream(inputBytes))
-            {
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    using (GZipStream zipStream = new GZipStream(inputStream, CompressionMode.Decompress))
-                    {
-                        zipStream.CopyTo(outStream);
-                        zipStream.Close();
-                        return outStream.ToArray();
-                    }
-                }
-
-            }
         }
     }
 }

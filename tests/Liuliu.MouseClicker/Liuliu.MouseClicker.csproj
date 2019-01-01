@@ -154,6 +154,7 @@
     <Compile Include="Hook\Main.cs" />
     <Compile Include="Hook\SocketInterFace.cs" />
     <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\Action.cs" />
     <Compile Include="Models\SendData.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />
     <Compile Include="Role.cs" />

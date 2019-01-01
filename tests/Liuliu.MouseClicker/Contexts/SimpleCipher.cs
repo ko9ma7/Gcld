@@ -16,48 +16,30 @@ namespace Liuliu.MouseClicker.Contexts
             {
                 return null;
             }
-            //if ((102 == paramArrayOfByte[0]) && 
-            //    (108 == paramArrayOfByte[1]) &&
-            //    (121 == paramArrayOfByte[2]) && 
-            //    (115 == paramArrayOfByte[3]) && 
-            //    (116 == paramArrayOfByte[4]) && 
-            //    (109 == paramArrayOfByte[5]) && 
-            //    (33 == paramArrayOfByte[6]))
-            if(0x0D==paramArrayOfByte[2]&&0x0A==paramArrayOfByte[3]&& 0x00 == paramArrayOfByte[4] && 0x00 == paramArrayOfByte[5] && 0x00 == paramArrayOfByte[6])
-            {try
-             {
-                    byte[] headBytes = new byte[8];
-                    Array.Copy(paramArrayOfByte, 0, headBytes, 0, 8);
-                    Debug.WriteLine(BitConverter.ToString(headBytes));
-                    byte[] arrayOfByte = new byte[paramArrayOfByte.Length - 8];
-                    Array.Copy(paramArrayOfByte, 8, arrayOfByte, 0, paramArrayOfByte.Length - 8);
-                    // Debug.WriteLine(BitConverter.ToString(arrayOfByte));
-                    return arrayOfByte;
-                }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine(ex.Message+"888888888888888888888888");
-                }
-              
-            }
-            if(0x0D == paramArrayOfByte[3] && 0x0A == paramArrayOfByte[4] && 0x00 == paramArrayOfByte[5] && 0x00 == paramArrayOfByte[6] && 0x00 == paramArrayOfByte[7])
+            //00-00-00-52-70-6C-61-79-65-72-40-6C-74-65-73-74-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-01-76-78-9C-AB-56-4A-4C-2E-C9
+            int index = BitConverter.ToString(paramArrayOfByte).IndexOf("78-9C"); 
+            
+            if(index>=120&&index<160)
             {
-                try
+                if(index==120)
                 {
-                    byte[] headBytes = new byte[9];
-                    Array.Copy(paramArrayOfByte, 0, headBytes, 0, 9);
+                    return paramArrayOfByte;
+                }
+                if(index>120)
+                {
+                    int i = paramArrayOfByte.ToList().IndexOf(0x78);
+                    //复制头字节并输出
+                    byte[] headBytes = new byte[i-4-32-4];
+                    Array.Copy(paramArrayOfByte, 0, headBytes, 0, i - 4 - 32 - 4);
                     Debug.WriteLine(BitConverter.ToString(headBytes));
-                    byte[] arrayOfByte = new byte[paramArrayOfByte.Length - 9];
-                    Array.Copy(paramArrayOfByte, 9, arrayOfByte, 0, paramArrayOfByte.Length - 9);
-                    // Debug.WriteLine(BitConverter.ToString(arrayOfByte));
+                    //长度4+命令32+编号4+压缩数据
+                    byte[] arrayOfByte = new byte[paramArrayOfByte.Length - headBytes.Length];
+                    Array.Copy(paramArrayOfByte, headBytes.Length, arrayOfByte, 0, paramArrayOfByte.Length - headBytes.Length);
+                    Debug.WriteLine(BitConverter.ToString(arrayOfByte));
                     return arrayOfByte;
                 }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine(ex.Message + "9999999999999999999999");
-                }
             }
-            return paramArrayOfByte;
+            return null;
         }
 
         public static byte[] decompressAfterdecrypt(byte[] paramArrayOfByte)
