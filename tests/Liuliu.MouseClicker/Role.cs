@@ -654,6 +654,11 @@ namespace Liuliu.MouseClicker
                 {
                     _dm.FindMultiColorAndClick(122, 58, 318, 196, "ffb40b", "19|-17|ffb814,35|0|ffb40b-202020,34|-34|fff303-202020,25|-25|ffdd12,26|-4|ff8804,8|-7|ff9907,28|-29|ffe009",-17,59);
                 }
+                if(_dm.IsExistPic(405,190,525,251, @"\bmp\达到上限.bmp"))
+                {
+                    _dm.MoveToClick(548, 360);
+                    _dm.Delay(1000);
+                }
                 if (_dm.IsExistPic(394, 216, 567, 307, @"\bmp\VS.bmp"))
                 {
                     _dm.Delay(500);

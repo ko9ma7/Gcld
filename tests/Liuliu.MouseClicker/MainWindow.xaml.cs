@@ -31,6 +31,9 @@ using System.IO;
 using PacketDotNet;
 using Liuliu.MouseClicker.Models;
 using System.Collections.ObjectModel;
+using System.IO.Compression;
+using PacketDotNet.Ieee80211;
+using System.Net;
 
 namespace Liuliu.MouseClicker
 {
@@ -109,26 +112,10 @@ namespace Liuliu.MouseClicker
         {
 
         }
-     
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<Account> list = new List<Account>() { new Account() { UserName = "aa", Password = "bb" },new Account() { UserName="mm",Password="pp"} };
-            List<Account> list2 = new List<Account>() { new Account() { UserName = "aa", Password = "ee" }, new Account() { UserName = "mm", Password = "pp" } };
-            List<Account> a = null;
-            ObservableCollection<Account> b = null;
-            List<Account> c = null;
-            a = list2;
-            b = new ObservableCollection<Account>(list2.Where(x=>x.UserName=="aa"));
-            c = b.ToList();
-            list = list2;
-            b[0].Password = "cc";
-
-           Debug.WriteLine(c[0].Password);
-
-            return;
-            var bytes = new byte[] { 0xE5, 0xBC, 0xBA };
-            Debug.WriteLine(Encoding.UTF8.GetString(bytes));
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             Task task = new Task(() =>
@@ -178,7 +165,7 @@ namespace Liuliu.MouseClicker
                 Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
 
                 // tcpdump filter to capture only TCP/IP packets
-                string filter = "host 39.105.208.92";
+                string filter = "host 39.96.32.192";
                 device.Filter = filter;
                 device.StartCapture();
 
@@ -209,21 +196,55 @@ namespace Liuliu.MouseClicker
            // Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
            if(len>54)
             {
-                if (BitConverter.ToString(e.Packet.Data).IndexOf("26-74-6F-3D") > 0)
+                var packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+                var tcpPacket = packet.Extract(typeof(TcpPacket));
+                if(tcpPacket!=null)
                 {
-                    var packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
-                    var tcpPacket = packet.Extract(typeof(TcpPacket));
-
-
-                   // Debug.WriteLine(tcpPacket.PrintHex());
-
-                    string re = BitConverter.ToString(tcpPacket.PayloadData);
-                    Debug.WriteLine(re);
-                    string result = Encoding.UTF8.GetString(tcpPacket.PayloadData);
-
-                    Debug.WriteLine(result);
+                    var ipPacket = (IpPacket)tcpPacket.ParentPacket;
+                    IPAddress srcIp = ipPacket.SourceAddress;
+                    IPAddress dstIp = ipPacket.DestinationAddress;
+                    if(srcIp.ToString()== "39.96.32.192")
+                    {
+                     
+                        // Array.Copy(源数据, 源数据开始复制处索引, 接收数据, 接收数据开始处索引, 复制多少个数据);
+                        byte[] dataLenBytes = new byte[4];
+                        byte[] commandBytes = new byte[32];
+                        byte[] unknowBytes = new byte[4];
+                        byte[] dataBytes = null;
+                        try
+                        {
+                            byte[] tmpData=null;
+                            tmpData = SimpleCipher.cancelHead(tcpPacket.PayloadData);
+                            Debug.WriteLine(BitConverter.ToString(tmpData));
+                            dataBytes = new byte[tmpData.Length - 4 - 4 - 32];
+                            Array.Copy(tmpData, 0, dataLenBytes, 0, 4);
+                            Array.Copy(tmpData, 4, commandBytes, 0, 32);
+                            Array.Copy(tmpData, 4 + 32, unknowBytes, 0, 4);
+                            Array.Copy(tmpData, 4 + 32 + 4, dataBytes, 0, tmpData.Length - 4 - 32 - 4);
+                            if(0x78== dataBytes[0] && 0x9c == dataBytes[1])
+                            {
+                                int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
+                                string command = Encoding.UTF8.GetString(commandBytes);
+                                int unknow = BitConverter.ToInt32(unknowBytes.Reverse().ToArray(), 0);
+                                Debug.WriteLine("数据长度:" + dataLen + ",命令:" + command.Replace("\0", "") + ",未知4字节:" + unknow);
+                                Debug.WriteLine(Encoding.UTF8.GetString(Zip.DeCompress(dataBytes)));
+                            }
+                           else
+                            {
+                                Debug.WriteLine("数据错误:"+BitConverter.ToString(tcpPacket.PayloadData));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                            try { Debug.WriteLine(BitConverter.ToString(tcpPacket.PayloadData)); }catch(Exception exx)
+                            {
+                                Debug.WriteLine(exx.Message);
+                            }
+                           
+                        }
+                    }
                 }
-              
             }
       
         }
@@ -240,5 +261,28 @@ namespace Liuliu.MouseClicker
             return BitConverter.ToString(byteshuzu).IndexOf(bytestr)>0;
         }
 
+
+
+        /// <summary>
+        /// 解压缩字节数组
+        /// </summary>
+        /// <param name="str"></param>
+        public static byte[] Decompress(byte[] inputBytes)
+        {
+
+            using (MemoryStream inputStream = new MemoryStream(inputBytes))
+            {
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    using (GZipStream zipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+                    {
+                        zipStream.CopyTo(outStream);
+                        zipStream.Close();
+                        return outStream.ToArray();
+                    }
+                }
+
+            }
+        }
     }
 }

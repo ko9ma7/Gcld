@@ -150,6 +150,7 @@ namespace Liuliu.MouseClicker.ViewModels
                     Debug.WriteLine("起始地址:" + InitialAddress);
                     int initAddress = AnyRadixConvert._16To10(InitialAddress);
                     int pid = SelectedProcess.Process.Id;
+                    
                     for (int i = 0; i < Number; i++)
                     {
                         if ((i - Number / 2)<0)

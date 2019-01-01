@@ -321,8 +321,25 @@ namespace Liuliu.MouseClicker.Tasks
                     List<Goods> buyList = null;
                     if(list.Max(x=>x.Color)!=MaxColor)
                     {
-                        Dm.DebugPrint("最大颜色错误:" + list.Max(x => x.Color) + "maxcolor:" + MaxColor.ToString());
+                        Dm.DebugPrint("最大颜色错误,应是:" + list.Max(x => x.Color) + ",等级识别的maxcolor:" + MaxColor.ToString());
                         MaxColor = list.Max(x => x.Color);
+                       
+                        if (MaxColor == Color.紫)
+                        {
+                            role.CloseWindow();
+                            Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
+                            Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
+                                               () => Dm.Delay(1000));
+                            GetSelectedGeneralEquipment(86, 68, 177, 149);
+                            GetSelectedGeneralEquipment(86, 156, 173, 241);
+                            GetSelectedGeneralEquipment(84, 244, 176, 326);
+                            GetSelectedGeneralEquipment(83, 332, 174, 417);
+                            Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+                            role.CloseWindow();
+                            Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
+                            Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
+                                               () => Dm.Delay(1000));
+                        }
                     }
                     if(MaxColor==Color.白||MaxColor==Color.蓝||MaxColor==Color.绿)
                     {
@@ -378,7 +395,9 @@ namespace Liuliu.MouseClicker.Tasks
                 //出现稀有物品
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
                 {
-                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
+                    Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
+                    Dm.Delay(500);
+                    Dm.MoveToClick(168, 370);
                 }
                 return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
             }, () => Dm.Delay(200));
