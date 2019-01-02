@@ -140,8 +140,10 @@ namespace Liuliu.MouseClicker
                     i++;
                 }
                 Debug.WriteLine("-- 选择一个网卡抓包: ");
-                i = 1;
-
+                if (File.Exists(@"E:\nox\Nox\bin\nox_adb.exe"))
+                    i = 0;
+                if (File.Exists(@"E:\Nox\bin\nox_adb.exe"))
+                    i = 1;
                 var device = devices[i];
 
                 // Register our handler function to the 'packet arrival' event
@@ -205,7 +207,8 @@ namespace Liuliu.MouseClicker
                     IPAddress dstIp = ipPacket.DestinationAddress;
                     if(srcIp.ToString()== "39.96.32.192")
                     {
-                     
+                        Debug.WriteLine("--------------------------------------------------------------------");
+                        Debug.WriteLine("数据格式：" + BitConverter.ToString(tcpPacket.PayloadData));
                         // Array.Copy(源数据, 源数据开始复制处索引, 接收数据, 接收数据开始处索引, 复制多少个数据);
                         byte[] dataLenBytes = new byte[4];
                         byte[] commandBytes = new byte[32];
@@ -246,6 +249,7 @@ namespace Liuliu.MouseClicker
                             Debug.WriteLine(ex.Message);
                             Debug.WriteLine("发生异常：" + BitConverter.ToString(tcpPacket.PayloadData));
                         }
+                        Debug.WriteLine("--------------------------------------------------------------------");
                     }
                 }
             }

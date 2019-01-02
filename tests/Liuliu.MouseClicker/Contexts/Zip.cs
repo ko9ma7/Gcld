@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,9 +49,13 @@ namespace Liuliu.MouseClicker.Contexts
             {
                 Int32 mSize;
                 byte[] mWriteData = new byte[4096];
+                int i = 0;
                 while (true)
                 {
                     mSize = mStream.Read(mWriteData, 0, mWriteData.Length);
+                    i++;
+                    if (i >= 4096)
+                        Debug.WriteLine("数组超长");
                     if (mSize > 0)
                         mMemory.Write(mWriteData, 0, mSize);
                     else
