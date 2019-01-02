@@ -108,12 +108,12 @@
                     </Button.ContextMenu>
                 </Button>
             </StackPanel>
-          
+
         </mah:WindowCommands>
 
     </mah:MetroWindow.RightWindowCommands>
-    
-<mah:MetroWindow.Flyouts>
+
+    <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <flyouts:SettingsFlyout x:Name="SettingsFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:RoleSettingFlyout x:Name="RoleSettingFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
@@ -125,77 +125,74 @@
     </mah:MetroWindow.Flyouts>
 
     <mah:MetroContentControl>
-        <Grid Background="AntiqueWhite" Margin="0,10,0,-10">
+        <Grid Background="AntiqueWhite" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
+            <ListView Grid.Row="0" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" SelectedItem="{Binding SelectedRole}" Grid.RowSpan="2">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="模拟器列表" Width="80" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
+                        <GridViewColumn Header="当前帐号" Width="65" DisplayMemberBinding="{Binding CurrentAccount.UserName,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
+                        <GridViewColumn Header="运行状态" Width="65" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
+                        <GridViewColumn Header="循环次数" Width="65" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
+                        <GridViewColumn Header="登陆" Width="40">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsAutoLogin,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="切换" Width="40">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsChangeRole,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="任务配置" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
+                                            <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
+                                            <ComboBoxItem Content="活动任务"></ComboBoxItem>
+                                            <ComboBoxItem Content="自动洗练"></ComboBoxItem>
+                                            <ComboBoxItem Content="自动兵器"></ComboBoxItem>
+                                            <ComboBoxItem Content="自动建筑"></ComboBoxItem>
+                                            <ComboBoxItem Content="自动主线"></ComboBoxItem>
+                                            <ComboBoxItem Content="购买装备"></ComboBoxItem>
+                                            <ComboBoxItem Content="自动副本"></ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
 
-            <Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="操作" Width="200">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                        <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                        <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
 
-                <ListView ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Margin="0,0,0,-29" SelectedItem="{Binding SelectedRole}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="模拟器列表" Width="80" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
-                            <GridViewColumn Header="当前帐号" Width="65" DisplayMemberBinding="{Binding CurrentAccount.UserName,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
-                            <GridViewColumn Header="运行状态" Width="65" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
-                            <GridViewColumn Header="循环次数" Width="65" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
-                            <GridViewColumn Header="登陆" Width="40">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding IsAutoLogin,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="切换" Width="40">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding IsChangeRole,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="任务配置" Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
-                                                <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
-                                                <ComboBoxItem Content="活动任务"></ComboBoxItem>
-                                                <ComboBoxItem Content="自动洗练"></ComboBoxItem>
-                                                <ComboBoxItem Content="自动兵器"></ComboBoxItem>
-                                                <ComboBoxItem Content="自动建筑"></ComboBoxItem>
-                                                <ComboBoxItem Content="自动主线"></ComboBoxItem>
-                                                <ComboBoxItem Content="购买装备"></ComboBoxItem>
-                                                <ComboBoxItem Content="自动副本"></ComboBoxItem>
-                                            </ComboBox>
-                                        </StackPanel>
-                                       
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="操作" Width="200">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                            <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
+            </ListView>
 
-                </ListView>
 
-            </Grid>
-
-            <Button Width="50" Height="30" Click="Button_Click" Margin="508,274,73,24" Grid.RowSpan="2" Content="hook"></Button>
-            <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding RefreshCommand}" Width="50" Height="30" Content="刷新" Margin="563,274,21,27" Grid.RowSpan="2"></Button>
-            <StatusBar Grid.Row="1" Margin="0,30,0,0">
+            <StatusBar Grid.Row="1">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{Binding StatusBar}" Padding="0" Width="300" Foreground="White"/>
+                    <Button Width="50" Height="30" Margin="160,0,0,0" Click="Button_Click"  Grid.RowSpan="2" Content="捕获"></Button>
+                    <Button Width="50" Height="30" Click="StopCaptureButton_Click"  Grid.RowSpan="2" Content="停止"></Button>
+                    <Button DataContext="{Binding MainCommand, Source={StaticResource Locator}}" Command="{Binding RefreshCommand}" Width="50" Height="30" Content="刷新" Grid.RowSpan="2"></Button>
                 </StackPanel>
             </StatusBar>
 

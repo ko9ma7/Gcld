@@ -10,7 +10,7 @@ namespace Liuliu.MouseClicker.Models
     /// 动作
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class RoleAction<T>
+    public class RoleAction
     {   /// <summary>
         /// 状态
         /// </summary>
@@ -18,7 +18,7 @@ namespace Liuliu.MouseClicker.Models
         /// <summary>
         /// 数据
         /// </summary>
-        public T data { get; set; }
+        public Data data { get; set; }
 
     }
     public class RefreshAttribute
@@ -117,6 +117,6 @@ namespace Liuliu.MouseClicker.Models
 
     public class RootObject
     {
-        public Action action { get; set; }
+        public RoleAction action { get; set; }
     }
 }

@@ -116,145 +116,309 @@ namespace Liuliu.MouseClicker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var tokenSource = new CancellationTokenSource();
-            var token = tokenSource.Token;
-            Task task = new Task(() =>
-            {
-                Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
-                // Retrieve the device list
-                var devices = CaptureDeviceList.Instance;
-
-                // If no devices were found print an error
-                if (devices.Count < 1)
-                {
-                    Debug.WriteLine("出现错误：电脑未检测到网卡！");
-                    return;
-                }
-
-                Debug.WriteLine("该电脑有以下网卡:");
-                Debug.WriteLine("----------------------------------------------------");
-                int i = 0;
-                foreach (var dev in devices)
-                {
-                    Debug.WriteLine("{0}) {1} {2}", i, dev.Name, dev.Description);
-                    i++;
-                }
-                Debug.WriteLine("-- 选择一个网卡抓包: ");
-                if (File.Exists(@"E:\nox\Nox\bin\nox_adb.exe"))
-                    i = 0;
-                if (File.Exists(@"E:\Nox\bin\nox_adb.exe"))
-                    i = 1;
-                var device = devices[i];
-
-                // Register our handler function to the 'packet arrival' event
-                device.OnPacketArrival +=
-                    new PacketArrivalEventHandler(device_OnPacketArrival);
-
-                // Open the device for capturing
-                int readTimeoutMilliseconds = 1000;
-
-                if (device is WinPcapDevice)
-                {
-                    var winPcap = device as WinPcapDevice;
-                    winPcap.Open(OpenFlags.DataTransferUdp | OpenFlags.NoCaptureLocal, readTimeoutMilliseconds);
-                }
-                else
-                {
-                    throw new InvalidOperationException("未知的设备类型： " + device.GetType().ToString());
-                }
-
-
-                Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
-
-                // tcpdump filter to capture only TCP/IP packets
-                string filter = "host 39.96.32.192";
-                device.Filter = filter;
-                device.StartCapture();
-
-              //  while (!token.IsCancellationRequested)
-               // {
-                    Thread.Sleep(250000);
-              //  }
-                device.StopCapture();
-
-                Debug.WriteLine("--捕获结束.");
-                // Print out the device statistics
-                Debug.WriteLine(device.Statistics.ToString());
-
-                // Close the pcap device
-                device.Close();
-            },token);
-           
-            task.Start();
-            task.Wait();
-            tokenSource.Cancel();
+            Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
+            int i = 0;
+            if (File.Exists(@"E:\nox\Nox\bin\nox_adb.exe"))
+                i = 0;
+            if (File.Exists(@"E:\Nox\bin\nox_adb.exe"))
+                i = 1;
+            StartCapture(i, "src host 39.96.32.192");
         }
 
-
-        private static void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        public class PacketWrapper
         {
-            var time = e.Packet.Timeval.Date;
-            var len = e.Packet.Data.Length;
-           // Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
-           if(len>54)
+            public RawCapture p;
+
+            public int Count { get; private set; }
+            public PosixTimeval Timeval { get { return p.Timeval; } }
+            public LinkLayers LinkLayerType { get { return p.LinkLayerType; } }
+            public int Length { get { return p.Data.Length; } }
+
+            public PacketWrapper(int count, RawCapture p)
             {
-                var packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
-                var tcpPacket = packet.Extract(typeof(TcpPacket));
-                if(tcpPacket!=null)
+                this.Count = count;
+                this.p = p;
+            }
+        }
+        private Queue<PacketWrapper> packetStrings;
+
+        private int packetCount;
+        private ICaptureStatistics captureStatistics;
+        private bool statisticsUiNeedsUpdate = false;
+        private TimeSpan LastStatisticsInterval = new TimeSpan(0, 0, 2);
+        private DateTime LastStatisticsOutput;
+        private Thread backgroundThread;
+        private ICaptureDevice device;
+        private bool BackgroundThreadStop;
+        private PacketArrivalEventHandler arrivalEventHandler;
+        private CaptureStoppedEventHandler captureStoppedEventHandler;
+        private object QueueLock = new object();
+        private List<RawCapture> PacketQueue = new List<RawCapture>();
+        private void StartCapture(int itemIndex,string filter)
+        {
+            packetCount = 0;
+            device = CaptureDeviceList.Instance[itemIndex];
+            packetStrings = new Queue<PacketWrapper>();
+            LastStatisticsOutput = DateTime.Now;
+
+            // start the background thread
+            BackgroundThreadStop = false;
+            backgroundThread = new System.Threading.Thread(BackgroundThread);
+            backgroundThread.IsBackground = true;
+            backgroundThread.Start();
+
+            // setup background capture
+            arrivalEventHandler = new PacketArrivalEventHandler(device_OnPacketArrival);
+            device.OnPacketArrival += arrivalEventHandler;
+            captureStoppedEventHandler = new CaptureStoppedEventHandler(device_OnCaptureStopped);
+            device.OnCaptureStopped += captureStoppedEventHandler;
+            device.Open();
+
+            // force an initial statistics update
+            captureStatistics = device.Statistics;
+            UpdateCaptureStatistics();
+
+            device.Filter = filter; 
+
+            Debug.WriteLine("-- 正在监听网卡{0} {1},开始抓包！", device.Name, device.Description);
+            // start the background capture
+            device.StartCapture();
+        }
+        private void UpdateCaptureStatistics()
+        {
+            //Debug.WriteLine(string.Format("Received packets: {0}, Dropped packets: {1}, Interface dropped packets: {2}",
+            //                                           captureStatistics.ReceivedPackets,
+            //                                           captureStatistics.DroppedPackets,
+            //                                           captureStatistics.InterfaceDroppedPackets));
+        }
+        void device_OnCaptureStopped(object sender, CaptureStoppedEventStatus status)
+        {
+            if (status != CaptureStoppedEventStatus.CompletedWithoutError)
+            {
+                MessageBox.Show("Error stopping capture", "Error",MessageBoxButton.OK);
+            }
+        }
+        private void BackgroundThread()
+        {
+            while (!BackgroundThreadStop)
+            {
+                bool shouldSleep = true;
+
+                lock (QueueLock)
                 {
-                    var ipPacket = (IpPacket)tcpPacket.ParentPacket;
-                    IPAddress srcIp = ipPacket.SourceAddress;
-                    IPAddress dstIp = ipPacket.DestinationAddress;
-                    if(srcIp.ToString()== "39.96.32.192")
+                    if (PacketQueue.Count != 0)
                     {
-                        Debug.WriteLine("--------------------------------------------------------------------");
-                        Debug.WriteLine("数据格式：" + BitConverter.ToString(tcpPacket.PayloadData));
-                        // Array.Copy(源数据, 源数据开始复制处索引, 接收数据, 接收数据开始处索引, 复制多少个数据);
-                        byte[] dataLenBytes = new byte[4];
-                        byte[] commandBytes = new byte[32];
-                        byte[] unknowBytes = new byte[4];
-                        byte[] dataBytes = null;
-                        try
+                        shouldSleep = false;
+                    }
+                }
+
+                if (shouldSleep)
+                {
+                   Thread.Sleep(250);
+                }
+                else // should process the queue
+                {
+                    List<RawCapture> ourQueue;
+                    lock (QueueLock)
+                    {
+                        // swap queues, giving the capture callback a new one
+                        ourQueue = PacketQueue;
+                        PacketQueue = new List<RawCapture>();
+                    }
+
+                   // Debug.WriteLine("BackgroundThread: ourQueue.Count is {0}", ourQueue.Count);
+
+                    foreach (var packet in ourQueue)
+                    {
+                        // Here is where we can process our packets freely without
+                        // holding off packet capture.
+                        //
+                        // NOTE: If the incoming packet rate is greater than
+                        //       the packet processing rate these queues will grow
+                        //       to enormous sizes. Packets should be dropped in these
+                        //       cases
+
+                        var packetWrapper = new PacketWrapper(packetCount, packet);
+                 
+                        //多线程？
+                        packetStrings.Enqueue(packetWrapper);
+
+                        packetCount++;
+                        var time = packet.Timeval.Date;
+                        var len = packet.Data.Length;
+                        //Debug.WriteLine("BackgroundThread: {0}:{1}:{2},{3} Len={4}",
+                        //    time.Hour, time.Minute, time.Second, time.Millisecond, len);
+                        var _packet = Packet.ParsePacket(packet.LinkLayerType, packet.Data);
+
+                        var tcpPacket = (TcpPacket)_packet.Extract(typeof(TcpPacket));
+                        if (tcpPacket != null)
                         {
-                            byte[] tmpData=null;
-                            tmpData = SimpleCipher.cancelHead(tcpPacket.PayloadData);
-                            if(tmpData!=null)
-                            {
-                                dataBytes = new byte[tmpData.Length - 4 - 4 - 32];
-                                Array.Copy(tmpData, 0, dataLenBytes, 0, 4); //数据长度4字节
-                                Array.Copy(tmpData, 4, commandBytes, 0, 32); //命令32字节
-                                Array.Copy(tmpData, 4 + 32, unknowBytes, 0, 4);//编号4字节
-                                Array.Copy(tmpData, 4 + 32 + 4, dataBytes, 0, tmpData.Length - 4 - 32 - 4); //压缩数据
-                                if (0x78 == dataBytes[0] && 0x9c == dataBytes[1])
+                            var ipPacket = (IpPacket)tcpPacket.ParentPacket;
+                            IPAddress srcIp = ipPacket.SourceAddress;
+                            IPAddress dstIp = ipPacket.DestinationAddress;
+                            int srcPort = tcpPacket.SourcePort;
+                            int dstPort = tcpPacket.DestinationPort;
+
+                            //Console.WriteLine("{0}:{1}:{2},{3} Len={4} {5}:{6} -> {7}:{8}",
+                            //    time.Hour, time.Minute, time.Second, time.Millisecond, len,
+                            //    srcIp, srcPort, dstIp, dstPort);
+
+                                Debug.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------");
+                               // Debug.WriteLine("数据格式：" + +tcpPacket.PayloadData.Length + "   " + BitConverter.ToString(tcpPacket.PayloadData));
+                                // Array.Copy(源数据, 源数据开始复制处索引, 接收数据, 接收数据开始处索引, 复制多少个数据);
+                                byte[] dataLenBytes = new byte[4];
+                                byte[] commandBytes = new byte[32];
+                                byte[] unknowBytes = new byte[4];
+                                byte[] dataBytes = null;
+                                try
                                 {
-                                    int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
-                                    string command = Encoding.UTF8.GetString(commandBytes);
-                                    int unknow = BitConverter.ToInt32(unknowBytes.Reverse().ToArray(), 0);
-                                    Debug.WriteLine("数据长度:" + dataLen + ",命令:" + command.Replace("\0", "") + ",编号:" + unknow);
-                                    Debug.WriteLine(Encoding.UTF8.GetString(Zip.DeCompress(dataBytes)));
+                                    byte[] tmpData = null;
+                                    tmpData = SimpleCipher.cancelHead(tcpPacket.PayloadData);
+                                    if (tmpData != null)
+                                    {
+                                        dataBytes = new byte[tmpData.Length - 4 - 4 - 32];
+                                        Array.Copy(tmpData, 0, dataLenBytes, 0, 4); //数据长度4字节
+                                        Array.Copy(tmpData, 4, commandBytes, 0, 32); //命令32字节
+                                        Array.Copy(tmpData, 4 + 32, unknowBytes, 0, 4);//编号4字节
+                                        Array.Copy(tmpData, 4 + 32 + 4, dataBytes, 0, tmpData.Length - 4 - 32 - 4); //压缩数据
+                                        if (0x78 == dataBytes[0] && 0x9c == dataBytes[1])
+                                        {
+                                            int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
+                                            string command = Encoding.UTF8.GetString(commandBytes).Replace("\0", "");
+                                            int unknow = BitConverter.ToInt32(unknowBytes.Reverse().ToArray(), 0);
+                                            Debug.WriteLine("数据长度:" + dataLen + ",命令:" + command + ",编号:" + unknow);
+                                            if(dataLen==(tmpData.Length-4))
+                                            {
+                                                string jsonStr = Encoding.UTF8.GetString(Zip.DeCompress(dataBytes));
+                                                Debug.WriteLine(jsonStr);
+                                                if (command==CommandList.QuenchingAndGetEquips)
+                                                {
+                                                   var obj=JsonHelper.FromJson<RootObject>(jsonStr);
+                                                   
+                                                }
+                                        }
+                                            else
+                                            {
+                                              Debug.WriteLine("该包不是完整的包！:" + tcpPacket.PayloadData.Length + "   " + BitConverter.ToString(tcpPacket.PayloadData));
+                                              Debug.WriteLine(Encoding.UTF8.GetString(Zip.DeCompress(dataBytes)));
+                                            }
+                                           
+
+
+
+
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine("数据错误:" +tcpPacket.PayloadData.Length + "   " + BitConverter.ToString(tcpPacket.PayloadData));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine("未知数据格式："+tcpPacket.PayloadData.Length + "   " + BitConverter.ToString(tcpPacket.PayloadData));
+                                    }
+
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    Debug.WriteLine("数据错误:" + BitConverter.ToString(tcpPacket.PayloadData));
+                                    Debug.WriteLine(ex.Message);
+                                    Debug.WriteLine("发生异常：" + tcpPacket.PayloadData.Length +"   "+BitConverter.ToString(tcpPacket.PayloadData));
                                 }
-                            }
-                            else
-                            {
-                                Debug.WriteLine("未知数据格式："+BitConverter.ToString(tcpPacket.PayloadData));
-                            }
-                           
                         }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
-                            Debug.WriteLine("发生异常：" + BitConverter.ToString(tcpPacket.PayloadData));
-                        }
-                        Debug.WriteLine("--------------------------------------------------------------------");
+
+                    }
+                    if (statisticsUiNeedsUpdate)
+                    {
+                        UpdateCaptureStatistics();
+                        statisticsUiNeedsUpdate = false;
                     }
                 }
             }
-      
         }
+        void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        {   //输出包统计信息
+            // print out periodic statistics about this device
+            var Now = DateTime.Now; // cache 'DateTime.Now' for minor reduction in cpu overhead
+            var interval = Now - LastStatisticsOutput;
+            if (interval > LastStatisticsInterval)
+            {
+               // Debug.WriteLine("device_OnPacketArrival: " + e.Device.Statistics);
+                captureStatistics = e.Device.Statistics;
+                statisticsUiNeedsUpdate = true;
+                LastStatisticsOutput = Now;
+            }
+
+            // lock QueueLock to prevent multiple threads accessing PacketQueue at
+            // the same time
+            lock (QueueLock)
+            {
+                PacketQueue.Add(e.Packet);
+            }
+        }
+        //private static void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        //{
+        //    var time = e.Packet.Timeval.Date;
+        //    var len = e.Packet.Data.Length;
+        //   // Debug.WriteLine("{0}:{1}:{2},{3} Len={4}", time.Hour, time.Minute, time.Second, time.Millisecond, len);
+        //   if(len>54)
+        //    {
+        //        var packet = Packet.ParsePacket(e.Packet.LinkLayerType, e.Packet.Data);
+        //        var tcpPacket = packet.Extract(typeof(TcpPacket));
+        //        if(tcpPacket!=null)
+        //        {
+        //            var ipPacket = (IpPacket)tcpPacket.ParentPacket;
+        //            IPAddress srcIp = ipPacket.SourceAddress;
+        //            IPAddress dstIp = ipPacket.DestinationAddress;
+        //            if(srcIp.ToString()== "39.96.32.192")
+        //            {
+        //                Debug.WriteLine("--------------------------------------------------------------------");
+        //                Debug.WriteLine("数据格式：" + BitConverter.ToString(tcpPacket.PayloadData));
+        //                // Array.Copy(源数据, 源数据开始复制处索引, 接收数据, 接收数据开始处索引, 复制多少个数据);
+        //                byte[] dataLenBytes = new byte[4];
+        //                byte[] commandBytes = new byte[32];
+        //                byte[] unknowBytes = new byte[4];
+        //                byte[] dataBytes = null;
+        //                try
+        //                {
+        //                    byte[] tmpData=null;
+        //                    tmpData = SimpleCipher.cancelHead(tcpPacket.PayloadData);
+        //                    if(tmpData!=null)
+        //                    {
+        //                        dataBytes = new byte[tmpData.Length - 4 - 4 - 32];
+        //                        Array.Copy(tmpData, 0, dataLenBytes, 0, 4); //数据长度4字节
+        //                        Array.Copy(tmpData, 4, commandBytes, 0, 32); //命令32字节
+        //                        Array.Copy(tmpData, 4 + 32, unknowBytes, 0, 4);//编号4字节
+        //                        Array.Copy(tmpData, 4 + 32 + 4, dataBytes, 0, tmpData.Length - 4 - 32 - 4); //压缩数据
+        //                        if (0x78 == dataBytes[0] && 0x9c == dataBytes[1])
+        //                        {
+        //                            int dataLen = BitConverter.ToInt32(dataLenBytes.Reverse().ToArray(), 0);
+        //                            string command = Encoding.UTF8.GetString(commandBytes);
+        //                            int unknow = BitConverter.ToInt32(unknowBytes.Reverse().ToArray(), 0);
+        //                            Debug.WriteLine("数据长度:" + dataLen + ",命令:" + command.Replace("\0", "") + ",编号:" + unknow);
+        //                            Debug.WriteLine(Encoding.UTF8.GetString(Zip.DeCompress(dataBytes)));
+        //                        }
+        //                        else
+        //                        {
+        //                            Debug.WriteLine("数据错误:" + BitConverter.ToString(tcpPacket.PayloadData));
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        Debug.WriteLine("未知数据格式："+BitConverter.ToString(tcpPacket.PayloadData));
+        //                    }
+                           
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Debug.WriteLine(ex.Message);
+        //                    Debug.WriteLine("发生异常：" + BitConverter.ToString(tcpPacket.PayloadData));
+        //                }
+        //                Debug.WriteLine("--------------------------------------------------------------------");
+        //            }
+        //        }
+        //    }
+      
+        //}
 
 
         /// <summary>
@@ -266,6 +430,30 @@ namespace Liuliu.MouseClicker
         private bool IsHasBytes(byte[] byteshuzu,string bytestr)
         {
             return BitConverter.ToString(byteshuzu).IndexOf(bytestr)>0;
+        }
+
+        private void StopCaptureButton_Click(object sender, RoutedEventArgs e)
+        {
+            Shutdown();
+        }
+
+        private void Shutdown()
+        {
+            if (device != null)
+            {
+                device.StopCapture();
+                device.Close();
+                device.OnPacketArrival -= arrivalEventHandler;
+                device.OnCaptureStopped -= captureStoppedEventHandler;
+                device = null;
+
+                // ask the background thread to shut down
+                BackgroundThreadStop = true;
+
+                // wait for the background thread to terminate
+                backgroundThread.Join();
+                Debug.WriteLine("捕获结束！");
+            }
         }
     }
 }
