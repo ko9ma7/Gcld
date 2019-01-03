@@ -149,7 +149,8 @@ namespace Liuliu.MouseClicker.Message
             {
                 BinaryReader binaryReader = new BinaryReader(memoryStream); //以二进制读取器读取该流内容
 
-                msgProtocol.MessageLength = binaryReader.ReadInt32(); //读取数据长度，4字节          
+               
+                msgProtocol.MessageLength = BitConverter.ToInt32(binaryReader.ReadBytes(4).Reverse().ToArray(), 0); //读取数据长度，4字节          
                 //如果进来的Bytes长度大于一个完整的MsgProtocol长度
                 if ((bufferLength - 4) > msgProtocol.MessageLength)
                 {
@@ -162,7 +163,20 @@ namespace Liuliu.MouseClicker.Message
                 {
                     msgProtocol.MessageContent = binaryReader.ReadBytes(msgProtocol.MessageLength); //读取实际消息内容，从第5个字节开始读
                 }
+                if(bufferLength-4>=msgProtocol.MessageLength)
+                {
+                    byte[] commandBytes = new byte[32];
+                    byte[] tokenBytes = new byte[4];
+                    byte[] dataBytes = new byte[msgProtocol.MessageContent.Length - 4 - 32];
+                    Array.Copy(msgProtocol.MessageContent, 0, commandBytes, 0, 32); //命令32字节
+                    Array.Copy(msgProtocol.MessageContent, 32, tokenBytes, 0,4); //token4字节
+                    Array.Copy(msgProtocol.MessageContent, 32 + 4, dataBytes, 0, dataBytes.Length); //数据
+                    msgProtocol.MessageCommand = Encoding.UTF8.GetString(commandBytes).Replace("\0", "");
+                    msgProtocol.MessageToken = BitConverter.ToInt32(tokenBytes.Reverse().ToArray(), 0);
 
+                    msgProtocol.JsonData = dataBytes;
+                   
+                }
                 binaryReader.Close(); //关闭二进制读取器，释放资源
             }
 
