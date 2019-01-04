@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace Liuliu.MouseClicker.Models
     }
     public class RefreshAttribute
     {
+    
         /// <summary>
         /// 属性类型
         /// </summary>
@@ -52,7 +54,18 @@ namespace Liuliu.MouseClicker.Models
     /// 装备
     /// </summary>
     public class Equips
-    {   /// <summary>
+    {
+        [JsonIgnore]
+        public bool IsSameType
+        {
+            get {
+                if(refreshAttribute!=null&& refreshAttribute.Count==3)
+                     return refreshAttribute[0].attType == refreshAttribute[1].attType &&
+                              refreshAttribute[0].attType == refreshAttribute[2].attType;
+                return false;
+                }
+        }
+        /// <summary>
         /// 装备等级
         /// </summary>
         public string lv { get; set; }
@@ -108,6 +121,8 @@ namespace Liuliu.MouseClicker.Models
         /// 铁
         /// </summary>
         public string iron { get; set; }
+        [JsonIgnore]
+        public bool IsBelong { get; set; }
     }
     public class Message
     {

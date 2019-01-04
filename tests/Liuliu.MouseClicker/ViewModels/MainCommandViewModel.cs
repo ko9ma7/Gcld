@@ -229,7 +229,10 @@ namespace Liuliu.MouseClicker.ViewModels
             {
                 context.Settings.StepName = "自动洗练";
                 if (xilianDict == null)
+                {
+                    Debug.WriteLine("套装信息为空！请设置。");
                     return;
+                }
                 context.Settings.EquipmentTypeDict = xilianDict;
                 tasks.Add(new SmallTool(context));
             }

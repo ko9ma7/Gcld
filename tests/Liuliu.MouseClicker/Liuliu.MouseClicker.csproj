@@ -154,8 +154,10 @@
     </Compile>
     <Compile Include="Hook\Main.cs" />
     <Compile Include="Hook\SocketInterFace.cs" />
-    <Compile Include="Message\Class1.cs" />
+    <Compile Include="Message\CombineBytes.cs" />
     <Compile Include="Message\MsgProtocol.cs" />
+    <Compile Include="Message\RequestModel.cs" />
+    <Compile Include="Message\RmList.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Action.cs" />
     <Compile Include="Models\SendData.cs" />

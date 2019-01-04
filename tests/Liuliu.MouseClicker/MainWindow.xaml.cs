@@ -199,10 +199,12 @@ namespace Liuliu.MouseClicker
                 MessageBox.Show("Error stopping capture", "Error", MessageBoxButton.OK);
             }
         }
+        Dictionary<string, List<RmList>> rmList = new Dictionary<string, List<RmList>>();
         private void BackgroundThread()
         {
             byte[] receivedBuffer = new byte[] { };//大小可变的缓存器
-
+         
+         
             while (!BackgroundThreadStop)
             {
                 bool shouldSleep = true;
@@ -276,40 +278,41 @@ namespace Liuliu.MouseClicker
                                 var state = rootObj.action.state;
                                 if(state==1)
                                 {
-                                    this.CallBack(true, rootObj.action.data, msgPro.MessageToken, false, rootObj);
+                                    if (SoftContext.CommandList.ContainsKey(msgPro.MessageCommand))
+                                    {
+                                        SoftContext.CommandList[msgPro.MessageCommand] =rootObj;
+                                    }
+                                    else
+                                    {
+                                        SoftContext.CommandList.Add(msgPro.MessageCommand, rootObj);
+                                    }
+                                //    this.CallBack(true, rootObj.action.data, msgPro.MessageCommand,msgPro.MessageToken,false, rootObj);
                                 }else if(state==2)
                                 {
-                                   string msg = rootObj.action.data.message.msg;
+                                 //  string msg = rootObj.action.data.message.msg;
                                 }else if(state==3)
                                 {
-                                    if(this.CommandList[msgPro.MessageCommand]==null)
-                                    {
-                                        this.CommandList[msgPro.MessageCommand] = 1;
-                                    }else
-                                    {
-                                        (this.CommandList[msgPro.MessageCommand] + 1);
-                                    }
+                                   
                                 }
                                 else if (state == 4)
                                 {
-                                    this.isReconncet = false;
-                                    msg = data.action.data.msg;
-                                    this.takeQuitAlert(msg);
-                                    this.callback(false, data.action.data, command, token, false, data);
+                                   //string msg = rootObj.action.data.msg;
+                                   // this.takeQuitAlert(msg);
+                                  //  this.CallBack(false, rootObj.action.data, msgPro.MessageCommand, msgPro.MessageToken, false, rootObj);
                                 }
                                 else if (state == 5)
                                 {
-                                    this.isReconncet = false;
-                                    MvcEventDispatcher.dispatch(ModuleName.CORE, new ByLockUserEvent(data.action.data));
+                                  // this.isReconncet = false;
+                                  //  MvcEventDispatcher.dispatch(ModuleName.CORE, new ByLockUserEvent(data.action.data));
                                 }
                                 else if (state == 6)
                                 {
-                                    MvcEventDispatcher.dispatch(ModuleName.MODULE_GAME_UI, new GetValidateCodeInfoEvent());
-                                    this.callback(false, data.action.data, command, token, false, data);
+                                    //  MvcEventDispatcher.dispatch(ModuleName.MODULE_GAME_UI, new GetValidateCodeInfoEvent());
+                                   // this.CallBack(false, rootObj.action.data, msgPro.MessageCommand, msgPro.MessageToken, false, rootObj);
                                 }
                                 else
                                 {
-                                    this.callback(false, data.action.data, command, token, false, data);
+                                   // this.CallBack(false, rootObj.action.data, msgPro.MessageCommand, msgPro.MessageToken, false, rootObj);
                                 }
 
 
@@ -343,10 +346,29 @@ namespace Liuliu.MouseClicker
                 statisticsUiNeedsUpdate = false;
             }
         }
-
-        private void CallBack(bool v1, Models.Data data, int messageToken, bool v2, RootObject rootObj)
+     
+    private void CallBack(bool v1, Models.Data data,string command,int token, bool v2, RootObject rootObj)
         {
-            throw new NotImplementedException();
+            RmList obj = null;
+            int i = 0;
+
+           if(rmList.ContainsKey(command))
+            {
+                i = 0;
+                while(i< rmList[command].Count)
+                {
+                    if(rmList[command][i].Token==token)
+                    {
+                        obj = rmList[command][i];
+                        rmList[command].RemoveAt(i);
+                        break;
+                    }
+                    i++;
+                }
+            }
+            if (obj == null)
+                return;
+            obj.CallBack?.Invoke();
         }
 
         void device_OnPacketArrival(object sender, CaptureEventArgs e)

@@ -31,7 +31,8 @@ namespace Liuliu.MouseClicker
             YeShenSimulatorList= new List<YeShenSimulator>();
         
         }
-
+        public static Dictionary<string,RootObject> CommandList=new Dictionary<string,RootObject>();
+       
         public static MainWindow MainWindow { get; set; }
 
         public static SoftRunStatus RunStatus { get; set; }
