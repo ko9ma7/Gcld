@@ -14,7 +14,7 @@ namespace Liuliu.MouseClicker.Models
     {   /// <summary>
         /// 状态
         /// </summary>
-        public string state { get; set; }
+        public int state { get; set; }
         /// <summary>
         /// 数据
         /// </summary>
@@ -109,9 +109,14 @@ namespace Liuliu.MouseClicker.Models
         /// </summary>
         public string iron { get; set; }
     }
-
+    public class Message
+    {
+        public string msg { get; set; }
+    }
     public class Data
     {
+        public Message message;
+
         public List<Equips> equips { get; set; }
     }
 
