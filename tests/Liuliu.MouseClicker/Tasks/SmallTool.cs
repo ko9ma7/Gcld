@@ -508,9 +508,9 @@ namespace Liuliu.MouseClicker.Tasks
             //初始化装备数据
             Delegater.WaitTrue(() =>
             {
-                if (SoftContext.CommandList.ContainsKey(CommandStr.GET_EQUIPS_LIST))
+                if (SoftContext.CommandList.ContainsKey(Const.GET_EQUIPS_LIST))
                 {
-                    var data = SoftContext.CommandList[CommandStr.GET_EQUIPS_LIST];
+                    var data = SoftContext.CommandList[Const.GET_EQUIPS_LIST];
                     equipsList = data.action.data.equips;
                     return true;
                 }

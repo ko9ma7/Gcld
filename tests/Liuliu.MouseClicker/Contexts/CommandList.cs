@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Liuliu.MouseClicker.Contexts
 {
-    public class CommandStr
+    public class Const
     {
         public const string CMD_GM = "gm@gmcommand";
 

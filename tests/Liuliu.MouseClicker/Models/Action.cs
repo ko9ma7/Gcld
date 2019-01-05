@@ -55,6 +55,10 @@ namespace Liuliu.MouseClicker.Models
     /// </summary>
     public class Equips
     {
+        public override string ToString()
+        {
+            return string.Format("等级：{0},品质：{1},ID:{2}");
+        }
         [JsonIgnore]
         public bool IsSameType
         {
