@@ -190,13 +190,13 @@ namespace Liuliu.MouseClicker.Message
                     //将得到的json字符串转为对象
                     var rootObj = JsonHelper.FromJson<RootObject>(msgPro.Data);
 
-                    if (SoftContext.CommandList.ContainsKey(msgPro.MessageCommand))
+                    if (SoftContext.CommandList.ContainsKey(key+msgPro.MessageCommand))
                     {
-                        SoftContext.CommandList[msgPro.MessageCommand] = rootObj;
+                        SoftContext.CommandList[key + msgPro.MessageCommand] = rootObj;
                     }
                     else
                     {
-                        SoftContext.CommandList.Add(msgPro.MessageCommand, rootObj);
+                        SoftContext.CommandList.Add(key + msgPro.MessageCommand, rootObj);
                     }
                     receivedBuffer = msgPro.ExtraBytes;
 

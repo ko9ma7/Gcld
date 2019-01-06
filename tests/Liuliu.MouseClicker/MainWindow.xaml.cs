@@ -128,6 +128,8 @@ namespace Liuliu.MouseClicker
 
         private void StopCaptureButton_Click(object sender, RoutedEventArgs e)
         {
+       
+
             CaptureService.GetInstance().Shutdown();
         }
     }

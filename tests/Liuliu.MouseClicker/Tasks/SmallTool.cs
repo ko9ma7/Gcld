@@ -504,19 +504,6 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
-            List<Equips> equipsList = new List<Equips>();
-            //初始化装备数据
-            Delegater.WaitTrue(() =>
-            {
-                if (SoftContext.CommandList.ContainsKey(Const.GET_EQUIPS_LIST))
-                {
-                    var data = SoftContext.CommandList[Const.GET_EQUIPS_LIST];
-                    equipsList = data.action.data.equips;
-                    return true;
-                }
-                return false;
-            }, () => Dm.Delay(1000));
-
 
             套装 青龙套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.血量 } };
             套装 白虎套装 = new 套装() { 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强攻 } };
@@ -533,65 +520,34 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 套装 temp = new 套装();
                 temp.麒麟双枪 = new Equipment();
-                var equ = equipsList.FirstOrDefault(x => x.IsSameType && x.refreshAttribute[0].attrName == List[i].麒麟双枪.类型.ToString());
                 temp.麒麟双枪.类型 = List[i].麒麟双枪.类型;
-                if (equ != null)
-                {
-                    temp.麒麟双枪.IsHave = true;
-                    equ.IsBelong = true;
-                }
+                temp.麒麟双枪.IsHave = equipmentTypeDict[i][0];
 
                 temp.麒麟 = new Equipment();
                 temp.麒麟.类型 = List[i].麒麟.类型;
-                var equ2 = equipsList.FirstOrDefault(x => x.IsSameType && x.refreshAttribute[0].attrName == List[i].麒麟.类型.ToString());
-                if (equ != null)
-                {
-                    temp.麒麟.IsHave = true;
-                    equ2.IsBelong = true;
-                }
-
+                temp.麒麟.IsHave = equipmentTypeDict[i][1];
 
                 temp.三昧纯阳铠 = new Equipment();
                 temp.三昧纯阳铠.类型 = List[i].三昧纯阳铠.类型;
-                var equ3 = equipsList.FirstOrDefault(x => x.IsSameType && x.refreshAttribute[0].attrName == List[i].三昧纯阳铠.类型.ToString());
-                if (equ != null)
-                {
-                    temp.三昧纯阳铠.IsHave = true;
-                    equ3.IsBelong = true;
-                }
+                temp.三昧纯阳铠.IsHave = equipmentTypeDict[i][2];
 
                 temp.蝶凤舞阳 = new Equipment();
                 temp.蝶凤舞阳.类型 = List[i].蝶凤舞阳.类型;
-                var equ4 = equipsList.FirstOrDefault(x => x.IsSameType && x.refreshAttribute[0].attrName == List[i].蝶凤舞阳.类型.ToString());
-                if (equ != null)
-                {
-                    temp.蝶凤舞阳.IsHave = true;
-                    equ4.IsBelong = true;
-                }
+                temp.蝶凤舞阳.IsHave = equipmentTypeDict[i][3];
 
                 temp.伏龙帅印 = new Equipment();
                 temp.伏龙帅印.类型 = List[i].伏龙帅印.类型;
-                var equ5 = equipsList.FirstOrDefault(x => x.IsSameType && x.refreshAttribute[0].attrName == List[i].伏龙帅印.类型.ToString());
-                if (equ != null)
-                {
-                    temp.伏龙帅印.IsHave = true;
-                    equ5.IsBelong = true;
-                }
+                temp.伏龙帅印.IsHave = equipmentTypeDict[i][4];
 
                 temp.蟠龙华盖 = new Equipment();
                 temp.蟠龙华盖.类型 = List[i].蟠龙华盖.类型;
-                var equ6 = equipsList.FirstOrDefault(x => x.IsSameType && x.refreshAttribute[0].attrName == List[i].蟠龙华盖.类型.ToString());
-                if (equ != null)
-                {
-                    temp.蟠龙华盖.IsHave = true;
-                    equ6.IsBelong = true;
-                }
+                temp.蟠龙华盖.IsHave = equipmentTypeDict[i][5];
                 List[i] = temp;
             }
-            //foreach (var taozhuang in List)
-            //{
-            //    Dm.DebugPrint(taozhuang.麒麟双枪.IsHave.ToString()+ taozhuang.麒麟.IsHave.ToString()+ taozhuang.三昧纯阳铠.IsHave.ToString()+ taozhuang.蝶凤舞阳.IsHave.ToString()+taozhuang.伏龙帅印.IsHave.ToString()+ taozhuang.蟠龙华盖.IsHave.ToString());
-            //}
+            foreach (var taozhuang in List)
+            {
+                Dm.DebugPrint(taozhuang.麒麟双枪.IsHave.ToString() + taozhuang.麒麟.IsHave.ToString() + taozhuang.三昧纯阳铠.IsHave.ToString() + taozhuang.蝶凤舞阳.IsHave.ToString() + taozhuang.伏龙帅印.IsHave.ToString() + taozhuang.蟠龙华盖.IsHave.ToString());
+            }
             Delegater.WaitTrue(() =>
             {
                 string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);

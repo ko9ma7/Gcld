@@ -12,6 +12,7 @@ using Liuliu.ScriptEngine.Tasks;
 using Liuliu.MouseClicker.Mvvm;
 using System.Windows.Controls;
 using Liuliu.MouseClicker.Models;
+using Liuliu.MouseClicker.Contexts;
 
 namespace Liuliu.MouseClicker
 {
@@ -21,7 +22,7 @@ namespace Liuliu.MouseClicker
         /// 创建一个角色
         /// </summary>
         /// <param name="hwnd">角色所在窗口句柄</param>
-        public Role(int hwnd)
+        public Role(int hwnd,int noxVMHandlePid)
         {
             _window = new DmWindow(new DmPlugin(), hwnd);
             _dm = _window.Dm;
@@ -31,7 +32,11 @@ namespace Liuliu.MouseClicker
             TaskEngine.OutMessage = OutMessage;
             TaskEngine.Window = _window;
             WindowTitle = _window.TopTitle;
+            _noxVMHandlePid = noxVMHandlePid;
+
+
         }
+        private int _noxVMHandlePid;
         private DmWindow _window;
         private DmPlugin _dm;
         private string _windowTitle;
@@ -183,7 +188,39 @@ namespace Liuliu.MouseClicker
             }
 
         }
+        private string _key = "";
+        public string CaptureKey { get
+            {
+                TcpRow[] allTcp = NetProcess.GetTcpConnections(_noxVMHandlePid, SoftContext.ServerIp);
+                TcpRow t= allTcp.FirstOrDefault();
+                if (t.Equals(null))
+                {
+                    return "";
+                }
+                else
+                {
+                    _key = string.Format("{0}:{1}->{2}:{3}[Receive]", t.LocalAddress.ToString(), t.LocalPort, t.RemoteAddress.ToString(), t.RemotePort);
+                }
+                return _key;
+            } }
+        
 
+        public roo GetData(string commandStr)
+        {
+            List<Equips> equipsList = new List<Equips>();
+            //初始化装备数据
+            Delegater.WaitTrue(() =>
+            {
+                if (SoftContext.CommandList.ContainsKey(CaptureKey+commandStr))
+                {
+                    var data = SoftContext.CommandList[CaptureKey + commandStr];
+
+                    return true;
+                }
+                return false;
+            });
+            return Data;
+        }
         public Action<string> OutSubMessage
         {
             get

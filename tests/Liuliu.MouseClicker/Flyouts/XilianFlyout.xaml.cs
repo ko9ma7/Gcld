@@ -32,6 +32,9 @@ namespace Liuliu.MouseClicker.Flyouts
             InitializeComponent();
             RegisterMessengers();
             IsOpenChanged += async (sender, e) => await XilianFlyout_IsOpenChanged(sender, e);
+
+          
+
         }
         Role role = null;
         private void RegisterMessengers()
@@ -51,6 +54,7 @@ namespace Liuliu.MouseClicker.Flyouts
                 Reset();
                 return;
             }
+            //关闭窗口，传送数据
             Dictionary<int, List<bool?>> dict = new Dictionary<int, List<bool?>>();
             dict.Add(0, new List<bool?>() { T1_1.IsChecked, T1_2.IsChecked, T1_3.IsChecked, T1_4.IsChecked, T1_5.IsChecked, T1_6.IsChecked });
             dict.Add(1, new List<bool?>() { T2_1.IsChecked, T2_2.IsChecked, T2_3.IsChecked, T2_4.IsChecked, T2_5.IsChecked, T2_6.IsChecked });
@@ -96,6 +100,27 @@ namespace Liuliu.MouseClicker.Flyouts
             this.T8.IsChecked = false;
             this.T9.IsChecked = false;
             this.T10.IsChecked = false;
+        }
+
+        private void btnReset_click(object sender, RoutedEventArgs e)
+        {
+            Reset();
+        }
+
+        private void btnStop_click(object sender, RoutedEventArgs e)
+        {
+            List<Equips> equipsList = new List<Equips>();
+            //初始化装备数据
+            Delegater.WaitTrue(() =>
+            {
+                if (SoftContext.CommandList.ContainsKey(Const.GET_EQUIPS_LIST))
+                {
+                    var data = SoftContext.CommandList[Const.GET_EQUIPS_LIST];
+                    equipsList = data.action.data.equips;
+                    return true;
+                }
+                return false;
+            });
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Liuliu.MouseClicker.ViewModels
            switch (sendData.Message)
            { 
                case "XilianMessage":
-                   xilianDict = sendData.Data;
+                   xilianDict= sendData.Data;
                    break;
            }
        });
@@ -139,7 +139,7 @@ namespace Liuliu.MouseClicker.ViewModels
                     foreach (YeShenSimulator item in SoftContext.YeShenSimulatorList)
                     {
 
-                        IRole role = new Role(item.NoxHwnd);
+                        IRole role = new Role(item.NoxHwnd,item.NoxVMHandlePid);
                         DmPlugin dm = role.Window.Dm;
 
                         if (role.Window.ClientSize.Item1 != 960 || role.Window.ClientSize.Item2 != 540)
@@ -197,6 +197,8 @@ namespace Liuliu.MouseClicker.ViewModels
 
         public void Start(Role role,Account account)
         {
+            role.GetData(Const.GET_EQUIPS_LIST);
+            return;
             Function func = new Function();
             func.Name = "任务";
 
@@ -233,7 +235,14 @@ namespace Liuliu.MouseClicker.ViewModels
                     Debug.WriteLine("套装信息为空！请设置。");
                     return;
                 }
-                context.Settings.EquipmentTypeDict = xilianDict;
+                Dictionary<int, List<bool?>> dict = new Dictionary<int, List<bool?>>();
+                foreach (var item in xilianDict)
+                {
+                    List<bool?> list = new List<bool?>();
+                    item.Value.ForEach(x => list.Add(x));
+                    dict.Add(item.Key, list);
+                }
+                context.Settings.EquipmentTypeDict = dict;
                 tasks.Add(new SmallTool(context));
             }
           

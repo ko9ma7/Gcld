@@ -55,15 +55,11 @@ namespace Liuliu.MouseClicker.Models
     /// </summary>
     public class Equips
     {
-        public override string ToString()
-        {
-            return string.Format("等级：{0},品质：{1},ID:{2}");
-        }
         [JsonIgnore]
         public bool IsSameType
         {
             get {
-                if(refreshAttribute!=null&& refreshAttribute.Count==3)
+                if(refreshAttribute!=null&& refreshAttribute.Count>=3)
                      return refreshAttribute[0].attType == refreshAttribute[1].attType &&
                               refreshAttribute[0].attType == refreshAttribute[2].attType;
                 return false;

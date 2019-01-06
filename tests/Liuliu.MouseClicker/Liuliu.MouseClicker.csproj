@@ -119,8 +119,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contexts\CmdHelper.cs" />
-    <Compile Include="Contexts\CommandList.cs" />
+    <Compile Include="Contexts\Const.cs" />
     <Compile Include="Contexts\LocalDataHandler.cs" />
+    <Compile Include="Contexts\NetProcess.cs" />
     <Compile Include="Contexts\Notifications.cs" />
     <Compile Include="Contexts\OperationHelper.cs" />
     <Compile Include="Contexts\ADBCommand.cs" />
