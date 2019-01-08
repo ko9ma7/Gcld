@@ -85,7 +85,7 @@ namespace Liuliu.MouseClicker.ViewModels
                 {
                     if (role.SelectedItemTask.Content.ToString() == "自动洗练")
                     {
-                        Messenger.Default.Send("OpenXilianFlyout", Notifications.XilianFlyout);
+                        Messenger.Default.Send(new SendData<Role>() { Message = "OpenXilianFlyout", Data = role }, Notifications.XilianFlyout);
                     }
                    if (role.SelectedItemTask.Content.ToString() == "活动任务")
                     {
@@ -197,8 +197,6 @@ namespace Liuliu.MouseClicker.ViewModels
 
         public void Start(Role role,Account account)
         {
-            role.GetData(Const.GET_EQUIPS_LIST);
-            return;
             Function func = new Function();
             func.Name = "任务";
 
@@ -235,14 +233,7 @@ namespace Liuliu.MouseClicker.ViewModels
                     Debug.WriteLine("套装信息为空！请设置。");
                     return;
                 }
-                Dictionary<int, List<bool?>> dict = new Dictionary<int, List<bool?>>();
-                foreach (var item in xilianDict)
-                {
-                    List<bool?> list = new List<bool?>();
-                    item.Value.ForEach(x => list.Add(x));
-                    dict.Add(item.Key, list);
-                }
-                context.Settings.EquipmentTypeDict = dict;
+                context.Settings.EquipmentTypeDict = xilianDict;
                 tasks.Add(new SmallTool(context));
             }
           

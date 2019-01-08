@@ -117,7 +117,7 @@
         <mah:FlyoutsControl>
             <flyouts:SettingsFlyout x:Name="SettingsFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:RoleSettingFlyout x:Name="RoleSettingFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
-            <flyouts:XilianFlyout x:Name="XilianFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
+            <flyouts:QuenchingFlyout x:Name="XilianFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:AccountFlyout x:Name="AccountFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
             <flyouts:MemHelperFlyout x:Name="MemHelperFlyout" Margin="0 30 0 0" IsOpen="False" Height="{Binding ElementName=MainWindow1, Path=ActualHeight}"/>
         </mah:FlyoutsControl>

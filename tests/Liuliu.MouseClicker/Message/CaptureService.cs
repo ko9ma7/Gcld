@@ -134,22 +134,22 @@ namespace Liuliu.MouseClicker.Message
                         IPAddress dstIp = ipPacket.DestinationAddress;
                         int srcPort = tcpPacket.SourcePort;
                         int dstPort = tcpPacket.DestinationPort;
-                        
 
-                        if (srcIp.ToString() == SoftContext.ServerIp)
+                      
+                        if (srcIp.ToString() == SoftContext.ServerIp&&srcPort==8220)
                         {
                             string key = string.Format("{0}:{1}->{2}:{3}[Receive]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
                             if (!dataBufferDict.ContainsKey(key))
                                 dataBufferDict.Add(key, new byte[] { });
-                                ReceivedData(tcpPacket,key);
+                            ReceivedData(tcpPacket,key);
                         }
-                        if (dstIp.ToString() == SoftContext.ServerIp)
-                        {
-                            string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
-                            if (!dataBufferDict.ContainsKey(key))
-                                dataBufferDict.Add(key, new byte[] { });
-                            SendData(tcpPacket,key);
-                        }
+                        //if (dstIp.ToString() == SoftContext.ServerIp)
+                        //{
+                        //    string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
+                        //    if (!dataBufferDict.ContainsKey(key))
+                        //        dataBufferDict.Add(key, new byte[] { });
+                        //    SendData(tcpPacket,key);
+                        //}
                     }
                 }
 
@@ -158,20 +158,17 @@ namespace Liuliu.MouseClicker.Message
        
         private void ReceivedData(TcpPacket tcpPacket,string key)
         {
-            byte[] receivedBuffer = dataBufferDict[key];
-            Debug.WriteLine("==============================================================================================================");
-            Debug.WriteLine("接收数据："+key);
             MsgProtocol msgPro = new MsgProtocol();
-            receivedBuffer = CombineBytes.ToArray(receivedBuffer, 0, receivedBuffer.Length, tcpPacket.PayloadData, 0, tcpPacket.PayloadData.Length);
-            if (receivedBuffer.Length < 4)
+            dataBufferDict[key] = CombineBytes.ToArray(dataBufferDict[key], 0, dataBufferDict[key].Length, tcpPacket.PayloadData, 0, tcpPacket.PayloadData.Length);
+            if (dataBufferDict[key].Length < 4)
             {
-                Debug.WriteLine("receivedBuffer.Length=" + receivedBuffer.Length + "< 4 \t -> \t continue");
+                Debug.WriteLine("receivedBuffer.Length=" + dataBufferDict[key].Length + "< 4 \t -> \t continue");
                 return;
             }
             else
             {
                 //取msg包头部分
-                msgPro = MsgProtocol.FromBytesR(receivedBuffer);
+                msgPro = MsgProtocol.FromBytesR(dataBufferDict[key]);
                 if (msgPro == null)
                 {
                     Debug.WriteLine("数据格式错误!消息为null"+BitConverter.ToString(tcpPacket.PayloadData));
@@ -179,13 +176,19 @@ namespace Liuliu.MouseClicker.Message
                 }
                 int msgContentLength = msgPro.MessageLength;
                 //判断去掉msg包头剩下的长度是否达到可以取包实质内容
-                while ((receivedBuffer.Length - 4) >= msgContentLength)
+                while ((dataBufferDict[key].Length - 4) >= msgContentLength)
                 {
                     // Debug.WriteLine("【receivedBuffer去掉包头的长度=" + (receivedBuffer.Length - 4) + "】>=【" + "包实质内容长度=" + msgContentLength + "】");
                     msgPro = null;
-                    msgPro = MsgProtocol.FromBytesR(receivedBuffer);
-                    Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
-                    Debug.WriteLine("【json】=" + msgPro.Data);
+                    msgPro = MsgProtocol.FromBytesR(dataBufferDict[key]);
+                    string filter = "player@ltestplayer@game";
+                    if (!msgPro.MessageCommand.Contains("push")&&!filter.Contains(msgPro.MessageCommand))
+                    {
+                        Debug.WriteLine("==============================================================================================================");
+                        Debug.WriteLine("接收数据：" + key);
+                        Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
+                        Debug.WriteLine("【json】=" + msgPro.Data);
+                    }
 
                     //将得到的json字符串转为对象
                     var rootObj = JsonHelper.FromJson<RootObject>(msgPro.Data);
@@ -198,11 +201,11 @@ namespace Liuliu.MouseClicker.Message
                     {
                         SoftContext.CommandList.Add(key + msgPro.MessageCommand, rootObj);
                     }
-                    receivedBuffer = msgPro.ExtraBytes;
+                    dataBufferDict[key] = msgPro.ExtraBytes;
 
-                    if (receivedBuffer.Length >= 4)
+                    if (dataBufferDict[key].Length >= 4)
                     {
-                        msgPro = MsgProtocol.FromBytesR(receivedBuffer);
+                        msgPro = MsgProtocol.FromBytesR(dataBufferDict[key]);
 
                         msgContentLength = msgPro.MessageLength;
                         continue;

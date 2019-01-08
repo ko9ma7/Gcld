@@ -41,7 +41,11 @@ namespace Liuliu.MouseClicker.ViewModels
                 return model;
             }
         }
-
+        public QuenchingViewModel Quenching
+        {
+            get { return ServiceLocator.Current.GetInstance<QuenchingViewModel>(); }
+        }
+        
         public SettingsViewModel Settings
         {
             get
@@ -87,6 +91,7 @@ namespace Liuliu.MouseClicker.ViewModels
             SimpleIoc.Default.Register<RoleSettingViewModel>();
             SimpleIoc.Default.Register<AccountViewModel>();
             SimpleIoc.Default.Register<MemHelperViewModel>();
+            SimpleIoc.Default.Register<QuenchingViewModel>();
         }
     }
 }

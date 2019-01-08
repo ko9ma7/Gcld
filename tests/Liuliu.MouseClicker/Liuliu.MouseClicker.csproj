@@ -136,6 +136,7 @@
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Converters\FontWeightConverter.cs" />
+    <Compile Include="Converters\QuenchingConvert.cs" />
     <Compile Include="Converters\TimeSpanToStringConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Flyouts\MemHelperFlyout.xaml.cs">
@@ -150,8 +151,8 @@
     <Compile Include="Flyouts\SettingsFlyout.xaml.cs">
       <DependentUpon>SettingsFlyout.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Flyouts\XilianFlyout.xaml.cs">
-      <DependentUpon>XilianFlyout.xaml</DependentUpon>
+    <Compile Include="Flyouts\QuenchingFlyout.xaml.cs">
+      <DependentUpon>QuenchingFlyout.xaml</DependentUpon>
     </Compile>
     <Compile Include="Hook\Main.cs" />
     <Compile Include="Hook\SocketInterFace.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Message\RmList.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Action.cs" />
+    <Compile Include="Models\Quenching.cs" />
     <Compile Include="Models\SendData.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />
     <Compile Include="Role.cs" />
@@ -175,6 +177,7 @@
     </Compile>
     <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\MemHelperViewModel.cs" />
+    <Compile Include="ViewModels\QuenchingViewModel.cs" />
     <Compile Include="ViewModels\RoleSettingViewModel.cs" />
     <Compile Include="ViewModels\ClickSettingViewModel.cs" />
     <Compile Include="ViewModels\MainCommandViewModel.cs" />
@@ -197,7 +200,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Flyouts\XilianFlyout.xaml">
+    <Page Include="Flyouts\QuenchingFlyout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -50,7 +50,7 @@ namespace Liuliu.MouseClicker.Tasks
             }
             return 1;
         }
-        private Dictionary<int, List<bool?>> equipmentTypeDict = null;
+        private Dictionary<int, List<bool>> equipmentTypeDict = null;
         protected override TaskStep[] StepsInitialize()
         {
             TaskStep[] steps =
@@ -409,49 +409,18 @@ namespace Liuliu.MouseClicker.Tasks
             return TaskResult.Finished;
         }
 
-        enum EquipmentAttrType
-        {
-            未知类型 = -1,
-            攻击,
-            防御,
-            掌控,
-            血量,
-            强防,
-            强壮,
-            强攻
-        }
-        enum EquipmentType
-        {
-            未知类型 = -1,
-            麒麟双枪,
-            麒麟,
-            三昧纯阳铠,
-            蝶凤舞阳,
-            伏龙帅印,
-            蟠龙华盖
-        }
+    
+       
         private EquipmentAttrType GetEquipmentType(int x1, int y1, int x2, int y2)
         {
             int intX, intY;
             int result = Dm.FindPic(x1, y1, x2, y2, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "404040", 0.6, 0, out intX, out intY);
             return (EquipmentAttrType)result;
         }
-        class Equipment
-        {
-            public EquipmentAttrType 类型;
-            public bool? IsHave = false;
-        }
-        class 套装
-        {
-            public Equipment 麒麟双枪 { get; set; }
-            public Equipment 麒麟 { get; set; }
-            public Equipment 三昧纯阳铠 { get; set; }
-            public Equipment 蝶凤舞阳 { get; set; }
-            public Equipment 伏龙帅印 { get; set; }
-            public Equipment 蟠龙华盖 { get; set; }
-        }
+     
+       
 
-        static List<套装> List { get; set; }
+        private List<套装> List { get; set; }
         private Tuple<bool, EquipmentAttrType> IsSameEequipmentType()
         {
             EquipmentAttrType type1 = EquipmentAttrType.未知类型, type2 = EquipmentAttrType.未知类型, type3 = EquipmentAttrType.未知类型;
@@ -649,7 +618,7 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                     Dm.Delay(1000);
                 }
-                Dm.Swipe(515, 438, 515, 220, 50);
+                Dm.Swipe(515, 438, 515, 320, 50);
                 Dm.Delay(1000);
                 return false;
             });

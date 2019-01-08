@@ -1,6 +1,7 @@
 ﻿using Liuliu.MouseClicker.Contexts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -128,7 +129,7 @@ namespace Liuliu.MouseClicker.Message
         public static MsgProtocol FromBytesR(byte[] buffer)
         {
             int bufferLength = buffer.Length;
-
+           
             MsgProtocol msgProtocol = new MsgProtocol();
 
             using (MemoryStream memoryStream = new MemoryStream(buffer)) //将字节数组填充至内存流
@@ -162,6 +163,10 @@ namespace Liuliu.MouseClicker.Message
                     msgProtocol.Data = Encoding.UTF8.GetString(Zip.DeCompress(dataBytes));
                    
                 }
+                //if((bufferLength-4)<msgProtocol.MessageLength)
+                //{
+                //    Debug.WriteLine("buffer.len小于消息长度." + msgProtocol.MessageLength);
+                //}
                 binaryReader.Close(); //关闭二进制读取器，释放资源
             }
             return msgProtocol; //返回消息协议对象

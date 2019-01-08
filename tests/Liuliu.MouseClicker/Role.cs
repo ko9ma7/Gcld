@@ -199,27 +199,30 @@ namespace Liuliu.MouseClicker
                 }
                 else
                 {
-                    _key = string.Format("{0}:{1}->{2}:{3}[Receive]", t.LocalAddress.ToString(), t.LocalPort, t.RemoteAddress.ToString(), t.RemotePort);
+                    _key = string.Format("{0}:{1}->{2}:{3}[Receive]", t.RemoteAddress.ToString(), t.RemotePort,t.LocalAddress.ToString(), t.LocalPort);
                 }
                 return _key;
             } }
         
 
-        public roo GetData(string commandStr)
+        public RootObject GetData(string commandStr)
         {
-            List<Equips> equipsList = new List<Equips>();
-            //初始化装备数据
-            Delegater.WaitTrue(() =>
+            
+            if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
+                return SoftContext.CommandList[CaptureKey + commandStr];
+            return null;
+        }
+        public RootObject GetData(string commandStr,Action action)
+        {
+            if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
+                return SoftContext.CommandList[CaptureKey + commandStr];
+            else
             {
-                if (SoftContext.CommandList.ContainsKey(CaptureKey+commandStr))
-                {
-                    var data = SoftContext.CommandList[CaptureKey + commandStr];
-
-                    return true;
-                }
-                return false;
-            });
-            return Data;
+                action();
+                if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
+                    return SoftContext.CommandList[CaptureKey + commandStr];
+            }
+            return null;
         }
         public Action<string> OutSubMessage
         {

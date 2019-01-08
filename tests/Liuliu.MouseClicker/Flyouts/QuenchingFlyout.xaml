@@ -1,0 +1,80 @@
+﻿<mah:Flyout x:Class="Liuliu.MouseClicker.Flyouts.QuenchingFlyout"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    mc:Ignorable="d" Theme="Light"
+    d:DesignHeight="360" d:DesignWidth="640"
+    Position="Bottom" DataContext="{Binding Source={StaticResource Locator}, Path=Quenching}">
+
+    <Grid>
+        <StackPanel>
+            <GroupBox Header="洗练助手" Height="349">
+                <Grid>
+                    <ListView Grid.Row="0" ItemsSource="{Binding TaozhuangList,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Grid.RowSpan="2">
+                        <ListView.View>
+                            
+                            <GridView>
+                                <GridViewColumn Header="套装\装备" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Content="{Binding 套装名称.Name}"></CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="麒麟双枪" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding 麒麟双枪.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 麒麟双枪.类型}">
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="麒麟" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding 麒麟.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 麒麟.类型}"></CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="三昧纯阳铠" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding 三昧纯阳铠.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 三昧纯阳铠.类型}"></CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="蝶凤舞阳" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding 蝶凤舞阳.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 蝶凤舞阳.类型}"></CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="伏龙帅印" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding 伏龙帅印.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 伏龙帅印.类型}"></CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="蟠龙华盖" Width="75">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding 蟠龙华盖.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 蟠龙华盖.类型}"></CheckBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+                    <Button  Content="获取" Width="60" Height="25" Background="Green" Click="btnStop_click" Margin="379,282,104,4"></Button>
+                    <Button  Content="重置" Width="60" Height="25" Background="Green" Click="btnReset_click" Margin="444,282,39,4"></Button> 
+                </Grid>
+            </GroupBox>
+         
+        </StackPanel>
+    </Grid>
+</mah:Flyout>
