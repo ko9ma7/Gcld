@@ -19,7 +19,7 @@
                                 <GridViewColumn Header="套装\装备" Width="75">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <CheckBox Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Content="{Binding 套装名称.Name}"></CheckBox>
+                                            <CheckBox Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding 套装名称.IsHave,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Content="{Binding 套装名称.Name}"></CheckBox>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

@@ -61,7 +61,7 @@ namespace Liuliu.MouseClicker.Contexts
         ///获取TCP连接对象
         /// </summary>
         /// <returns></returns>
-        public static TcpRow[] GetTcpConnections(int processId,string serverip)
+        public static TcpRow[] GetTcpConnections(int processId)
         {
             TcpRow[] tTable;
             int AF_INET = 2;    // IP_v4
@@ -91,7 +91,7 @@ namespace Liuliu.MouseClicker.Contexts
                 Marshal.FreeHGlobal(buffTable);
             }
 
-            return tTable.Where(x=>x.owningPid==processId&&x.RemoteAddress.ToString()==serverip).ToArray();
+            return tTable.Where(x=>x.owningPid==processId).ToArray();
         }
 
 

@@ -49,21 +49,10 @@ namespace Liuliu.MouseClicker.ViewModels
                            break;
                    }
                });
-       Messenger.Default.Register<SendData<Dictionary<int, List<bool?>>>>(this, Notifications.MainCommandViewModel,
-       (sendData) =>
-       {
-           switch (sendData.Message)
-           { 
-               case "XilianMessage":
-                   xilianDict= sendData.Data;
-                   break;
-           }
-       });
 
         }
 
         private Role _role;
-        private Dictionary<int, List<bool?>> xilianDict = null;
 
         public ICommand OpenSettingsFlyoutCommand
         {
@@ -228,12 +217,6 @@ namespace Liuliu.MouseClicker.ViewModels
             if (role.SelectedItemTask.Content.ToString() == "自动洗练")
             {
                 context.Settings.StepName = "自动洗练";
-                if (xilianDict == null)
-                {
-                    Debug.WriteLine("套装信息为空！请设置。");
-                    return;
-                }
-                context.Settings.EquipmentTypeDict = xilianDict;
                 tasks.Add(new SmallTool(context));
             }
           

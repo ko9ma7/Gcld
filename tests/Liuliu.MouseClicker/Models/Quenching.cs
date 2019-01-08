@@ -16,11 +16,11 @@ namespace Liuliu.MouseClicker.Models
             set { SetProperty(ref _name, value, () => Name); }
         }
 
-        private int _rowNumber;
-        public int RowNumber
+        private bool _isHave;
+        public bool IsHave
         {
-            get { return _rowNumber; }
-            set { SetProperty(ref _rowNumber, value, () => RowNumber); }
+            get { return _isHave; }
+            set { SetProperty(ref _isHave, value, () => IsHave); }
         }
     }
        

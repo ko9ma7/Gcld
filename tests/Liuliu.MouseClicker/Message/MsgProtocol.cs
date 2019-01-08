@@ -138,7 +138,10 @@ namespace Liuliu.MouseClicker.Message
                 msgProtocol.MessageLength = BitConverter.ToInt32(binaryReader.ReadBytes(4).Reverse().ToArray(), 0); //读取数据长度，4字节          
                 //如果进来的Bytes长度大于一个完整的MsgProtocol长度
                 if (msgProtocol.MessageLength < 0)
+                {
+                    Debug.WriteLine("读取消息错误，长度小于0  buffer: " + BitConverter.ToString(buffer));
                     return null;
+                }
                 if ((bufferLength - 4) > msgProtocol.MessageLength)
                 {
                     msgProtocol.MessageContent = binaryReader.ReadBytes(msgProtocol.MessageLength); //读取实际消息内容，从第5个字节开始读
