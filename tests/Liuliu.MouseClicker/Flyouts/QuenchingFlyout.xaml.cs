@@ -33,10 +33,6 @@ namespace Liuliu.MouseClicker.Flyouts
         {
             InitializeComponent();
             RegisterMessengers();
-            IsOpenChanged += async (sender, e) => await XilianFlyout_IsOpenChanged(sender, e);
-
-
-
         }
         Role _role = null;
         private void RegisterMessengers()
@@ -55,14 +51,6 @@ namespace Liuliu.MouseClicker.Flyouts
                   }
               });
 
-        }
-        private async Task XilianFlyout_IsOpenChanged(object sender, RoutedEventArgs e)
-        {
-            if (IsOpen)
-            {
-                Reset();
-                return;
-            }
         }
 
         private void OpenXilianFlyout()
