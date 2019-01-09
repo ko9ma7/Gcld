@@ -44,6 +44,10 @@ namespace Liuliu.MouseClicker.Contexts
         /// <returns></returns>
         public static byte[] DeCompress(byte[] pBytes)
         {
+            try
+            {
+
+           
             MemoryStream mMemory = new MemoryStream();
             using (InflaterInputStream mStream = new InflaterInputStream(new MemoryStream(pBytes)))
             {
@@ -63,6 +67,11 @@ namespace Liuliu.MouseClicker.Contexts
                 }
             }
             return mMemory.ToArray();
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return new byte[] { };
         }
     }
 
