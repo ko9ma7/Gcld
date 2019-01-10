@@ -13,6 +13,7 @@ using Liuliu.MouseClicker.Mvvm;
 using System.Windows.Controls;
 using Liuliu.MouseClicker.Models;
 using Liuliu.MouseClicker.Contexts;
+using Newtonsoft.Json.Linq;
 
 namespace Liuliu.MouseClicker
 {
@@ -219,13 +220,13 @@ namespace Liuliu.MouseClicker
             } }
         
 
-        public RootObject GetData(string commandStr)
+        public dynamic GetData(string commandStr)
         {
             if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
                 return SoftContext.CommandList[CaptureKey + commandStr];
             return null;
         }
-        public RootObject GetData(string commandStr,Action action)
+        public dynamic GetData(string commandStr,Action action)
         {
             if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
                 return SoftContext.CommandList[CaptureKey + commandStr];
@@ -317,6 +318,7 @@ namespace Liuliu.MouseClicker
                 return false;
                });
             _dm.DebugPrint(name);
+         
             if (name!=""&&nameList.Contains(name))
             {
                 _dm.DebugPrint("该角色已经执行过!切换失败");
@@ -334,6 +336,8 @@ namespace Liuliu.MouseClicker
             {
                 nameList.Add(name);
             }
+
+
             return true;
         }
 
@@ -349,7 +353,22 @@ namespace Liuliu.MouseClicker
             OutSubMessage("打开失败!");
             return false;
         }
-
+        /// <summary>
+        /// 获取当前角色信息
+        /// </summary>
+        /// <returns></returns>
+        public Player GetPlayer()
+        {
+            var playInfo = GetData(Const.ROLE_GET_INFO);
+            if (playInfo != null)
+            {
+                JObject jObject = playInfo.action.data.player;
+                Player player = jObject.ToObject<Player>();
+                Debug.WriteLine(player.serverId + " " + player.serverName + " " + player.playerName + " " + player.playerId + " " + player.playerLv);
+                return player;
+            }
+            return null;
+        }
         public bool CloseWindow()
         {
             OutSubMessage("开始关闭窗口...");

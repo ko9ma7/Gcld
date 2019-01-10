@@ -1,4 +1,6 @@
 ﻿using Liuliu.MouseClicker.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OSharp.Utility.Data;
 using PacketDotNet;
 using SharpPcap;
@@ -191,7 +193,8 @@ namespace Liuliu.MouseClicker.Message
                     }
 
                     //将得到的json字符串转为对象
-                    var rootObj = JsonHelper.FromJson<RootObject>(msgPro.Data);
+                   // var rootObj = JsonHelper.FromJson<dynamic>(msgPro.Data);
+                    var rootObj = JsonConvert.DeserializeObject<dynamic>(msgPro.Data);
 
                     if (SoftContext.CommandList.ContainsKey(key+msgPro.MessageCommand))
                     {

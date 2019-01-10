@@ -5,6 +5,8 @@ using Liuliu.MouseClicker.Tasks;
 using Liuliu.MouseClicker.ViewModels;
 using Liuliu.ScriptEngine.Models;
 using Liuliu.ScriptEngine.Tasks;
+using Newtonsoft.Json.Linq;
+using OSharp.Utility.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -91,7 +93,15 @@ namespace Liuliu.MouseClicker.Flyouts
             var rootObj = _role.GetData(Const.GET_EQUIPS_LIST);
             if (rootObj != null)
             {
-                equipsList = rootObj.action.data.equips;
+                JArray equips = rootObj.action.data.equips;
+                if (equips != null)
+                {
+                    equipsList = JsonHelper.FromJson<List<Equips>>(equips.ToString());
+                }
+                else
+                {
+                    return;
+                }
                 foreach (var equip in equipsList)
                 {
                     套装 taozhuang = model.TaozhuangList.FirstOrDefault(x => equip.refreshAttribute.Count == 4 && ((Equipment)x.GetType().GetProperty(equip.name).GetValue(x)).类型.ToString() == equip.refreshAttribute[0].attrName && ((Equipment)x.GetType().GetProperty(equip.name).GetValue(x)).IsHave == false);

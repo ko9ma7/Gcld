@@ -164,6 +164,7 @@
     <Compile Include="Message\RmList.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Action.cs" />
+    <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Quenching.cs" />
     <Compile Include="Models\SendData.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />

@@ -32,7 +32,7 @@ namespace Liuliu.MouseClicker
 
         }
         public const string ServerIp = "39.96.32.192";
-        public static Dictionary<string, RootObject> CommandList = new Dictionary<string, RootObject>();
+        public static Dictionary<string, dynamic> CommandList = new Dictionary<string, dynamic>();
 
         public static MainWindow MainWindow { get; set; }
 
