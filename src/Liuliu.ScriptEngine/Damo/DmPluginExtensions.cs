@@ -329,6 +329,7 @@ namespace Liuliu.ScriptEngine.Damo
             if(intX>0&&intY>0)
             {
                 _dm.MoveToClick(intX, intY);
+                _dm.DebugPrint(intX + " " + intY);
                 _dm.Delay(50);
             }
             return result;

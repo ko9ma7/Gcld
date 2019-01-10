@@ -120,6 +120,7 @@
     </ApplicationDefinition>
     <Compile Include="Contexts\CmdHelper.cs" />
     <Compile Include="Contexts\Const.cs" />
+    <Compile Include="Contexts\GameHelper.cs" />
     <Compile Include="Contexts\LocalDataHandler.cs" />
     <Compile Include="Contexts\NetProcess.cs" />
     <Compile Include="Contexts\Notifications.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Quenching.cs" />
     <Compile Include="Models\SendData.cs" />
+    <Compile Include="Models\WearEquip.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Tasks\AutoLevel.cs" />

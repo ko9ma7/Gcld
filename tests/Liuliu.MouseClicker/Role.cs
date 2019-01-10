@@ -147,7 +147,10 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                throw new NotImplementedException();
+                var player = GetPlayer();
+                if(player!=null)
+                     return int.Parse(player.playerLv);
+                return 0;
             }
         }
 
@@ -296,7 +299,7 @@ namespace Liuliu.MouseClicker
                     return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp|\bmp\切换角色2.bmp");
                 
                 },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp|\bmp\开始游戏2.bmp"),()=>_dm.Delay(1000));
-            string name = "";
+            
             Delegater.WaitTrue(() =>
             {
                 _dm.Delay(1000);
@@ -311,33 +314,25 @@ namespace Liuliu.MouseClicker
 
                 if (_dm.FindPicAndClick(312, 285, 646, 394, @"\bmp\等级.bmp"))
                 {
-                     name = _dm.FetchWord(422, 305, 533, 333, "edebe9-303030", "角色名");
                     _dm.Delay(500);
                     return _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
                 }
                 return false;
                });
-            _dm.DebugPrint(name);
-         
-            if (name!=""&&nameList.Contains(name))
-            {
-                _dm.DebugPrint("该角色已经执行过!切换失败");
-                _dm.Delay(500);
-                _dm.FindPicAndClick(316, 289, 635, 482, @"\bmp\开始.bmp");
-                if (_currentAccount != null)
+            Delegater.WaitTrue(() => {
+                if (_dm.IsExistPic(818, 281, 953, 447, @"\bmp\世界.bmp") || _dm.IsExistPic(818, 281, 953, 447, @"\bmp\副本.bmp"))
                 {
-                    _currentAccount.IsWorking = false;
-                    _currentAccount.IsFinished = true;
-                    SoftContext.Locator.Accounts.SetAccountState(_currentAccount);
+                    while (_dm.IsExistPic(406, 378, 557, 432, @"\bmp\以后再说.bmp", 0.8))
+                    {
+                        _dm.MoveToClick(544, 414);
+                        _dm.Delay(1000);
+                    }
+                    _dm.Delay(1000);
+                    return true;
                 }
                 return false;
-            }
-            else
-            {
-                nameList.Add(name);
-            }
-
-
+            }, () => _dm.Delay(1000));
+   
             return true;
         }
 

@@ -4,6 +4,8 @@ using Liuliu.ScriptEngine;
 using Liuliu.ScriptEngine.Damo;
 using Liuliu.ScriptEngine.Models;
 using Liuliu.ScriptEngine.Tasks;
+using Newtonsoft.Json.Linq;
+using OSharp.Utility.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -216,16 +218,39 @@ namespace Liuliu.MouseClicker.Tasks
 
 
         }
-        private void GetSelectedGeneralEquipment(int x1, int y1, int x2, int y2)
+        private List<string> taozhuangList = new List<string>();
+        private void GetSelectedGeneralEquipment(int x1, int y1,int x2,int y2,int a,int b)
         {
-            if (Dm.FindColorBlockAndClick(x1, y1, x2, y2, "DDDDDD-222222", 100, 25, 50))
+            Role role = (Role)Role;
+            if (Dm.GetColorNum(x1,y1,x2,y2,"DDDDDD-222222",0.9)>100)
             {
-                GetEquipmentProperty(465, 177, 0);//枪
-                GetEquipmentProperty(467, 250, 1);//甲
-                GetEquipmentProperty(468, 319, 2);//帅印
-                GetEquipmentProperty(535, 179, 3);//马
-                GetEquipmentProperty(536, 251, 4); //披风
-                GetEquipmentProperty(538, 322, 5);//旗子
+                //GetEquipmentProperty(465, 177, 0);//枪
+                //GetEquipmentProperty(467, 250, 1);//甲
+                //GetEquipmentProperty(468, 319, 2);//帅印
+                //GetEquipmentProperty(535, 179, 3);//马
+                //GetEquipmentProperty(536, 251, 4); //披风
+                //GetEquipmentProperty(538, 322, 5);//旗子\
+                Dm.MoveToClick(a, b);
+                Dm.Delay(1000);
+                Dm.MoveToClick(465, 177);
+                Dm.Delay(1000);
+
+                var obj = role.GetData(Const.GENERAL_GET_WEAREQUIP);
+                JArray wel = obj.action.data.equips;
+                List<WearEquip> wearEquipList = new List<WearEquip>();
+                if (wel != null)
+                {
+                    wearEquipList = JsonHelper.FromJson<List<WearEquip>>(wel.ToString());
+                    foreach (var wearEquip in wearEquipList)
+                    {
+                        if (wearEquip.itemName.Contains("套装"))
+                        {
+                            if (!taozhuangList.Contains(wearEquip.itemName))
+                                taozhuangList.Add(wearEquip.itemName);
+                        }
+                    }
+                }
+
             }
         }
         Color MaxColor = Color.无法识别;
@@ -241,10 +266,14 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep6(TaskContext arg)
         {
             Role role = (Role)Role;
+            taozhuangList.Clear();
             role.CloseWindow();
-            Dm.UseDict(1);
-            int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30");
-            Dm.UseDict(0);
+            #region 数字识别等级
+            //Dm.UseDict(1);
+            // int level = Dm.GetOcrNumber(101, 31, 159, 59, "40.30.88-20.30.30");
+            //  Dm.UseDict(0);
+            int level = role.Level;
+            Dm.DebugPrint("人物等级：" + level);
             if (level >= 16 && level < 28) //蓝
                 MaxColor = Color.蓝;
             else if (level >= 28 && level < 36) //绿
@@ -262,6 +291,7 @@ namespace Liuliu.MouseClicker.Tasks
                 role.CloseWindow();
                 return TaskResult.Finished;
             }
+            #endregion
             for (int i = 0; i < 6; i++)
             {
                 needs[i] = 0;
@@ -272,11 +302,15 @@ namespace Liuliu.MouseClicker.Tasks
                 Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
                 Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
                                    () => Dm.Delay(1000));
-                GetSelectedGeneralEquipment(86, 68, 177, 149);
-                GetSelectedGeneralEquipment(86, 156, 173, 241);
-                GetSelectedGeneralEquipment(84, 244, 176, 326);
-                GetSelectedGeneralEquipment(83, 332, 174, 417);
+                GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
+                GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
+                GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
+                GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
                 Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+                foreach (var item in taozhuangList)
+                {
+                    Debug.WriteLine(item);
+                }
                 role.CloseWindow();
             }
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
@@ -324,10 +358,10 @@ namespace Liuliu.MouseClicker.Tasks
                             Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("将领"), () => Dm.Delay(1000));
                             Delegater.WaitTrue(() => role.OpenWindowMenu("将领"),
                                                () => Dm.Delay(1000));
-                            GetSelectedGeneralEquipment(86, 68, 177, 149);
-                            GetSelectedGeneralEquipment(86, 156, 173, 241);
-                            GetSelectedGeneralEquipment(84, 244, 176, 326);
-                            GetSelectedGeneralEquipment(83, 332, 174, 417);
+                            GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
+                            GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
+                            GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
+                            GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
                             Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
                             role.CloseWindow();
                             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
