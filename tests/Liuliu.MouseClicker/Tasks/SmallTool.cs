@@ -219,10 +219,10 @@ namespace Liuliu.MouseClicker.Tasks
 
         }
         private List<string> taozhuangList = new List<string>();
-        private void GetSelectedGeneralEquipment(int x1, int y1,int x2,int y2,int a,int b)
+        private void GetSelectedGeneralEquipment(int x1, int y1, int x2, int y2, int a, int b)
         {
             Role role = (Role)Role;
-            if (Dm.GetColorNum(x1,y1,x2,y2,"DDDDDD-222222",0.9)>100)
+            if (Dm.GetColorNum(x1, y1, x2, y2, "DDDDDD-222222", 0.9,false) > 100)
             {
                 //GetEquipmentProperty(465, 177, 0);//枪
                 //GetEquipmentProperty(467, 250, 1);//甲
@@ -235,7 +235,7 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.MoveToClick(465, 177);
                 Dm.Delay(1000);
 
-                var obj = role.GetData(Const.GENERAL_GET_WEAREQUIP);
+                var obj = role.GameHelper.GetData(Const.GENERAL_GET_WEAREQUIP);
                 JArray wel = obj.action.data.equips;
                 List<WearEquip> wearEquipList = new List<WearEquip>();
                 if (wel != null)
@@ -296,6 +296,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 needs[i] = 0;
             }
+            int count = 0;
             //获取所需装备件数
             if (MaxColor == Color.紫)
             {
@@ -307,10 +308,32 @@ namespace Liuliu.MouseClicker.Tasks
                 GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
                 GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
                 Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+                string temp = "";
+
                 foreach (var item in taozhuangList)
                 {
-                    Debug.WriteLine(item);
+                    temp = temp + item + " ";
+                    if (item.Contains("极"))
+                    {
+                        role.CloseWindow();
+                        return TaskResult.Finished;
+                    }
+                    if (item.Contains("真"))
+                    {
+                        count = count + 2;
+                        continue;
+                    }
+                    if (item.Contains("套装"))
+                    {
+                        count = count + 1;
+                    }
                 }
+                if (count >= 10)
+                {
+                    role.CloseWindow();
+                    return TaskResult.Finished;
+                }
+                Debug.WriteLine("已经拥有套装：" + temp);
                 role.CloseWindow();
             }
             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
@@ -324,28 +347,28 @@ namespace Liuliu.MouseClicker.Tasks
             dict.Add(4, new int[] { 488, 133, 604, 176, 486, 276, 581, 311, 551, 374, 0, 0 });
             dict.Add(5, new int[] { 614, 131, 732, 175, 614, 270, 721, 314, 675, 369, 0, 0 });
             dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
-            Delegater.WaitTrue(() =>
+            Delegater.WaitTrue((Func<bool>)(() =>
             {
                 Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
-                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp"))
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp",0.8,false))
                 {
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
                     return true;
                 }
                 //出现适合装备
-                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp"))
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\适合您的装备.bmp",0.8,false))
                 {
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
                     List<Goods> list = new List<Goods>();
-                    Dm.StartWatch();
+                   // Dm.StartWatch();
                     for (int i = 1; i <= 6; i++)
                     {
                         var color = GetColor(dict[i][0], dict[i][1], dict[i][2], dict[i][3]);
                         var starLevel = Dm.GetPicCount(dict[i][4], dict[i][5], dict[i][6], dict[i][7], @"\bmp\星星1.bmp");
                         list.Add(new Goods() { Pos = i, StarLevel = starLevel, Color = color, Buypos = new Tuple<int, int>(dict[i][8], dict[i][9]) });
-                        Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
+                        //Dm.DebugPrint(string.Format("位置{0}：星级【{1}】,颜色【{2}】", i, starLevel, color));
                     }
-                    Dm.StopWatch();
+                   // Dm.StopWatch();
                     List<Goods> buyList = null;
                     if (list.Max(x => x.Color) != MaxColor)
                     {
@@ -392,27 +415,52 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                     if (buyList != null)
                     {
+                        Dm.Delay(2000);
                         foreach (var goods in buyList)
                         {
-                            if (MaxColor >= Color.紫)
+                            try
                             {
-                                for (int j = 0; j < 6; j++)
-                                {
-                                    if (needs[j] != 0 && goods.Pos == j + 1)
+                                StoreItem items = role.GameHelper.GetStoreItem();
+                                    if (items == null)
                                     {
-                                        needs[j] -= 1;
+                                        Dm.DebugPrint("Error:获取商店数据错误。");
+                                        role.CloseWindow();
+                                        return true;
+                                    }
+                                    if (int.Parse(items.nowItemNum) >= int.Parse(items.maxItemNum))
+                                    {
+                                        Dm.DebugPrint("Error:仓库数量达到上限。");
+                                        role.CloseWindow();
+                                        return true;
+                                    }
+                                    if (items.items[goods.Pos - 1].curItemNum == null)
+                                    {
+                                        Dm.DebugPrint("获取的商品跟识别不一致。");
+                                       
+                                        Dm.Delay(2000);
+                                        continue;
+                                    }
+                         
+                               
+                                if (MaxColor >= Color.紫)
+                                {
+                                    if (int.Parse(items.items[goods.Pos - 1].curItemNum) < (10 - count))
+                                    {
                                         Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
                                         Dm.Delay(1000);
                                         break;
                                     }
+
                                 }
-                            }
-                            else
-                            {
-                                Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
-                                Dm.Delay(1000);
-                                break;
-                            }
+                                else
+                                {
+                                    Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
+                                    Dm.Delay(1000);
+                                    break;
+                                }
+                            }catch(Exception ex)
+                            { Debug.WriteLine(ex.Message); }
+                           
                         }
                     }
                     Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
@@ -421,31 +469,31 @@ namespace Liuliu.MouseClicker.Tasks
                         Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店确定.bmp");
                 }
                 //出现稀有物品
-                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp"))
+                if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\稀有物品.bmp",0.8,false))
                 {
                     Dm.FindPicAndClick(283, 192, 668, 411, @"\bmp\商店取消.bmp");
                     Dm.Delay(500);
                     Dm.MoveToClick(168, 370);
                 }
                 return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
-            }, () => Dm.Delay(200));
+            }), () => Dm.Delay(200));
             Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
             role.CloseWindow();
             return TaskResult.Finished;
         }
 
-    
-       
+
+
         private EquipmentAttrType GetEquipmentType(int x1, int y1, int x2, int y2)
         {
             int intX, intY;
             int result = Dm.FindPic(x1, y1, x2, y2, @"\bmp\攻击.bmp|\bmp\防御.bmp|\bmp\掌控.bmp|\bmp\血量.bmp|\bmp\强防.bmp|\bmp\强壮.bmp|\bmp\强攻.bmp|", "404040", 0.6, 0, out intX, out intY);
             return (EquipmentAttrType)result;
         }
-     
-       
 
-       
+
+
+
         private Tuple<bool, EquipmentAttrType> IsSameEequipmentType()
         {
             EquipmentAttrType type1 = EquipmentAttrType.未知类型, type2 = EquipmentAttrType.未知类型, type3 = EquipmentAttrType.未知类型;
@@ -596,7 +644,7 @@ namespace Liuliu.MouseClicker.Tasks
                                                     if (a.IsHave == true)
                                                         temp2 = temp2 + a.类型.ToString() + " ";
                                                 }
-                                                Dm.DebugPrint("属性【" + atttype.ToString() + "】不是装备【" + etype.ToString() + "】需要的属性.需要属性：【"+temp+"】");
+                                                Dm.DebugPrint("属性【" + atttype.ToString() + "】不是装备【" + etype.ToString() + "】需要的属性.需要属性：【" + temp + "】");
                                             }
                                         }
                                         ClosePopup(409, 362);//点击确定
@@ -661,7 +709,7 @@ namespace Liuliu.MouseClicker.Tasks
             return TaskResult.Finished;
         }
 
-      
+
         private TaskResult RunStep2(TaskContext context)
         {
             Role role = (Role)context.Role;

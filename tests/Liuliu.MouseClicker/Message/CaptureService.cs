@@ -174,6 +174,7 @@ namespace Liuliu.MouseClicker.Message
                 if (msgPro == null)
                 {
                     Debug.WriteLine("数据格式错误!消息为null"+BitConverter.ToString(tcpPacket.PayloadData));
+                    dataBufferDict[key] = new byte[] { };
                     return;
                 }
                 int msgContentLength = msgPro.MessageLength;
@@ -183,14 +184,14 @@ namespace Liuliu.MouseClicker.Message
                     // Debug.WriteLine("【receivedBuffer去掉包头的长度=" + (receivedBuffer.Length - 4) + "】>=【" + "包实质内容长度=" + msgContentLength + "】");
                     msgPro = null;
                     msgPro = MsgProtocol.FromBytesR(dataBufferDict[key]);
-                    string filter = "player@ltestplayer@game";
-                    if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
-                    {
-                        Debug.WriteLine("==============================================================================================================");
-                        Debug.WriteLine("接收数据：" + key);
-                        Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
-                        Debug.WriteLine("【json】=" + msgPro.Data);
-                    }
+                    //string filter = "player@ltestplayer@game";
+                    //if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
+                    //{
+                    //    Debug.WriteLine("==============================================================================================================");
+                    //    Debug.WriteLine("接收数据：" + key);
+                    //    Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
+                    //    Debug.WriteLine("【json】=" + msgPro.Data);
+                    //}
 
                     //将得到的json字符串转为对象
                    // var rootObj = JsonHelper.FromJson<dynamic>(msgPro.Data);

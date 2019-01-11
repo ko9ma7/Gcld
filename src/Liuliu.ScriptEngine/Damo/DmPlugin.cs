@@ -1446,10 +1446,10 @@ namespace Liuliu.ScriptEngine
             int result = _dm.FindStr(x1, y1, x2, y2, str, color, sim, out x, out y);
             intX = (int)x;
             intY = (int)y;
-            if(intX<0&&intY<0)
-            {
-                Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找字[" + str + "]失败!");
-            }
+            //if(intX<0&&intY<0)
+            //{
+            //    Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId.ToString() + "]" + "找字[" + str + "]失败!");
+            //}
             
             return result;
         }

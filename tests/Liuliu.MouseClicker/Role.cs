@@ -34,6 +34,7 @@ namespace Liuliu.MouseClicker
             TaskEngine.Window = _window;
             WindowTitle = _window.TopTitle;
             _noxVMHandlePid = noxVMHandlePid;
+            GameHelper = new GameHelper(_noxVMHandlePid);
             套装 青龙套装 = new 套装() { 套装名称 = new 套装名称() { Name = "青龙" }, 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.血量 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.血量 } };
             套装 白虎套装 = new 套装() { 套装名称 = new 套装名称() { Name = "白虎" }, 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强攻 } };
             套装 朱雀套装 = new 套装() { 套装名称 = new 套装名称() { Name = "朱雀" }, 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.攻击 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强壮 } };
@@ -143,11 +144,13 @@ namespace Liuliu.MouseClicker
             }
         }
 
+        public GameHelper GameHelper { get; set; }
+
         public int Level
         {
             get
             {
-                var player = GetPlayer();
+                var player = GameHelper.GetPlayer();
                 if(player!=null)
                      return int.Parse(player.playerLv);
                 return 0;
@@ -204,43 +207,7 @@ namespace Liuliu.MouseClicker
         }
 
         public List<套装> TaozhuangList { get; set; }
-        private string _key = "";
-        public string CaptureKey { get
-            {
-                TcpRow[] allTcp = NetProcess.GetTcpConnections(_noxVMHandlePid);
-                TcpRow t = allTcp.FirstOrDefault(x=>x.RemoteAddress.ToString()==SoftContext.ServerIp&&x.RemotePort==8220&&x.state==ConnectionState.Established);
-                if (t.LocalAddress.ToString()=="0.0.0.0"&&t.RemoteAddress.ToString()=="0.0.0.0")
-                {
 
-                    return "";
-                }
-                else
-                {
-
-                    _key = string.Format("{0}:{1}->{2}:{3}[Receive]", t.RemoteAddress.ToString(), t.RemotePort, t.LocalAddress.ToString(), t.LocalPort);
-                }
-                return _key;
-            } }
-        
-
-        public dynamic GetData(string commandStr)
-        {
-            if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
-                return SoftContext.CommandList[CaptureKey + commandStr];
-            return null;
-        }
-        public dynamic GetData(string commandStr,Action action)
-        {
-            if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
-                return SoftContext.CommandList[CaptureKey + commandStr];
-            else
-            {
-                action();
-                if (SoftContext.CommandList.ContainsKey(CaptureKey + commandStr))
-                    return SoftContext.CommandList[CaptureKey + commandStr];
-            }
-            return null;
-        }
         public Action<string> OutSubMessage
         {
             get
@@ -298,7 +265,7 @@ namespace Liuliu.MouseClicker
                     OpenWindowMenu("角色");
                     return _dm.FindPicAndClick(446, 408, 580, 486, @"\bmp\切换角色.bmp|\bmp\切换角色2.bmp");
                 
-                },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp|\bmp\开始游戏2.bmp"),()=>_dm.Delay(1000));
+                },()=>_dm.IsExistPic(394, 416, 563, 486, @"\bmp\开始游戏.bmp|\bmp\开始游戏2.bmp",0.8,false),()=>_dm.Delay(1000));
             
             Delegater.WaitTrue(() =>
             {
@@ -348,22 +315,7 @@ namespace Liuliu.MouseClicker
             OutSubMessage("打开失败!");
             return false;
         }
-        /// <summary>
-        /// 获取当前角色信息
-        /// </summary>
-        /// <returns></returns>
-        public Player GetPlayer()
-        {
-            var playInfo = GetData(Const.ROLE_GET_INFO);
-            if (playInfo != null)
-            {
-                JObject jObject = playInfo.action.data.player;
-                Player player = jObject.ToObject<Player>();
-                Debug.WriteLine(player.serverId + " " + player.serverName + " " + player.playerName + " " + player.playerId + " " + player.playerLv);
-                return player;
-            }
-            return null;
-        }
+      
         public bool CloseWindow()
         {
             OutSubMessage("开始关闭窗口...");
@@ -684,9 +636,9 @@ namespace Liuliu.MouseClicker
         public bool CloseMenu()
         {
             return Delegater.WaitTrue(()=> {
-                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp",0.8,false))
                     return true;
-                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp", 0.8, false))
                     _dm.MoveToClick(918,499);
                 return false;
             },()=>_dm.Delay(1000),10);
@@ -694,9 +646,9 @@ namespace Liuliu.MouseClicker
         public bool OpenMenu()
         {
             return Delegater.WaitTrue(() => {
-                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp"))
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单打开.bmp", 0.8, false))
                     return true;
-                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp"))
+                if (_dm.IsExistPic(862, 454, 961, 537, @"\bmp\菜单未打开.bmp", 0.8, false))
                     _dm.MoveToClick(918, 499);
                 return false;
             }, () => _dm.Delay(1000),10);

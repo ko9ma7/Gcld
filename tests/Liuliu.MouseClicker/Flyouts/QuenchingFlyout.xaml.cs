@@ -90,7 +90,7 @@ namespace Liuliu.MouseClicker.Flyouts
             List<Equips> equipsList = new List<Equips>();
             //初始化装备数据
 
-            var rootObj = _role.GetData(Const.GET_EQUIPS_LIST);
+            var rootObj = _role.GameHelper.GetData(Const.GET_EQUIPS_LIST);
             if (rootObj != null)
             {
                 JArray equips = rootObj.action.data.equips;
