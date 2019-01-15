@@ -193,16 +193,10 @@ namespace Liuliu.MouseClicker.ViewModels
             TaskEngine engine = role.TaskEngine;
 
             List<TaskBase> tasks = new List<TaskBase>();
+
+            role.Player = role.GameHelper.GetPlayer();
             if (role.IsAutoLogin)
-                engine.AutoLogin = () => 
-                {
-                    if (AutoLogin(role, account))
-                    {
-                        role.Player = role.GameHelper.GetPlayer();
-                        return true;
-                    }
-                    return false;
-                 };
+                engine.AutoLogin = () => AutoLogin(role, account);
             else
                 engine.AutoLogin = null;
             if (role.IsChangeRole)

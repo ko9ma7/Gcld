@@ -84,5 +84,18 @@ namespace Liuliu.MouseClicker.Contexts
             }
             return null;
         }
+        
+        public WeaponInfo GetWeaponInfo()
+        {
+            var dy = GetData(Const.WEAPON_OPEN_GETWEAPONINFO);
+            if (dy != null)
+            {
+                JObject jObject = dy.action.data;
+                WeaponInfo wi = jObject.ToObject<WeaponInfo>();
+              
+                return wi;
+            }
+            return null;
+        }
     }
 }

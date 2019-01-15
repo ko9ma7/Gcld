@@ -190,14 +190,14 @@ namespace Liuliu.MouseClicker.Message
                         dataBufferDict[key] = new byte[] { };
                         return;
                     }
-                    //string filter = "player@ltestplayer@game";
-                    //if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
-                    //{
-                    //    Debug.WriteLine("==============================================================================================================");
-                    //    Debug.WriteLine("接收数据：" + key);
-                    //    Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
-                    //    Debug.WriteLine("【json】=" + msgPro.Data);
-                    //}
+                    string filter = "player@ltestplayer@game";
+                    if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
+                    {
+                        Debug.WriteLine("==============================================================================================================");
+                        Debug.WriteLine("接收数据：" + key);
+                        Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
+                        Debug.WriteLine("【json】=" + msgPro.Data);
+                    }
 
                     //将得到的json字符串转为对象
                     // var rootObj = JsonHelper.FromJson<dynamic>(msgPro.Data);

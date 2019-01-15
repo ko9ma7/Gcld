@@ -61,10 +61,15 @@ namespace Liuliu.MouseClicker
             }
         }
 
+        public WeaponInfo GetWeaponInfo()
+        {
+            return GameHelper.GetWeaponInfo();
+        }
+
         private Player _player;
         public Player Player
         {
-            get { return GameHelper.GetPlayer(); }
+            get { return _player; }
             set
             {
                 SetProperty(ref _player, value, () => Player);
@@ -160,9 +165,8 @@ namespace Liuliu.MouseClicker
         {
             get
             {
-                var player = GameHelper.GetPlayer();
-                if(player!=null)
-                     return int.Parse(player.playerLv);
+                if (_player != null)
+                    return int.Parse(_player.playerLv);
                 return 0;
             }
         }

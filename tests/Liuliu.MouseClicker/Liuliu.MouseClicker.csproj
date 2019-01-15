@@ -183,6 +183,7 @@
     <Compile Include="Models\Quenching.cs" />
     <Compile Include="Models\RefreshItem.cs" />
     <Compile Include="Models\SendData.cs" />
+    <Compile Include="Models\Weapons.cs" />
     <Compile Include="Models\WearEquip.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />
     <Compile Include="Role.cs" />

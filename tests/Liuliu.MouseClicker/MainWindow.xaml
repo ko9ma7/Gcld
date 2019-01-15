@@ -138,6 +138,13 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
+                                            <Label Content="模拟器名："></Label>
+                                            <Label Content="{Binding WindowTitle}"></Label>
+                                            
+                                            <Label Content="当前账号："></Label>
+                                            <Label Content="{Binding CurrentAccount.UserName}"></Label>
+                                            <Label Content="循环次数："></Label>
+                                            <Label Content="{Binding TaskEngine.Cycle}"></Label>
                                             <Label Content="角色名："></Label>
                                             <Label Content="{Binding Player.playerName}"></Label>
                                             <Label Content="等级："></Label>
