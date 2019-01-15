@@ -184,6 +184,12 @@ namespace Liuliu.MouseClicker.Message
                     // Debug.WriteLine("【receivedBuffer去掉包头的长度=" + (receivedBuffer.Length - 4) + "】>=【" + "包实质内容长度=" + msgContentLength + "】");
                     msgPro = null;
                     msgPro = MsgProtocol.FromBytesR(dataBufferDict[key]);
+                    if (msgPro == null)
+                    {
+                        Debug.WriteLine("数据格式错误!消息为null" + BitConverter.ToString(tcpPacket.PayloadData));
+                        dataBufferDict[key] = new byte[] { };
+                        return;
+                    }
                     //string filter = "player@ltestplayer@game";
                     //if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
                     //{
@@ -194,7 +200,7 @@ namespace Liuliu.MouseClicker.Message
                     //}
 
                     //将得到的json字符串转为对象
-                   // var rootObj = JsonHelper.FromJson<dynamic>(msgPro.Data);
+                    // var rootObj = JsonHelper.FromJson<dynamic>(msgPro.Data);
                     var rootObj = JsonConvert.DeserializeObject<dynamic>(msgPro.Data);
 
                     if (SoftContext.CommandList.ContainsKey(key+msgPro.MessageCommand))

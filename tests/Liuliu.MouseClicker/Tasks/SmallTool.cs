@@ -547,6 +547,28 @@ namespace Liuliu.MouseClicker.Tasks
         {
             Role role = (Role)context.Role;
             List<套装> tempTaozhuangList = role.TaozhuangList;
+            Dictionary<string, List<string>> dictCount = new Dictionary<string, List<string>>();
+            dictCount.Add("麒麟双枪", new List<string>());
+            dictCount.Add("麒麟", new List<string>());
+            dictCount.Add("三昧纯阳铠", new List<string>());
+            dictCount.Add("蝶凤舞阳", new List<string>());
+            dictCount.Add("伏龙帅印", new List<string>());
+            dictCount.Add("蟠龙华盖", new List<string>());
+            foreach (var item in tempTaozhuangList)
+            {
+                if (item.麒麟双枪.IsHave==false)
+                    dictCount["麒麟双枪"].Add(item.麒麟双枪.类型.ToString());
+                if (item.麒麟.IsHave == false)
+                    dictCount["麒麟"].Add(item.麒麟.类型.ToString());
+                if (item.三昧纯阳铠.IsHave == false)
+                    dictCount["三昧纯阳铠"].Add(item.三昧纯阳铠.类型.ToString());
+                if (item.蝶凤舞阳.IsHave == false)
+                    dictCount["蝶凤舞阳"].Add(item.蝶凤舞阳.类型.ToString());
+                if (item.伏龙帅印.IsHave == false)
+                    dictCount["伏龙帅印"].Add(item.伏龙帅印.类型.ToString());
+                if (item.蟠龙华盖.IsHave == false)
+                    dictCount["蟠龙华盖"].Add(item.蟠龙华盖.类型.ToString());
+            }
             Delegater.WaitTrue(() =>
             {
                 string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
@@ -556,7 +578,6 @@ namespace Liuliu.MouseClicker.Tasks
                     return true;
                 }
                 string[] t = points.Split('|');
-
                 foreach (var item in t)
                 {
                     string[] p = item.Split(',');
@@ -578,6 +599,7 @@ namespace Liuliu.MouseClicker.Tasks
                             continue;
                         else
                         {
+
                             int count = tempTaozhuangList.Count(x => ((Equipment)x.GetType().GetProperty(etype.ToString()).GetValue(x)).IsHave == true);
                             if (count == 10)
                             {
@@ -586,6 +608,13 @@ namespace Liuliu.MouseClicker.Tasks
                             }
                             else
                                 Dm.DebugPrint(etype.ToString() + "剩下【" + (10 - count) + "】件未洗.");
+                            var hs = new HashSet<string>(dictCount[etype.ToString()]);
+                            if(hs.Count==1)
+                            {
+                                Dm.DebugPrint(etype.ToString() + "剩下一个属性未洗,跳过!");
+                                continue;
+                            }
+
                         }
                         Delegater.WaitTrue(() =>
                             {
@@ -622,6 +651,7 @@ namespace Liuliu.MouseClicker.Tasks
                                                 if (a.IsHave == true)
                                                     temp2 = temp2 + a.类型.ToString() + " ";
                                             }
+                                            dictCount[etype.ToString()].Remove(atttype.ToString());
                                             Dm.DebugPrint("属性【" + atttype.ToString() + "】是装备【" + etype.ToString() + "】需要的属性.  " + eqtype.ToString() + "已有属性：" + temp2 + ",还剩下属性未洗：" + temp + "  剩下件数未洗：" + (10 - count - 1));
                                             ClosePopup(550, 361);//点击点取消
                                             return true;

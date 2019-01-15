@@ -265,7 +265,7 @@ namespace Liuliu.MouseClicker
             return false;
         }
 
-        List<string> nameList = new List<string>();
+        List<string> playerList = new List<string>();
         public bool ChangeRole()
         {
             OutMessage("切换角色中...");
@@ -309,7 +309,17 @@ namespace Liuliu.MouseClicker
                 }
                 return false;
             }, () => _dm.Delay(1000));
-   
+            _dm.Delay(3000);
+            Player= GameHelper.GetPlayer();
+            if (!playerList.Contains(Player.playerName))
+            {
+                playerList.Add(Player.playerName);
+            }
+            else
+            {
+                if (playerList.Count >= 10)
+                    return false;    
+            }
             return true;
         }
 

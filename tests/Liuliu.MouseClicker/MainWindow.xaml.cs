@@ -80,6 +80,13 @@ namespace Liuliu.MouseClicker
             }
             else
             {
+                Debug.WriteLine("SharpPcap版本：" + SharpPcap.Version.VersionString);
+                int i = 0;
+                if (File.Exists(@"E:\nox\Nox\bin\nox_adb.exe"))
+                    i = 0;
+                if (File.Exists(@"E:\Nox\bin\nox_adb.exe"))
+                    i = 1;
+                CaptureService.GetInstance().StartCapture(i, "host " + SoftContext.ServerIp);
 
                 Locator.Main.StatusBar = "准备就绪";
                 return;
