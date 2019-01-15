@@ -133,7 +133,50 @@
             <ListView Grid.Row="0" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" SelectedItem="{Binding SelectedRole}" Grid.RowSpan="2">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="模拟器列表" Width="80" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
+                        <GridViewColumn Header="角色列表" Width="600">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="角色名："></Label>
+                                            <Label Content="{Binding Player.playerName}"></Label>
+                                            <Label Content="等级："></Label>
+                                            <Label Content="{Binding Player.playerLv}"></Label>
+                                            <Label Content="金币："></Label>
+                                            <Label Content="{Binding Player.gold}"></Label>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="自动登陆："></Label>
+                                            <CheckBox IsChecked="{Binding IsAutoLogin,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                                            <Label Content="切换角色："></Label>
+                                            <CheckBox IsChecked="{Binding IsChangeRole,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></CheckBox>
+                                            <Label Content="任务配置："></Label>
+                                            <ComboBox x:Name="settingCbox" SelectedItem="{Binding SelectedItemTask}">
+                                                <ComboBoxItem IsSelected="True" Content="日常任务"></ComboBoxItem>
+                                                <ComboBoxItem Content="活动任务"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动洗练"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动兵器"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动建筑"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动主线"></ComboBoxItem>
+                                                <ComboBoxItem Content="购买装备"></ComboBoxItem>
+                                                <ComboBoxItem Content="自动副本"></ComboBoxItem>
+                                            </ComboBox>
+                                            <Label Content="操作："></Label>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                                <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                                <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="消息："></Label>
+                                            <Label Content="子消息："></Label>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!--<GridViewColumn Header="模拟器列表" Width="80" DisplayMemberBinding="{Binding WindowTitle}"></GridViewColumn>
                         <GridViewColumn Header="当前帐号" Width="65" DisplayMemberBinding="{Binding CurrentAccount.UserName,UpdateSourceTrigger=PropertyChanged}"></GridViewColumn>
                         <GridViewColumn Header="运行状态" Width="65" DisplayMemberBinding="{Binding TaskEngine.TaskRunState}"></GridViewColumn>
                         <GridViewColumn Header="循环次数" Width="65" DisplayMemberBinding="{Binding TaskEngine.Cycle}"></GridViewColumn>
@@ -180,7 +223,7 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                        </GridViewColumn>-->
                     </GridView>
                 </ListView.View>
 

@@ -46,7 +46,7 @@ namespace Liuliu.MouseClicker
             套装 凤凰套装 = new 套装() { 套装名称 = new 套装名称() { Name = "凤凰" }, 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强壮 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.强攻 } };
             套装 灵龟套装 = new 套装() { 套装名称 = new 套装名称() { Name = "灵龟" }, 麒麟双枪 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 麒麟 = new Equipment() { 类型 = EquipmentAttrType.强攻 }, 三昧纯阳铠 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 蝶凤舞阳 = new Equipment() { 类型 = EquipmentAttrType.强防 }, 伏龙帅印 = new Equipment() { 类型 = EquipmentAttrType.掌控 }, 蟠龙华盖 = new Equipment() { 类型 = EquipmentAttrType.掌控 } };
             TaozhuangList = new List<套装>() { 青龙套装, 白虎套装, 朱雀套装, 鲮鲤套装, 玄武套装, 霸下套装, 驱虎套装, 烛龙套装, 凤凰套装, 灵龟套装 };
-
+           _player=GameHelper.GetPlayer();
         }
         private int _noxVMHandlePid;
         private DmWindow _window;
@@ -58,6 +58,16 @@ namespace Liuliu.MouseClicker
             set
             {
                 SetProperty(ref _windowTitle, value, () => WindowTitle);
+            }
+        }
+
+        private Player _player;
+        public Player Player
+        {
+            get { return GameHelper.GetPlayer(); }
+            set
+            {
+                SetProperty(ref _player, value, () => Player);
             }
         }
         private bool _isAutoLogin;
