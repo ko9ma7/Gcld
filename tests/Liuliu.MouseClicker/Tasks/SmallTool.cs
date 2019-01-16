@@ -347,7 +347,7 @@ namespace Liuliu.MouseClicker.Tasks
             dict.Add(4, new int[] { 488, 133, 604, 176, 486, 276, 581, 311, 551, 374, 0, 0 });
             dict.Add(5, new int[] { 614, 131, 732, 175, 614, 270, 721, 314, 675, 369, 0, 0 });
             dict.Add(6, new int[] { 740, 129, 857, 178, 744, 272, 843, 312, 802, 372, 0, 0 });
-            Delegater.WaitTrue((Func<bool>)(() =>
+            Delegater.WaitTrue(() =>
             {
                 Dm.FindStrAndClick(718, 448, 857, 502, "刷新", "86.17.70-5.5.25");
                 if (Dm.IsExistPic(283, 192, 668, 411, @"\bmp\金币秒CD.bmp", 0.8, false))
@@ -385,7 +385,7 @@ namespace Liuliu.MouseClicker.Tasks
                             GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
                             GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
                             GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
-                            Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+
                             role.CloseWindow();
                             Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("商店"), () => Dm.Delay(1000));
                             Delegater.WaitTrue(() => role.OpenWindowMenu("商店"),
@@ -415,7 +415,7 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                     if (buyList != null)
                     {
-                        Dm.Delay(2000);
+                        Dm.Delay(500);
                         foreach (var goods in buyList)
                         {
                             try
@@ -437,7 +437,7 @@ namespace Liuliu.MouseClicker.Tasks
                                 {
                                     Dm.DebugPrint("获取的商品跟识别不一致。");
 
-                                    Dm.Delay(2000);
+                                    Dm.Delay(500);
                                     continue;
                                 }
 
@@ -448,15 +448,12 @@ namespace Liuliu.MouseClicker.Tasks
                                     {
                                         Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
                                         Dm.Delay(1000);
-                                        break;
                                     }
-
                                 }
                                 else
                                 {
                                     Dm.MoveToClick(goods.Buypos.Item1, goods.Buypos.Item2);
                                     Dm.Delay(1000);
-                                    break;
                                 }
                             }
                             catch (Exception ex)
@@ -477,8 +474,8 @@ namespace Liuliu.MouseClicker.Tasks
                     Dm.MoveToClick(168, 370);
                 }
                 return Dm.IsExistStr(718, 448, 857, 502, "清除", "86.17.70-5.5.25");
-            }), () => Dm.Delay(200));
-            Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
+            }, () => Dm.Delay(200));
+           // Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
             role.CloseWindow();
             return TaskResult.Finished;
         }
@@ -802,6 +799,8 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 for (int i = 0; i < info.weapons.Count; i++)
                 {
+                    if (bool.Parse(info.weapons[i].open) == false)
+                        continue; 
                     while (true)
                     {
                         if(role.Level!=0)
@@ -840,8 +839,8 @@ namespace Liuliu.MouseClicker.Tasks
                             }
                         }
 
-                        //当前钢数量比升级所需数量大
-                        if (int.Parse(info.nowIron) > int.Parse(info.weapons[i].upgradeCost))
+                        //当前镔铁数量比升级所需数量大,保留80万镔铁
+                        if (int.Parse(info.nowIron)>800000&&int.Parse(info.nowIron) > int.Parse(info.weapons[i].upgradeCost))
                         {
                             Dm.MoveToClick(pointList[i].Item1, pointList[i].Item2);
                             Dm.Delay(200);
