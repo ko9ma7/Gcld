@@ -97,5 +97,33 @@ namespace Liuliu.MouseClicker.Contexts
             }
             return null;
         }
+        
+
+        public MoveInfo GetMoveInfo()
+        {
+            return (MoveInfo)GetObject<MoveInfo>(Const.ANCIENT_CASTLE_MOVE);
+        }
+        public AncientCity GetAncientCity()
+        {
+            return (AncientCity)GetObject<AncientCity>(Const.ACTIVITY_COMMON);
+        }
+        public LeftSteps GetLeftSteps()
+        {
+            return (LeftSteps)GetObject<LeftSteps>(Const.ANCIENT_CASTLE_DICE);
+        }
+        public object GetObject<T>(string cons)
+        {
+            var dy = GetData(cons);
+            if (dy != null)
+            {
+                JObject jObject = dy.action.data;
+                object obj = jObject.ToObject<T>();
+                return obj;
+            }
+            return null;
+        }
+
+      
+
     }
 }

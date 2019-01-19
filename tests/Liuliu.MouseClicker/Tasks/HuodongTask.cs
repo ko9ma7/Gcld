@@ -294,7 +294,7 @@ namespace Liuliu.MouseClicker.Tasks
             {
                 return TaskResult.Jump;
             }
-            return TaskResult.Jump;
+            //return TaskResult.Jump;
             Delegater.WaitTrue(() => role.OpenActivityBoard("探宝寻踪"),
                              () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
                              () => Dm.Delay(1000));
@@ -305,6 +305,8 @@ namespace Liuliu.MouseClicker.Tasks
                 Delegater.WaitTrue(() => Dm.FindPicAndClick(140, 380, 824, 512, @"\bmp\古城探索.bmp"),
                                    () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
                                    () => Dm.Delay(1000));
+                #region 模拟
+               
                 bool isMove且末西 = false, isMove且末北 = false, isMove且末东=false,isMove车师南 = false,isMove楼兰古城=false;
                 Delegater.WaitTrue(() =>
                 {
@@ -441,6 +443,7 @@ namespace Liuliu.MouseClicker.Tasks
                     }
                     return false;
                 }, () => Dm.Delay(1000));
+                #endregion
             }
             Dm.Delay(2000);
             //图二
