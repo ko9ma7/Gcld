@@ -75,8 +75,9 @@
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="OSharp.Utility, Version=4.1.0.0, Culture=neutral, PublicKeyToken=e7429fb96767d50d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSharp.Utility.4.1.32.1\lib\net40\OSharp.Utility.dll</HintPath>
@@ -94,6 +95,10 @@
       <HintPath>..\..\packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SimpleUpdater, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c532149a76b9a64b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\fishlee.net.simpleupdater.4.3.0.0\lib\net45\SimpleUpdater.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -106,6 +111,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MahApps.Metro.1.2.4.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>

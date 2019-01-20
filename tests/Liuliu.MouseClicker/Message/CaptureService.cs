@@ -216,7 +216,12 @@ namespace Liuliu.MouseClicker.Message
                     if (dataBufferDict[key].Length >= 4)
                     {
                         msgPro = MsgProtocol.FromBytesR(dataBufferDict[key]);
-
+                        if (msgPro == null)
+                        {
+                            Debug.WriteLine("数据格式错误!消息为null" + BitConverter.ToString(tcpPacket.PayloadData));
+                            dataBufferDict[key] = new byte[] { };
+                            return;
+                        }
                         msgContentLength = msgPro.MessageLength;
                         continue;
                     }

@@ -6,7 +6,7 @@
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     mc:Ignorable="d"
     d:DesignHeight="360" d:DesignWidth="640"
-    Position="Bottom" Theme="Accent"
+    Position="Bottom"
              DataContext="{Binding Source={StaticResource Locator}, Path=RoleSetting}">
     <Grid>
         <StackPanel>
@@ -33,7 +33,7 @@
         </GroupBox>-->
         <GroupBox Header="活动设置" Height="181">
                 <WrapPanel>
-                    <CheckBox Margin="5" IsChecked="{Binding IsChecked木牛流马,UpdateSourceTrigger=PropertyChanged}">木牛流马</CheckBox>
+                    <!--<CheckBox Margin="5" IsChecked="{Binding IsChecked木牛流马,UpdateSourceTrigger=PropertyChanged}">木牛流马</CheckBox>
                     <CheckBox Margin="5" IsChecked="{Binding IsChecked武将犒赏}">武将犒赏</CheckBox>
                     <CheckBox Margin="5" IsChecked="{Binding IsChecked古城探宝}">古城探宝</CheckBox>
                     <CheckBox Margin="5" IsChecked="{Binding IsChecked讨伐董卓}">讨伐董卓</CheckBox>
@@ -59,7 +59,19 @@
                     <CheckBox Margin="5" IsChecked="{Binding IsChecked丝绸酬宾}">丝绸酬宾</CheckBox>
                     <CheckBox Margin="5" IsChecked="{Binding IsChecked钢铁酬宾}">钢铁酬宾</CheckBox>
                     <CheckBox Margin="5" IsChecked="{Binding IsChecked铁甲冲锋}">铁甲冲锋</CheckBox>
-                    <CheckBox Margin="5" IsChecked="{Binding IsChecked镇守襄阳}">镇守襄阳</CheckBox>
+                    <CheckBox Margin="5" IsChecked="{Binding IsChecked镇守襄阳}">镇守襄阳</CheckBox>-->
+                    <ListBox ItemsSource="{Binding ActivityList}" Width="544" Height="140" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Activity}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </WrapPanel>
         </GroupBox>
             <GroupBox Header="其他设置" Height="181">

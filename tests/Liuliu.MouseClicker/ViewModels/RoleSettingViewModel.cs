@@ -21,14 +21,38 @@ using Newtonsoft.Json;
 using GalaSoft.MvvmLight.Messaging;
 using System.IO;
 using Liuliu.MouseClicker.Contexts;
+using System.Collections.ObjectModel;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
+    public class ActivityItem
+    {
+        public Activity Activity { get; set; }
+        public bool IsChecked { get; set; }
+    }
     public class RoleSettingViewModel : ViewModelExBase
     {
         public RoleSettingViewModel()
         {
             _name = "";
+            _activityList = new ObservableCollection<ActivityItem>();
+            _activityList.Add(new ActivityItem() { Activity = Activity.万邦来朝, IsChecked = false });
+            _activityList.Add(new ActivityItem() { Activity = Activity.古城探宝, IsChecked = false });
+            _activityList.Add(new ActivityItem() { Activity = Activity.草船借箭, IsChecked = false });
+            _activityList.Add(new ActivityItem() { Activity = Activity.天降神剑, IsChecked = false });
+            _activityList.Add(new ActivityItem() { Activity = Activity.海岛寻宝, IsChecked = false });
+            _activityList.Add(new ActivityItem() { Activity = Activity.宝石矿脉, IsChecked = false });
+            _activityList.Add(new ActivityItem() { Activity = Activity.大宴群雄, IsChecked = false });
+
+        }
+        private ObservableCollection<ActivityItem> _activityList;
+        public ObservableCollection<ActivityItem> ActivityList
+        {
+            get { return _activityList; }
+            set
+            {
+                SetProperty(ref _activityList, value, () => ActivityList);
+            }
         }
 
         private string _name;
@@ -41,46 +65,6 @@ namespace Liuliu.MouseClicker.ViewModels
             }
         }
 
-
-        private bool _isChecked木牛流马;
-        public bool IsChecked木牛流马
-        {
-            get { return _isChecked木牛流马; }
-            set { SetProperty(ref _isChecked木牛流马,value, () => IsChecked木牛流马); 
-            }
-        }
-
-        private bool _isChecked武将犒赏;
-        public bool IsChecked武将犒赏
-        {
-            get { return _isChecked武将犒赏; }
-            set { SetProperty(ref _isChecked武将犒赏, value, () => IsChecked武将犒赏); }
-        }
-
-        private bool _isChecked古城探宝;
-        public bool IsChecked古城探宝
-        {
-            get { return _isChecked古城探宝; }
-            set { SetProperty(ref _isChecked古城探宝, value, () => IsChecked古城探宝); }
-        }
-        private bool _isChecked领取军资;
-        public bool IsChecked领取军资
-        {
-            get { return _isChecked领取军资; }
-            set { SetProperty(ref _isChecked领取军资, value, () => IsChecked领取军资); }
-        }
-
-
-
-       
-
-      
-
-     
-
-       
-
-      
 
         [JsonIgnore]
         public ICommand DmFileBrowseCommand
@@ -120,24 +104,7 @@ namespace Liuliu.MouseClicker.ViewModels
             if (model != null)
             {
                 Name = model.Name;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
-                IsChecked木牛流马 = model.IsChecked木牛流马;
+                
             }
         }
 

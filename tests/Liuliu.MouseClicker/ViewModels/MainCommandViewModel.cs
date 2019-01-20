@@ -80,7 +80,8 @@ namespace Liuliu.MouseClicker.ViewModels
                     {
                         Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
                     }
-                    
+                  
+
                 });
             }
         }
