@@ -79,8 +79,15 @@ namespace Liuliu.MouseClicker.ViewModels
                    if (role.SelectedItemTask.Content.ToString() == "活动任务")
                     {
                         Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
+                        SoftContext.Locator.RoleSetting.ActivityShow = true;
+                        SoftContext.Locator.RoleSetting.UtilShow = false;
                     }
-                  
+                    if (role.SelectedItemTask.Content.ToString() == "日常任务")
+                    {
+                        Messenger.Default.Send("OpenRoleSettingFlyout", "RoleSettingFlyout");
+                        SoftContext.Locator.RoleSetting.ActivityShow = false;
+                        SoftContext.Locator.RoleSetting.UtilShow = true;
+                    }
 
                 });
             }

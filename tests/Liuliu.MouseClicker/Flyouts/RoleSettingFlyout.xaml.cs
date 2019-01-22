@@ -64,7 +64,7 @@ namespace Liuliu.MouseClicker.Flyouts
                 return;
             }
             model.SaveToLocal();
-            SoftContext.Locator.Main.StatusBar = "设置信息保存成功";
+            SoftContext.Locator.Main.StatusBar = "配置信息保存成功";
         }
       
     }

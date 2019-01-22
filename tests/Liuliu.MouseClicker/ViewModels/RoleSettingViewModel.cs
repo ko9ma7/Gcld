@@ -30,11 +30,15 @@ namespace Liuliu.MouseClicker.ViewModels
         public Activity Activity { get; set; }
         public bool IsChecked { get; set; }
     }
+    public class UtilItem
+    {
+        public string FunctionName { get; set; }
+        public bool IsChecked { get; set; }
+    }
     public class RoleSettingViewModel : ViewModelExBase
     {
         public RoleSettingViewModel()
         {
-            _name = "";
             _activityList = new ObservableCollection<ActivityItem>();
             _activityList.Add(new ActivityItem() { Activity = Activity.万邦来朝, IsChecked = false });
             _activityList.Add(new ActivityItem() { Activity = Activity.古城探宝, IsChecked = false });
@@ -44,6 +48,24 @@ namespace Liuliu.MouseClicker.ViewModels
             _activityList.Add(new ActivityItem() { Activity = Activity.宝石矿脉, IsChecked = false });
             _activityList.Add(new ActivityItem() { Activity = Activity.大宴群雄, IsChecked = false });
 
+            _utilList = new ObservableCollection<UtilItem>();
+            _utilList.Add(new UtilItem() { FunctionName = "领取礼包", IsChecked = false });
+            _utilList.Add(new UtilItem() { FunctionName = "领取军资", IsChecked = false });
+            _utilList.Add(new UtilItem() { FunctionName = "登录奖励", IsChecked = false });
+            _utilList.Add(new UtilItem() { FunctionName = "祭祀资源", IsChecked = false });
+            _utilList.Add(new UtilItem() { FunctionName = "军需处", IsChecked = false });
+            _utilList.Add(new UtilItem() { FunctionName = "领取俸禄", IsChecked = false });
+            _utilList.Add(new UtilItem() { FunctionName = "集市购买", IsChecked = false });
+
+        }
+        private ObservableCollection<UtilItem> _utilList;
+        public ObservableCollection<UtilItem> UtilList
+        {
+            get { return _utilList; }
+            set
+            {
+                SetProperty(ref _utilList, value, () => UtilList);
+            }
         }
         private ObservableCollection<ActivityItem> _activityList;
         public ObservableCollection<ActivityItem> ActivityList
@@ -55,56 +77,38 @@ namespace Liuliu.MouseClicker.ViewModels
             }
         }
 
-        private string _name;
-        public string Name
+        private bool _activityShow;
+        [JsonIgnore]
+        public bool ActivityShow
         {
-            get { return _name; }
+            get { return _activityShow; }
             set
             {
-                SetProperty(ref _name, value, () => Name);
+                SetProperty(ref _activityShow, value, () => ActivityShow);
             }
         }
-
-
+        private bool _utilShow;
         [JsonIgnore]
-        public ICommand DmFileBrowseCommand
+        public bool UtilShow
         {
-            get
+            get { return _utilShow; }
+            set
             {
-                return new RelayCommand(() =>
-                {
-                    Messenger.Default.Send("DmFileBrowse", "SettingsFlyout");
-                });
+                SetProperty(ref _utilShow, value, () => UtilShow);
             }
         }
 
-        [JsonIgnore]
-        public override string Error
-        {
-            get
-            {
-                //if (!File.Exists(DmFile))
-                //{
-                //    return "大漠插件文件不存在";
-                //}
-                //if (DmRegCodeShow && DmRegCode.IsMissing())
-                //{
-                //    return "大漠注册码不能为空";
-                //}
-                return base.Error;
-            }
-        }
 
         /// <summary>
         /// 从本地数据初始化
         /// </summary>
         public void InitFromLocal()
         {
-            var model = LocalDataHandler.GetData<RoleSettingViewModel>("data.db", _name);
+            var model = LocalDataHandler.GetData<RoleSettingViewModel>("data.db", "roleSetting");
             if (model != null)
             {
-                Name = model.Name;
-                
+                UtilList = model.UtilList;
+                ActivityList = model.ActivityList;
             }
         }
 
@@ -113,7 +117,7 @@ namespace Liuliu.MouseClicker.ViewModels
         /// </summary>
         public void SaveToLocal()
         {
-            LocalDataHandler.SetData("data.db", _name, this);
+            LocalDataHandler.SetData("data.db", "roleSetting", this);
         }
     }
 }
