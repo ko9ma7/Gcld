@@ -318,9 +318,11 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep1(TaskContext context)
         {
+  
+           
             Role role = (Role)context.Role;
             DmPlugin dm = role.Window.Dm;
-           
+            
             role.GoToMap("世界");
             role.CloseWindow();
             dm.Delay(1000);

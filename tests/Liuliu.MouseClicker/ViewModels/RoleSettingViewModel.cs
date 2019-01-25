@@ -39,28 +39,7 @@ namespace Liuliu.MouseClicker.ViewModels
     {
         public RoleSettingViewModel()
         {
-            if(_activityList==null)
-            {
-                _activityList = new ObservableCollection<ActivityItem>();
-                _activityList.Add(new ActivityItem() { Activity = Activity.万邦来朝, IsChecked = false });
-                _activityList.Add(new ActivityItem() { Activity = Activity.古城探宝, IsChecked = false });
-                _activityList.Add(new ActivityItem() { Activity = Activity.草船借箭, IsChecked = false });
-                _activityList.Add(new ActivityItem() { Activity = Activity.天降神剑, IsChecked = false });
-                _activityList.Add(new ActivityItem() { Activity = Activity.海岛寻宝, IsChecked = false });
-                _activityList.Add(new ActivityItem() { Activity = Activity.宝石矿脉, IsChecked = false });
-                _activityList.Add(new ActivityItem() { Activity = Activity.大宴群雄, IsChecked = false });
-            }
-           if(_utilList==null)
-            {
-                _utilList = new ObservableCollection<UtilItem>();
-                _utilList.Add(new UtilItem() { FunctionName = "领取礼包", IsChecked = false });
-                _utilList.Add(new UtilItem() { FunctionName = "领取军资", IsChecked = false });
-                _utilList.Add(new UtilItem() { FunctionName = "登录奖励", IsChecked = false });
-                _utilList.Add(new UtilItem() { FunctionName = "祭祀资源", IsChecked = false });
-                _utilList.Add(new UtilItem() { FunctionName = "军需处", IsChecked = false });
-                _utilList.Add(new UtilItem() { FunctionName = "领取俸禄", IsChecked = false });
-                _utilList.Add(new UtilItem() { FunctionName = "集市购买", IsChecked = false });
-            }
+          
         }
         private ObservableCollection<UtilItem> _utilList;
         public ObservableCollection<UtilItem> UtilList
@@ -114,6 +93,32 @@ namespace Liuliu.MouseClicker.ViewModels
                 UtilList = model.UtilList;
                 ActivityList = model.ActivityList;
             }
+            else
+            {
+                if (ActivityList == null)
+                {
+                    ActivityList = new ObservableCollection<ActivityItem>();
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.万邦来朝, IsChecked = false });
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.古城探宝, IsChecked = false });
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.草船借箭, IsChecked = false });
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.天降神剑, IsChecked = false });
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.海岛寻宝, IsChecked = false });
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.宝石矿脉, IsChecked = false });
+                    ActivityList.Add(new ActivityItem() { Activity = Activity.大宴群雄, IsChecked = false });
+                }
+                if (UtilList == null)
+                {
+                    UtilList = new ObservableCollection<UtilItem>();
+                    UtilList.Add(new UtilItem() { FunctionName = "领取礼包", IsChecked = false });
+                    UtilList.Add(new UtilItem() { FunctionName = "领取军资", IsChecked = false });
+                    UtilList.Add(new UtilItem() { FunctionName = "登录奖励", IsChecked = false });
+                    UtilList.Add(new UtilItem() { FunctionName = "祭祀资源", IsChecked = false });
+                    UtilList.Add(new UtilItem() { FunctionName = "军需处", IsChecked = false });
+                    UtilList.Add(new UtilItem() { FunctionName = "领取俸禄", IsChecked = false });
+                    UtilList.Add(new UtilItem() { FunctionName = "集市购买", IsChecked = false });
+                }
+            }
+
         }
 
         /// <summary>
