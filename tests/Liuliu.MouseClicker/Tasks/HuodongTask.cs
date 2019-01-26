@@ -579,7 +579,7 @@ namespace Liuliu.MouseClicker.Tasks
                 Delegater.WaitTrue(() => Dm.FindPicAndClick(659, 411, 822, 495, @"\bmp\古城探索.bmp"),
                                    () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
                                    () => Dm.Delay(1000));
-                bool isMove渊泉西 = false, isMove伊吾东 = false, isMove盐泽 = false, isMove敦煌古城 = false;
+                bool isMove伍塔木 = false;
                 Delegater.WaitTrue(() =>
                 {
                     //存在古城金币则没有次数,并且没有可走,退出
@@ -588,6 +588,42 @@ namespace Liuliu.MouseClicker.Tasks
                         return Delegater.WaitTrue(() => Dm.FindPicAndClick(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
                                             () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
                                             () => Dm.Delay(1000));
+                    }
+
+
+                    //还可走,已经投掷骰子
+                    if (Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp"))
+                    {
+                        if (isMove伍塔木 == false)
+                        {
+
+                            MovePanel("右下");
+                            Dm.Delay(500);
+                            if (!Dm.IsExistPic(81, 271, 309, 451, @"\bmp\马车.bmp"))
+                            {
+                                Dm.MoveToClick(193, 360); //点击伍塔木
+                                MovePanel("右下");
+                                Dm.Delay(500);
+                            }
+                            else
+                            {
+                                isMove伍塔木 = true;
+                                return Delegater.WaitTrue(() => Dm.FindPicAndClick(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                                            () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
+                                            () => Dm.Delay(1000));
+                            }
+                            return false;
+                        }
+                    }
+                   
+                    //投掷骰子
+                    if (!Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp") &&
+                        !Dm.IsExistPic(806, 419, 956, 535, @"\bmp\古城金币.bmp") &&
+                        Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"))
+                    {
+                        Delegater.WaitTrue(() => Dm.MoveToClick(908, 478),
+                                           () => Dm.IsExistPic(320, 0, 638, 90, @"\bmp\古城还可走.bmp") || Dm.IsExistPic(659, 411, 822, 495, @"\bmp\古城探索.bmp"),
+                                           () => Dm.Delay(1000), 2000);
                     }
                     return false;
                 }, () => Dm.Delay(1000));
