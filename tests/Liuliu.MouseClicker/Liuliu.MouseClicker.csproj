@@ -193,6 +193,10 @@
     <Compile Include="Models\Weapons.cs" />
     <Compile Include="Models\WearEquip.cs" />
     <Compile Include="Mvvm\ViewModelExBase.cs" />
+    <Compile Include="PacketSend\AsynchronousClient.cs" />
+    <Compile Include="PacketSend\Command.cs" />
+    <Compile Include="PacketSend\CommandList.cs" />
+    <Compile Include="PacketSend\ZlibCompress.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Tasks\AutoLevel.cs" />
     <Compile Include="Tasks\SmallTool.cs" />

@@ -137,7 +137,8 @@ namespace Liuliu.MouseClicker.Message
                         int srcPort = tcpPacket.SourcePort;
                         int dstPort = tcpPacket.DestinationPort;
 
-                      
+                        try
+                        { 
                         if (srcIp.ToString() == SoftContext.ServerIp&&srcPort==8220)
                         {
                             string key = string.Format("{0}:{1}->{2}:{3}[Receive]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
@@ -145,13 +146,17 @@ namespace Liuliu.MouseClicker.Message
                                 dataBufferDict.Add(key, new byte[] { });
                             ReceivedData(tcpPacket,key);
                         }
-                        //if (dstIp.ToString() == SoftContext.ServerIp)
-                        //{
-                        //    string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
-                        //    if (!dataBufferDict.ContainsKey(key))
-                        //        dataBufferDict.Add(key, new byte[] { });
-                        //    SendData(tcpPacket,key);
-                        //}
+                        if (dstIp.ToString() == SoftContext.ServerIp)
+                        {
+                            string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
+                            if (!dataBufferDict.ContainsKey(key))
+                                dataBufferDict.Add(key, new byte[] { });
+                            SendData(tcpPacket, key);
+                        }
+                        }catch(Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message+ex.StackTrace);
+                        }
                     }
                 }
 
@@ -193,10 +198,10 @@ namespace Liuliu.MouseClicker.Message
                     string filter = "player@ltestplayer@game";
                     if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
                     {
-                        Debug.WriteLine("==============================================================================================================");
-                        Debug.WriteLine("接收数据：" + key);
-                        Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
-                        Debug.WriteLine("【json】=" + msgPro.Data);
+                        //Debug.WriteLine("==============================================================================================================");
+                        //Debug.WriteLine("接收数据：" + key);
+                        //Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
+                        //Debug.WriteLine("【json】=" + msgPro.Data);
                     }
 
                     //将得到的json字符串转为对象
@@ -232,26 +237,108 @@ namespace Liuliu.MouseClicker.Message
                 }
             }
         }
-      
+
+
+
+        /*
+         ==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:reconnect token:0
+【param】=sessionId=3A63C8DC7384D5B728DDBF0A30E613EE&ts=1549446334&sign=2240e707815335be289220b4f8f594ecbff94b731ee496
+
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:player@getPlayerList token:1
+【param】=platform=MOBILE_ANDROID
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:player@getPlayerInfo token:2
+【param】=playerId=383637&platform=MOBILE_ANDROID&pushToken=&sid=feiliu543&ssp=&udid=03696143-3bf0-34e8-a271-d254ce37aeff&push_type=native&os=Android&idfa=03696143-3bf0-34e8-a271-d254ce37aeff&astId=ffffffff-ecf5-1f97-cc49-9bcb36b67e53&astUserId=&bindAst=
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:kbtask@getSTaskInfo token:3
+【param】=
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:world@enterWorldScene token:4
+【param】=
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:general@getGeneralSimpleInfo2 token:5
+【param】=
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:special@getSpecialSInfo token:6
+【param】=
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+【data】=command:tavern@getGeneral token:7
+【param】=type=2
+==============================================================================================================
+发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
+sendBuffer.Length=0< 4 	 -> 	 continue
+==============================================================================================================       
+             */
         private void SendData(TcpPacket tcpPacket,string key)
         {
-            byte[] sendBuffer = dataBufferDict[key];
-
-            if(tcpPacket.PayloadData.Length>0)
-            {
                 Debug.WriteLine("==============================================================================================================");
                 Debug.WriteLine("发送数据："+key);
                 MsgProtocol msgPro = new MsgProtocol();
-                sendBuffer = CombineBytes.ToArray(sendBuffer, 0, sendBuffer.Length, tcpPacket.PayloadData, 0, tcpPacket.PayloadData.Length);
-                if (sendBuffer.Length < 4)
+                dataBufferDict[key] = CombineBytes.ToArray(dataBufferDict[key], 0, dataBufferDict[key].Length, tcpPacket.PayloadData, 0, tcpPacket.PayloadData.Length);
+                if (dataBufferDict[key].Length < 4)
                 {
-                    Debug.WriteLine("sendBuffer.Length=" + sendBuffer.Length + "< 4 \t -> \t continue");
+                    Debug.WriteLine("sendBuffer.Length=" + dataBufferDict[key].Length + "< 4 \t -> \t continue");
                     return;
                 }
                 else
                 {
                     //取msg包头部分
-                    msgPro = MsgProtocol.FromBytesS(sendBuffer);
+                    msgPro = MsgProtocol.FromBytesS(dataBufferDict[key]);
                     if (msgPro == null)
                     {
                         Debug.WriteLine("数据格式错误!消息为null"+BitConverter.ToString(tcpPacket.PayloadData));
@@ -259,19 +346,19 @@ namespace Liuliu.MouseClicker.Message
                     }
                     int msgContentLength = msgPro.MessageLength;
                     //判断去掉msg包头剩下的长度是否达到可以取包实质内容
-                    while ((sendBuffer.Length - 4) >= msgContentLength)
+                    while ((dataBufferDict[key].Length - 4) >= msgContentLength)
                     {
                         // Debug.WriteLine("【sendBuffer去掉包头的长度=" + (sendBuffer.Length - 4) + "】>=【" + "包实质内容长度=" + msgContentLength + "】");
                         msgPro = null;
-                        msgPro = MsgProtocol.FromBytesS(sendBuffer);
+                        msgPro = MsgProtocol.FromBytesS(dataBufferDict[key]);
                         Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
                         Debug.WriteLine("【param】=" + msgPro.Data);
 
-                        sendBuffer = msgPro.ExtraBytes;
+                        dataBufferDict[key] = msgPro.ExtraBytes;
 
-                        if (sendBuffer.Length >= 4)
+                        if (dataBufferDict[key].Length >= 4)
                         {
-                            msgPro = MsgProtocol.FromBytesS(sendBuffer);
+                            msgPro = MsgProtocol.FromBytesS(dataBufferDict[key]);
 
                             msgContentLength = msgPro.MessageLength;
                             continue;
@@ -281,7 +368,7 @@ namespace Liuliu.MouseClicker.Message
                             break;
                         }
                     }
-                }
+                
 
             }
         }

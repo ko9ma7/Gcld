@@ -295,11 +295,26 @@ namespace Liuliu.MouseClicker.Tasks
                 return TaskResult.Jump;
             }
             //return TaskResult.Jump;
-            Delegater.WaitTrue(() => role.OpenActivityBoard("探宝寻踪"),
+            Delegater.WaitTrue(() => {
+                   if(role.OpenActivityBoard("探宝寻踪"))
+                    {
+                        Dm.Delay(2000);
+                        if (Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"))
+                        {
+                            Dm.FindPicAndClick(384, 476, 572, 538, @"\bmp\古城返回主城.bmp");
+                            return true;
+                        }    
+                    }
+                    return false;
+                },
                              () => Dm.IsExistPic(205, 57, 833, 163, @"\bmp\探宝.bmp"),
                              () => Dm.Delay(1000));
+           
+            Delegater.WaitTrue(() => Dm.FindPicAndClick(414, 420, 566, 492, @"\bmp\古城探索.bmp"),
+                                 () => Dm.IsExistPic(384, 476, 572, 538, @"\bmp\古城返回主城.bmp"),
+                                 () => Dm.Delay(1000));
             //图一
-            if(Dm.IsExistPic(142,415,316,496, @"\bmp\古城探索.bmp")&& !Dm.IsExistPic(142, 415, 316, 496, @"\bmp\已探索.bmp"))
+            if (Dm.IsExistPic(142,415,316,496, @"\bmp\古城探索.bmp")&& !Dm.IsExistPic(142, 415, 316, 496, @"\bmp\已探索.bmp"))
             {
                 role.OutSubMessage("开始探索第一图...");
                 Delegater.WaitTrue(() => Dm.FindPicAndClick(140, 380, 824, 512, @"\bmp\古城探索.bmp"),
