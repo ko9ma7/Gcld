@@ -147,7 +147,7 @@ namespace Liuliu.MouseClicker
 
                 i = 0;
                 // 获取当前任务，执行
-                Task curTask = role.CurTask;
+                PacketSend.Task curTask = role.CurTask;
                 TaskExecute tasker = new TaskExecute(client);
 
                 while (i++ < 60)
@@ -169,7 +169,7 @@ namespace Liuliu.MouseClicker
             }
 
         }
-        private async Task MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async System.Threading.Tasks.Task MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             LoginGameTest();
             //初始化大漠对象,注册,新建一个大漠对象
