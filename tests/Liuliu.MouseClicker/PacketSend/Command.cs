@@ -23,7 +23,9 @@ namespace Liuliu.MouseClicker.PacketSend
         /// 报文长度
         /// </summary>
         public int dataLength { get; set; }
-
+        /// <summary>
+        /// 需要发送的字节数据
+        /// </summary>
         public byte[] outputarr { get; set; }
 
         public Dictionary<string, string> sendlst;

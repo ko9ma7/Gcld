@@ -171,7 +171,7 @@ namespace Liuliu.MouseClicker
         }
         private async System.Threading.Tasks.Task MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            LoginGameTest();
+            //LoginGameTest();
             //初始化大漠对象,注册,新建一个大漠对象
             OperationResult initResult = SoftContext.Initialize();
 

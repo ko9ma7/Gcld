@@ -16,7 +16,9 @@ namespace Liuliu.MouseClicker.PacketSend
         {
 
         }
-
+        /// <summary>
+        /// 输出信息
+        /// </summary>
         public void PrintInfo()
         {
             for (int i = 0; i < m_rcvpackagelst.Count(); i++)
@@ -25,7 +27,9 @@ namespace Liuliu.MouseClicker.PacketSend
                 Debug.WriteLine(pair.Key+"="+pair.Value);
             }
         }
-
+        /// <summary>
+        /// 输出建筑信息
+        /// </summary>
         public void PrintBuildingInfo()
         { //push@building
             KeyValuePair<string, string> pair = m_rcvpackagelst.Find(x => { return x.Key == "push@building"; });
@@ -55,7 +59,10 @@ namespace Liuliu.MouseClicker.PacketSend
             else
                 Debug.WriteLine("没有产出信息");
         }
-
+        /// <summary>
+        /// 获取UserKey
+        /// </summary>
+        /// <returns></returns>
         public string getUserKey()
         {
             KeyValuePair<string, string> pair = m_rcvpackagelst.Find(obj => obj.Key == "login_user");
@@ -82,7 +89,7 @@ namespace Liuliu.MouseClicker.PacketSend
         }
 
         /// <summary>
-        /// 
+        /// 根据类型获取产出
         /// </summary>
         /// <param name="ntype">=1:银两;=2:木材;=3:粮食;=4:铁矿;=5:兵营出兵速度</param>
         /// <returns></returns>
@@ -132,7 +139,10 @@ namespace Liuliu.MouseClicker.PacketSend
                 m_AreaList = areaArr;
             }
         }
-
+        /// <summary>
+        ///获取建筑信息
+        /// </summary>
+        /// <returns></returns>
         public string GetBuildingInfo()
         {
             KeyValuePair<string, string> pair = m_rcvpackagelst.Find(obj => obj.Key == "building@getBuildingInfo");
