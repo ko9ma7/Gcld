@@ -63,25 +63,27 @@ namespace Liuliu.MouseClicker.Message
         private CaptureStoppedEventHandler captureStoppedEventHandler;
         private object QueueLock = new object();
         private Queue<RawCapture> PacketQueue = new Queue<RawCapture>();
+        private static List<RawCapture> NotProcessedPacketList = new List<RawCapture>();
+
         private Queue<PacketWrapper> packetStrings;
         private Dictionary<string, byte[]> dataBufferDict = new Dictionary<string, byte[]>();
         public void StartCapture(int itemIndex, string filter)
         {
             packetCount = 0;
-            device = CaptureDeviceList.Instance[itemIndex];
+            device = CaptureDeviceList.Instance[itemIndex]; //选折网卡
             packetStrings = new Queue<PacketWrapper>();
             LastStatisticsOutput = DateTime.Now;
 
             // start the background thread
             BackgroundThreadStop = false;
-            backgroundThread = new System.Threading.Thread(BackgroundThread);
+            backgroundThread = new Thread(BackgroundThread);
             backgroundThread.IsBackground = true;
             backgroundThread.Start();
 
             // setup background capture
-            arrivalEventHandler = new PacketArrivalEventHandler(device_OnPacketArrival);
+            arrivalEventHandler = new PacketArrivalEventHandler(device_OnPacketArrival);//当包抵达时要进行的操作
             device.OnPacketArrival += arrivalEventHandler;
-            captureStoppedEventHandler = new CaptureStoppedEventHandler(device_OnCaptureStopped);
+            captureStoppedEventHandler = new CaptureStoppedEventHandler(device_OnCaptureStopped); //停止抓包要做的操作
             device.OnCaptureStopped += captureStoppedEventHandler;
             device.Open();
 
@@ -97,6 +99,15 @@ namespace Liuliu.MouseClicker.Message
             {
                 Debug.WriteLine("Error stopping capture");
             }
+            Debug.WriteLine("stopping capture");
+        }
+
+        void device_OnPacketArrival(object sender, CaptureEventArgs e)
+        {
+            lock (QueueLock)
+            {
+                NotProcessedPacketList.Add(e.Packet);
+            }
         }
         private void BackgroundThread()
         {
@@ -106,7 +117,7 @@ namespace Liuliu.MouseClicker.Message
 
                 lock (QueueLock)
                 {
-                    if (PacketQueue.Count != 0)
+                    if (NotProcessedPacketList.Count != 0)
                     {
                         shouldSleep = false;
                     }
@@ -118,46 +129,56 @@ namespace Liuliu.MouseClicker.Message
                 }
                 else // should process the queue
                 {
-                    RawCapture packet;
+                    //获取当前待处理封包
+                    List<RawCapture> ourPacketList;
                     lock (QueueLock)
                     {
-                        packet = PacketQueue.Dequeue();
+                        ourPacketList = NotProcessedPacketList;
+                        NotProcessedPacketList = new List<RawCapture>();
                     }
 
-                    var packetWrapper = new PacketWrapper(packetCount, packet);
-
-                    var _packet = Packet.ParsePacket(packet.LinkLayerType, packet.Data);
-
-                    var tcpPacket = (TcpPacket)_packet.Extract(typeof(TcpPacket));
-                    if (tcpPacket != null)
+                    #region 进行封包处理
+                    foreach (var packet in ourPacketList)
                     {
-                        var ipPacket = (IpPacket)tcpPacket.ParentPacket;
-                        IPAddress srcIp = ipPacket.SourceAddress;
-                        IPAddress dstIp = ipPacket.DestinationAddress;
-                        int srcPort = tcpPacket.SourcePort;
-                        int dstPort = tcpPacket.DestinationPort;
+                        var packetWrapper = new PacketWrapper(packetCount, packet);
 
-                        try
-                        { 
-                        if (srcIp.ToString() == SoftContext.ServerIp&&srcPort==8220)
+                        var _packet = Packet.ParsePacket(packet.LinkLayerType, packet.Data);
+
+                        var tcpPacket = (TcpPacket)_packet.Extract(typeof(TcpPacket));
+                        if (tcpPacket != null)
                         {
-                            string key = string.Format("{0}:{1}->{2}:{3}[Receive]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
-                            if (!dataBufferDict.ContainsKey(key))
-                                dataBufferDict.Add(key, new byte[] { });
-                            ReceivedData(tcpPacket,key);
-                        }
-                        if (dstIp.ToString() == SoftContext.ServerIp)
-                        {
-                            string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
-                            if (!dataBufferDict.ContainsKey(key))
-                                dataBufferDict.Add(key, new byte[] { });
-                            SendData(tcpPacket, key);
-                        }
-                        }catch(Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message+ex.StackTrace);
+                            var ipPacket = (IpPacket)tcpPacket.ParentPacket;
+                            IPAddress srcIp = ipPacket.SourceAddress;
+                            IPAddress dstIp = ipPacket.DestinationAddress;
+                            int srcPort = tcpPacket.SourcePort;
+                            int dstPort = tcpPacket.DestinationPort;
+
+                            try
+                            {
+                                //收到封包处理
+                                if (srcIp.ToString() == SoftContext.ServerIp && srcPort == 8220)
+                                {
+                                    string key = string.Format("{0}:{1}->{2}:{3}[Receive]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
+                                    if (!dataBufferDict.ContainsKey(key))   //当发现新的接收方则添加新的接收缓冲区
+                                        dataBufferDict.Add(key, new byte[] { });
+                                    ReceivedData(tcpPacket, key);
+                                }
+                                //发送封包处理
+                                if (dstIp.ToString() == SoftContext.ServerIp)
+                                {
+                                    string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
+                                    if (!dataBufferDict.ContainsKey(key))  //当发现新的发送方则添加新的发送缓冲区
+                                        dataBufferDict.Add(key, new byte[] { });
+                                    SendData(tcpPacket, key);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message + ex.StackTrace);
+                            }
                         }
                     }
+                    #endregion
                 }
 
             }
@@ -238,92 +259,6 @@ namespace Liuliu.MouseClicker.Message
             }
         }
 
-
-
-        /*
-         ==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:reconnect token:0
-【param】=sessionId=3A63C8DC7384D5B728DDBF0A30E613EE&ts=1549446334&sign=2240e707815335be289220b4f8f594ecbff94b731ee496
-
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:player@getPlayerList token:1
-【param】=platform=MOBILE_ANDROID
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:player@getPlayerInfo token:2
-【param】=playerId=383637&platform=MOBILE_ANDROID&pushToken=&sid=feiliu543&ssp=&udid=03696143-3bf0-34e8-a271-d254ce37aeff&push_type=native&os=Android&idfa=03696143-3bf0-34e8-a271-d254ce37aeff&astId=ffffffff-ecf5-1f97-cc49-9bcb36b67e53&astUserId=&bindAst=
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:kbtask@getSTaskInfo token:3
-【param】=
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:world@enterWorldScene token:4
-【param】=
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:general@getGeneralSimpleInfo2 token:5
-【param】=
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:special@getSpecialSInfo token:6
-【param】=
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-【data】=command:tavern@getGeneral token:7
-【param】=type=2
-==============================================================================================================
-发送数据：172.16.111.105:49842->39.96.32.192:8220[Send]
-sendBuffer.Length=0< 4 	 -> 	 continue
-==============================================================================================================       
-             */
         private void SendData(TcpPacket tcpPacket,string key)
         {
                 Debug.WriteLine("==============================================================================================================");
@@ -373,15 +308,9 @@ sendBuffer.Length=0< 4 	 -> 	 continue
             }
         }
 
-
-        void device_OnPacketArrival(object sender, CaptureEventArgs e)
-        {
-            lock (QueueLock)
-            {
-                PacketQueue.Enqueue(e.Packet);
-            }
-        }
-
+        /// <summary>
+        /// 停止抓包
+        /// </summary>
         public void Shutdown()
         {
             if (device != null)
