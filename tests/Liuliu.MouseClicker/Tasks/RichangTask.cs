@@ -23,7 +23,10 @@ namespace Liuliu.MouseClicker.Tasks
         {
             return 1;
         }
-     
+        protected override TaskResult OnStepStarting(TaskContext context)
+        {
+            return TaskResult.Success;
+        }
 
         protected override TaskStep[] StepsInitialize()
         {

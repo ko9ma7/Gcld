@@ -67,6 +67,7 @@ namespace Liuliu.MouseClicker.Message
 
         private Queue<PacketWrapper> packetStrings;
         private Dictionary<string, byte[]> dataBufferDict = new Dictionary<string, byte[]>();
+        public Dictionary<string, CommandCache> CommandCacheDict = new Dictionary<string, CommandCache>();
         public void StartCapture(int itemIndex, string filter)
         {
             packetCount = 0;
@@ -129,7 +130,7 @@ namespace Liuliu.MouseClicker.Message
                 }
                 else // should process the queue
                 {
-                    //获取当前待处理封包
+                    //获取当前待处理封包列表
                     List<RawCapture> ourPacketList;
                     lock (QueueLock)
                     {
@@ -159,17 +160,27 @@ namespace Liuliu.MouseClicker.Message
                                 if (srcIp.ToString() == SoftContext.ServerIp && srcPort == 8220)
                                 {
                                     string key = string.Format("{0}:{1}->{2}:{3}[Receive]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
+                                    string key2 = string.Format("{0}:{1}", dstIp, dstPort);
                                     if (!dataBufferDict.ContainsKey(key))   //当发现新的接收方则添加新的接收缓冲区
+                                    {
                                         dataBufferDict.Add(key, new byte[] { });
-                                    ReceivedData(tcpPacket, key);
+                                        if (!CommandCacheDict.ContainsKey(key2))
+                                            CommandCacheDict.Add(key2, new CommandCache());
+                                    }
+                                    ReceivedData(tcpPacket, key,key2);
                                 }
                                 //发送封包处理
                                 if (dstIp.ToString() == SoftContext.ServerIp)
                                 {
                                     string key = string.Format("{0}:{1}->{2}:{3}[Send]", srcIp.ToString(), srcPort, dstIp.ToString(), dstPort);
+                                    string key2 = string.Format("{0}:{1}", srcIp, srcPort);
                                     if (!dataBufferDict.ContainsKey(key))  //当发现新的发送方则添加新的发送缓冲区
+                                    {
                                         dataBufferDict.Add(key, new byte[] { });
-                                    SendData(tcpPacket, key);
+                                        if (!CommandCacheDict.ContainsKey(key2))
+                                            CommandCacheDict.Add(key2, new CommandCache());
+                                    }
+                                    SendData(tcpPacket, key,key2);
                                 }
                             }
                             catch (Exception ex)
@@ -184,7 +195,7 @@ namespace Liuliu.MouseClicker.Message
             }
         }
        
-        private void ReceivedData(TcpPacket tcpPacket,string key)
+        private void ReceivedData(TcpPacket tcpPacket,string key,string key2)
         {
             MsgProtocol msgPro = new MsgProtocol();
             dataBufferDict[key] = CombineBytes.ToArray(dataBufferDict[key], 0, dataBufferDict[key].Length, tcpPacket.PayloadData, 0, tcpPacket.PayloadData.Length);
@@ -225,6 +236,7 @@ namespace Liuliu.MouseClicker.Message
                         Debug.WriteLine("【json】=" + msgPro.Data);
                     }
 
+                    CommandCacheDict[key2].UpdateData(PacketType.Receive, msgPro.MessageCommand, msgPro.Data);
                     //将得到的json字符串转为对象
                     // var rootObj = JsonHelper.FromJson<dynamic>(msgPro.Data);
                     var rootObj = JsonConvert.DeserializeObject<dynamic>(msgPro.Data);
@@ -259,15 +271,15 @@ namespace Liuliu.MouseClicker.Message
             }
         }
 
-        private void SendData(TcpPacket tcpPacket,string key)
+        private void SendData(TcpPacket tcpPacket,string key,string key2)
         {
-                Debug.WriteLine("==============================================================================================================");
-                Debug.WriteLine("发送数据："+key);
+                //Debug.WriteLine("==============================================================================================================");
+                //Debug.WriteLine("发送数据："+key);
                 MsgProtocol msgPro = new MsgProtocol();
                 dataBufferDict[key] = CombineBytes.ToArray(dataBufferDict[key], 0, dataBufferDict[key].Length, tcpPacket.PayloadData, 0, tcpPacket.PayloadData.Length);
                 if (dataBufferDict[key].Length < 4)
                 {
-                    Debug.WriteLine("sendBuffer.Length=" + dataBufferDict[key].Length + "< 4 \t -> \t continue");
+                   // Debug.WriteLine("sendBuffer.Length=" + dataBufferDict[key].Length + "< 4 \t -> \t continue");
                     return;
                 }
                 else
@@ -277,6 +289,7 @@ namespace Liuliu.MouseClicker.Message
                     if (msgPro == null)
                     {
                         Debug.WriteLine("数据格式错误!消息为null"+BitConverter.ToString(tcpPacket.PayloadData));
+                        dataBufferDict[key] = new byte[] { };
                         return;
                     }
                     int msgContentLength = msgPro.MessageLength;
@@ -286,15 +299,29 @@ namespace Liuliu.MouseClicker.Message
                         // Debug.WriteLine("【sendBuffer去掉包头的长度=" + (sendBuffer.Length - 4) + "】>=【" + "包实质内容长度=" + msgContentLength + "】");
                         msgPro = null;
                         msgPro = MsgProtocol.FromBytesS(dataBufferDict[key]);
-                        Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
-                        Debug.WriteLine("【param】=" + msgPro.Data);
+                    // Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
+                    // Debug.WriteLine("【param】=" + msgPro.Data);
+                        if (msgPro == null)
+                        {
+                            Debug.WriteLine("数据格式错误!消息为null" + BitConverter.ToString(tcpPacket.PayloadData));
+                            dataBufferDict[key] = new byte[] { };
+                            return;
+                        }
 
-                        dataBufferDict[key] = msgPro.ExtraBytes;
+                    CommandCacheDict[key2].UpdateData(PacketType.Send, msgPro.MessageCommand, msgPro.Data);
+
+
+                    dataBufferDict[key] = msgPro.ExtraBytes;
 
                         if (dataBufferDict[key].Length >= 4)
                         {
                             msgPro = MsgProtocol.FromBytesS(dataBufferDict[key]);
-
+                            if (msgPro == null)
+                            {
+                                Debug.WriteLine("数据格式错误!消息为null" + BitConverter.ToString(tcpPacket.PayloadData));
+                                dataBufferDict[key] = new byte[] { };
+                                return;
+                            }
                             msgContentLength = msgPro.MessageLength;
                             continue;
                         }

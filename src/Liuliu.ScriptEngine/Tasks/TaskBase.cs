@@ -78,8 +78,10 @@ namespace Liuliu.ScriptEngine.Tasks
         /// 任务步骤开始前的任务
         /// </summary>
         /// <param name="context"></param>
-        protected virtual void OnStepStarting(TaskContext context)
-        { }
+        protected virtual TaskResult OnStepStarting(TaskContext context)
+        {
+            return TaskResult.Success;
+        }
         /// <summary>
         /// 任务步骤结束后的任务
         /// </summary>
@@ -108,7 +110,16 @@ namespace Liuliu.ScriptEngine.Tasks
             {
                 TaskStep step = TaskContext.TaskSteps[TaskContext.StepIndex - 1];
                 Role.OutMessage("执行步骤" + TaskContext.StepIndex + ":" + step.Name);
-                OnStepStarting(TaskContext);
+                var ssr=OnStepStarting(TaskContext);
+                if(ssr.ResultType==TaskResultType.Jump)
+                {
+                    TaskContext.StepIndex++;
+                    if (TaskContext.StepIndex > TaskContext.TaskSteps.Length)
+                    {
+                        return TaskResult.Finished;
+                    }
+                    continue;
+                }
                 //执行任务步骤
                 result = step.RunFunc(TaskContext);
 

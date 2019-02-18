@@ -213,7 +213,9 @@ namespace Liuliu.MouseClicker.ViewModels
                 engine.ChangeRole = null;
             if (role.SelectedItemTask.Content.ToString() == "日常任务")
             {
-                tasks.Add(new RichangTask(new TaskContext(role, new Function() { Name = "日常任务" })));
+                TaskContext tc=new TaskContext(role, new Function() { Name = "日常任务" });
+               
+                 tasks.Add(new RichangTask(tc));
             }
             if (role.SelectedItemTask.Content.ToString() == "活动任务")
             {
