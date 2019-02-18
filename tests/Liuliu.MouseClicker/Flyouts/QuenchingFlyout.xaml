@@ -10,11 +10,11 @@
 
     <Grid>
         <StackPanel>
-            <GroupBox Header="洗练助手" Height="349">
+            <GroupBox Header="洗练助手" Height="349" x:Name="gb">
                 <Grid>
                     <ListView Grid.Row="0" ItemsSource="{Binding TaozhuangList,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Grid.RowSpan="2">
                         <ListView.View>
-                            
+
                             <GridView>
                                 <GridViewColumn Header="套装\装备" Width="75">
                                     <GridViewColumn.CellTemplate>
@@ -70,11 +70,12 @@
                         </ListView.View>
 
                     </ListView>
+                    <CheckBox Height="25" x:Name="isSkip" Checked="CheckBox_Checked_1" Unchecked="CheckBox_Unchecked_1" Margin="262,282,169,4">剩一种类型跳过</CheckBox>
                     <Button  Content="获取" Width="60" Height="25" Background="Green" Click="btnStop_click" Margin="379,282,104,4"></Button>
-                    <Button  Content="重置" Width="60" Height="25" Background="Green" Click="btnReset_click" Margin="444,282,39,4"></Button> 
+                    <Button  Content="重置" Width="60" Height="25" Background="Green" Click="btnReset_click" Margin="444,282,39,4"></Button>
                 </Grid>
             </GroupBox>
-         
+
         </StackPanel>
     </Grid>
 </mah:Flyout>

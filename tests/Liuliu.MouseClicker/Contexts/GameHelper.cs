@@ -24,11 +24,19 @@ namespace Liuliu.MouseClicker.Contexts
             get
             {
                 TcpRow[] allTcp = NetProcess.GetTcpConnections(_noxVMHandlePid);
-                TcpRow t = allTcp.FirstOrDefault(x => x.RemoteAddress.ToString() == SoftContext.ServerIp && x.RemotePort == 8220 && x.state == ConnectionState.Established);
-                if (t.LocalAddress.ToString() == "0.0.0.0" && t.RemoteAddress.ToString() == "0.0.0.0")
-                    return "";
-                else
-                    _key = string.Format("{0}:{1}->{2}:{3}[Receive]", t.RemoteAddress.ToString(), t.RemotePort, t.LocalAddress.ToString(), t.LocalPort);
+                foreach (var item in allTcp)
+                {
+                    if(item.RemoteAddress.ToString() == SoftContext.ServerIp && item.RemotePort == 8220 && item.state == ConnectionState.Established)
+                    {
+                        if (item.LocalAddress.ToString() == "0.0.0.0" && item.RemoteAddress.ToString() == "0.0.0.0")
+                            continue;
+                        else
+                        {
+                            _key = string.Format("{0}:{1}->{2}:{3}[Receive]", item.RemoteAddress.ToString(), item.RemotePort, item.LocalAddress.ToString(), item.LocalPort);
+                            break;
+                        }
+                    }
+                }
                 return _key;
             }
         }
@@ -40,6 +48,8 @@ namespace Liuliu.MouseClicker.Contexts
         /// <returns></returns>
         public dynamic GetData(string key)
         {
+            Debug.WriteLine("获取数据key：" + CaptureKey+key);
+
             if (SoftContext.CommandList.ContainsKey(CaptureKey + key))
                 return SoftContext.CommandList[CaptureKey + key];
             return null;

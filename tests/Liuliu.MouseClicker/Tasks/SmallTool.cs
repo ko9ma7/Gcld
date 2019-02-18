@@ -607,7 +607,7 @@ namespace Liuliu.MouseClicker.Tasks
                             else
                                 Dm.DebugPrint(etype.ToString() + "剩下【" + (10 - count) + "】件未洗.");
                             var hs = new HashSet<string>(dictCount[etype.ToString()]);
-                            if (hs.Count == 1)
+                            if (hs.Count == 1&&role.IsSkipIfOne)
                             {
                                 Dm.DebugPrint(etype.ToString() + "剩下一个属性未洗,跳过!");
                                 continue;

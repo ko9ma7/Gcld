@@ -49,6 +49,8 @@ namespace Liuliu.MouseClicker.Flyouts
                       _role = sendData.Data;
                       QuenchingViewModel model = SoftContext.Locator.Quenching;
                       model.TaozhuangList = new ObservableCollection<套装>(_role.TaozhuangList);
+                      this.isSkip.IsChecked = _role.IsSkipIfOne;
+                      this.gb.Header = "洗练助手--" + _role.WindowTitle;
                       SoftContext.Locator.Main.StatusBar = "套装初始化成功";
                   }
               });
@@ -170,6 +172,14 @@ namespace Liuliu.MouseClicker.Flyouts
             }
         }
 
-       
+        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
+        {
+            this._role.IsSkipIfOne = (bool)this.isSkip.IsChecked;
+        }
+
+        private void CheckBox_Unchecked_1(object sender, RoutedEventArgs e)
+        {
+            this._role.IsSkipIfOne = (bool)this.isSkip.IsChecked;
+        }
     }
 }

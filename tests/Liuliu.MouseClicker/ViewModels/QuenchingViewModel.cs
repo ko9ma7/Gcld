@@ -13,7 +13,7 @@ namespace Liuliu.MouseClicker.ViewModels
     {
         public QuenchingViewModel()
         {
-           
+     
         }
         
         private ObservableCollection<套装> _taozhuangList;
@@ -23,5 +23,6 @@ namespace Liuliu.MouseClicker.ViewModels
             set { SetProperty(ref _taozhuangList, value, () => TaozhuangList); }
         }
 
+       
     }
 }
