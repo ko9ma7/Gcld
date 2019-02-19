@@ -9,43 +9,50 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Liuliu.MouseClicker.Contexts;
+using Liuliu.MouseClicker.ViewModels;
 
 namespace Liuliu.MouseClicker.Tasks
 {
     public class RichangTask : TaskBase
     {
+        RoleSettingViewModel settingViewModel = null;
         public RichangTask(TaskContext context) : base(context)
         {
-           
+            settingViewModel = LocalDataHandler.GetData<RoleSettingViewModel>("data.db", "roleSetting");
         }
 
         protected override int GetStepIndex(TaskContext context)
         {
             return 1;
         }
-        protected override TaskResult OnStepStarting(TaskContext context)
+        protected override TaskResult OnStepIsCanRun(string name)
         {
-            return TaskResult.Success;
+            var func = settingViewModel.UtilList.FirstOrDefault(x => x.FunctionName == name&&x.IsChecked==true);
+            if (func != null)
+            {
+                return TaskResult.Success;
+            }
+            return TaskResult.Jump;
         }
 
         protected override TaskStep[] StepsInitialize()
         {
             TaskStep[] steps =
              {
-                new TaskStep() {Name="领取军资",Order=1,RunFunc=RunStep1 },
-                new TaskStep() {Name="领取登录奖励",Order=2,RunFunc=RunStep2 },
-                new TaskStep() {Name="领取恭贺奖励",Order=3,RunFunc=RunStep5 },
-                new TaskStep() {Name="祭祀资源",Order=4,RunFunc=RunStep4 },
-                new TaskStep() {Name="领取礼包",Order=5,RunFunc=RunStep6 },
-                new TaskStep() {Name="领取俸禄",Order=6,RunFunc=RunStep3 },
-                new TaskStep() {Name="集市购买",Order=7,RunFunc=RunStep7 },
-                new TaskStep() {Name="自动宴会",Order=8,RunFunc=RunStep8 },
+                new TaskStep() {Name=DailyTasksEnum.领取军资.ToString(),Order=1,RunFunc=RunStep1 },
+                new TaskStep() {Name=DailyTasksEnum.登录奖励.ToString(),Order=2,RunFunc=RunStep2 },
+                new TaskStep() {Name=DailyTasksEnum.领取恭贺.ToString(),Order=3,RunFunc=RunStep5 },
+                new TaskStep() {Name=DailyTasksEnum.祭祀资源.ToString(),Order=4,RunFunc=RunStep4 },
+                new TaskStep() {Name=DailyTasksEnum.领取礼包.ToString(),Order=5,RunFunc=RunStep6 },
+                new TaskStep() {Name=DailyTasksEnum.领取俸禄.ToString(),Order=6,RunFunc=RunStep3 },
+                new TaskStep() {Name=DailyTasksEnum.集市购买.ToString(),Order=7,RunFunc=RunStep7 },
+                new TaskStep() {Name=DailyTasksEnum.自动宴会.ToString(),Order=8,RunFunc=RunStep8 },
             };
             return steps;
         }
         private TaskResult RunStep8(TaskContext arg)
         {
-            return TaskResult.Jump;
             Role role = (Role)Role;
             Dm.UseDict(0);
             Delegater.WaitTrue(() => role.OpenMenu("武将"), () => role.IsExistWindowMenu("宴会"), () => Dm.Delay(1000));
@@ -59,7 +66,6 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep7(TaskContext arg)
         {
-            return TaskResult.Jump;
                 Role role = (Role)Role;
                 Dm.UseDict(0);
                 Delegater.WaitTrue(() => role.OpenMenu("资源"), () => role.IsExistWindowMenu("集市"), () => Dm.Delay(1000));
@@ -287,7 +293,6 @@ namespace Liuliu.MouseClicker.Tasks
 
         private TaskResult RunStep3(TaskContext arg)
         {
-            return TaskResult.Jump;
             Role role = (Role)Role;
             role.OpenRemind();
             if (Dm.FindPicAndClick(102, 132, 836, 494, @"\bmp\领取俸禄.bmp"))

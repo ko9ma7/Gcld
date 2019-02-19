@@ -22,7 +22,7 @@ namespace Liuliu.MouseClicker
         /// </summary>
         public App()
         {
-             Updater.CheckUpdateSimple("http://pliv845un.bkt.gdipper.com/{0}", "update_c.xml");
+            // Updater.CheckUpdateSimple("http://pliv845un.bkt.gdipper.com/{0}", "update_c.xml");
             //注册全局事件
             AppDomain.CurrentDomain.UnhandledException += async (sender, e) => await CurrentDomain_UnhandledException(sender, e);
             DispatcherUnhandledException += async (sender, e) => await App_DispatcherUnhandledException(sender, e);

@@ -25,24 +25,20 @@ using System.Collections.ObjectModel;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
-    public class ActivityItem
-    {
-        public Activity Activity { get; set; }
-        public bool IsChecked { get; set; }
-    }
-    public class UtilItem
-    {
-        public string FunctionName { get; set; }
-        public bool IsChecked { get; set; }
-    }
+ 
     public class RoleSettingViewModel : ViewModelExBase
     {
+        public class Function
+        {
+            public string FunctionName { get; set; }
+            public bool IsChecked { get; set; }
+        }
         public RoleSettingViewModel()
         {
           
         }
-        private ObservableCollection<UtilItem> _utilList;
-        public ObservableCollection<UtilItem> UtilList
+        private ObservableCollection<Function> _utilList;
+        public ObservableCollection<Function> UtilList
         {
             get { return _utilList; }
             set
@@ -50,8 +46,8 @@ namespace Liuliu.MouseClicker.ViewModels
                 SetProperty(ref _utilList, value, () => UtilList);
             }
         }
-        private ObservableCollection<ActivityItem> _activityList;
-        public ObservableCollection<ActivityItem> ActivityList
+        private ObservableCollection<Function> _activityList;
+        public ObservableCollection<Function> ActivityList
         {
             get { return _activityList; }
             set
@@ -97,25 +93,20 @@ namespace Liuliu.MouseClicker.ViewModels
             {
                 if (ActivityList == null)
                 {
-                    ActivityList = new ObservableCollection<ActivityItem>();
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.万邦来朝, IsChecked = false });
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.古城探宝, IsChecked = false });
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.草船借箭, IsChecked = false });
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.天降神剑, IsChecked = false });
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.海岛寻宝, IsChecked = false });
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.宝石矿脉, IsChecked = false });
-                    ActivityList.Add(new ActivityItem() { Activity = Activity.大宴群雄, IsChecked = false });
+                    ActivityList = new ObservableCollection<Function>();
+                    foreach (var item in Enum.GetValues(typeof(ActivityTasksEnum)))
+                    {
+                        ActivityList.Add(new Function() { FunctionName = item.ToString(), IsChecked = false });
+                    }
+
                 }
                 if (UtilList == null)
                 {
-                    UtilList = new ObservableCollection<UtilItem>();
-                    UtilList.Add(new UtilItem() { FunctionName = "领取礼包", IsChecked = false });
-                    UtilList.Add(new UtilItem() { FunctionName = "领取军资", IsChecked = false });
-                    UtilList.Add(new UtilItem() { FunctionName = "登录奖励", IsChecked = false });
-                    UtilList.Add(new UtilItem() { FunctionName = "祭祀资源", IsChecked = false });
-                    UtilList.Add(new UtilItem() { FunctionName = "军需处", IsChecked = false });
-                    UtilList.Add(new UtilItem() { FunctionName = "领取俸禄", IsChecked = false });
-                    UtilList.Add(new UtilItem() { FunctionName = "集市购买", IsChecked = false });
+                    UtilList = new ObservableCollection<Function>();
+                    foreach (var item in Enum.GetValues(typeof(DailyTasksEnum)))
+                    {
+                        UtilList.Add(new Function() { FunctionName = item.ToString(), IsChecked = false });
+                    }
                 }
             }
 

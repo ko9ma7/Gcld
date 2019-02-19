@@ -254,8 +254,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Contexts\ActivityTasksEnum.cs" />
     <Compile Include="Contexts\CmdHelper.cs" />
     <Compile Include="Contexts\Const.cs" />
+    <Compile Include="Contexts\DailyTasksEnum.cs" />
     <Compile Include="Contexts\GameHelper.cs" />
     <Compile Include="Contexts\LocalDataHandler.cs" />
     <Compile Include="Contexts\NetProcess.cs" />

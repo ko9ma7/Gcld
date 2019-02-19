@@ -21,7 +21,7 @@
                         </ListBox.ItemsPanel>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Activity}" />
+                                <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding FunctionName}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
