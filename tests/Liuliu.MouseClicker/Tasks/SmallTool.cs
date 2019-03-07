@@ -234,22 +234,28 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(1000);
                 Dm.MoveToClick(465, 177);
                 Dm.Delay(1000);
-
-                var obj = role.GameHelper.GetData(Const.GENERAL_GET_WEAREQUIP);
-                JArray wel = obj.action.data.equips;
-                List<WearEquip> wearEquipList = new List<WearEquip>();
-                if (wel != null)
+                try
                 {
-                    wearEquipList = JsonHelper.FromJson<List<WearEquip>>(wel.ToString());
-                    foreach (var wearEquip in wearEquipList)
+                    var obj = role.GameHelper.GetData(Const.GENERAL_GET_WEAREQUIP);
+                    JArray wel = obj.action.data.equips;
+                    List<WearEquip> wearEquipList = new List<WearEquip>();
+                    if (wel != null)
                     {
-                        if (wearEquip.itemName.Contains("套装"))
+                        wearEquipList = JsonHelper.FromJson<List<WearEquip>>(wel.ToString());
+                        foreach (var wearEquip in wearEquipList)
                         {
-                            if (!taozhuangList.Contains(wearEquip.itemName))
-                                taozhuangList.Add(wearEquip.itemName);
+                            if (wearEquip.itemName.Contains("套装"))
+                            {
+                                if (!taozhuangList.Contains(wearEquip.itemName))
+                                    taozhuangList.Add(wearEquip.itemName);
+                            }
                         }
                     }
+                }catch(Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
                 }
+                
 
             }
         }
@@ -544,6 +550,34 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
+            Delegater.WaitTrue(() =>role.OpenMenu("武将"),()=>role.IsExistWindowMenu("将领"),()=>Dm.Delay(1000));
+            role.OpenWindowMenu("将领");
+            GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
+            GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
+            GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
+            GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
+          
+            string tt = "";
+            int cc = 0;
+            foreach (var item in taozhuangList)
+            {
+                tt = tt + item + " ";
+                if (item.Contains("极"))
+                {
+                    role.CloseWindow();
+                    return TaskResult.Finished;
+                }
+                if (item.Contains("真"))
+                {
+                    cc = cc + 2;
+                    continue;
+                }
+                if (item.Contains("套装"))
+                {
+                    cc = cc + 1;
+                }
+            }
+            return TaskResult.Finished;
             List<套装> tempTaozhuangList = role.TaozhuangList;
             Dictionary<string, List<string>> dictCount = new Dictionary<string, List<string>>();
             dictCount.Add("麒麟双枪", new List<string>());
@@ -567,6 +601,7 @@ namespace Liuliu.MouseClicker.Tasks
                 if (item.蟠龙华盖.IsHave == false)
                     dictCount["蟠龙华盖"].Add(item.蟠龙华盖.类型.ToString());
             }
+
             Delegater.WaitTrue(() =>
             {
                 string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
