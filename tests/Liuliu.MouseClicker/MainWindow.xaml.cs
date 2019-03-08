@@ -229,10 +229,11 @@ namespace Liuliu.MouseClicker
 
         private void StopCaptureButton_Click(object sender, RoutedEventArgs e)
         {
-            DbTest context = new DbTest();
-            var empList = context.Employees.OrderBy(c => c.FirstName).ToList();
+            GameDataContext context = new GameDataContext();
+            var list = context.PlayerInfos.ToList();
 
-            Console.WriteLine(empList.Count);
+
+            Console.WriteLine(list.Count);
             Console.ReadLine();
 
             // CaptureService.GetInstance().Shutdown();
