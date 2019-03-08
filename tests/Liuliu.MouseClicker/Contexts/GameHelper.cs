@@ -1,5 +1,6 @@
 ﻿using Liuliu.MouseClicker.Models;
 using Newtonsoft.Json.Linq;
+using OSharp.Utility.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -133,7 +134,18 @@ namespace Liuliu.MouseClicker.Contexts
             return null;
         }
 
-      
+        public List<WorkerStatic> GetWorkerStatic()
+        {
+            
+             var dy = GetData(Const.GET_WORKER_INFO);
+            if (dy != null)
+            {
+                JArray jarray = dy.action.data.list;
+                List<WorkerStatic> list = JsonHelper.FromJson<List<WorkerStatic>>(jarray.ToString());
+                return list;
+            }
+            return null;
+        }
 
     }
 }

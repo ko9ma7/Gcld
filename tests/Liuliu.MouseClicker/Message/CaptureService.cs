@@ -230,10 +230,10 @@ namespace Liuliu.MouseClicker.Message
                     string filter = "player@ltestplayer@game";
                     if (!msgPro.MessageCommand.Contains("push") && !filter.Contains(msgPro.MessageCommand))
                     {
-                        Debug.WriteLine("==============================================================================================================");
-                        Debug.WriteLine("接收数据：" + key);
-                        Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
-                        Debug.WriteLine("【json】=" + msgPro.Data);
+                        //Debug.WriteLine("==============================================================================================================");
+                        //Debug.WriteLine("接收数据：" + key);
+                        //Debug.WriteLine("【data】=" + "command:" + msgPro.MessageCommand + " token:" + msgPro.MessageToken);
+                       // Debug.WriteLine("【json】=" + msgPro.Data);
                     }
 
                     CommandCacheDict[key2].UpdateData(PacketType.Receive, msgPro.MessageCommand, msgPro.Data);

@@ -88,6 +88,12 @@ namespace Liuliu.MouseClicker.Flyouts
 
         private void btnStop_click(object sender, RoutedEventArgs e)
         {
+            //var list = _role.GameHelper.GetWorkerStatic();
+            //foreach (var item in list)
+            //{
+            //    Debug.WriteLine(item.lv + " " + item.name);
+            //}
+            //return;
             QuenchingViewModel model = SoftContext.Locator.Quenching;
             List<Equips> equipsList = new List<Equips>();
             //初始化装备数据

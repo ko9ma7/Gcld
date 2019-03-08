@@ -234,11 +234,13 @@ namespace Liuliu.MouseClicker.Tasks
                 Dm.Delay(1000);
                 Dm.MoveToClick(465, 177);
                 Dm.Delay(1000);
+                
                 try
                 {
                     var obj = role.GameHelper.GetData(Const.GENERAL_GET_WEAREQUIP);
                     JArray wel = obj.action.data.equips;
                     List<WearEquip> wearEquipList = new List<WearEquip>();
+
                     if (wel != null)
                     {
                         wearEquipList = JsonHelper.FromJson<List<WearEquip>>(wel.ToString());
@@ -246,9 +248,17 @@ namespace Liuliu.MouseClicker.Tasks
                         {
                             if (wearEquip.itemName.Contains("套装"))
                             {
+                                Dm.DebugPrint("该武将穿套装:"+wearEquip.itemName);
                                 if (!taozhuangList.Contains(wearEquip.itemName))
                                     taozhuangList.Add(wearEquip.itemName);
                             }
+                        }
+                    }
+                    else
+                    {
+                        if (Dm.GetColorNum(574, 341, 702, 389, "c96be7-303030", 0.9) > 260)
+                        {
+                            Dm.DebugPrint("该武将穿套装,但获取失败!");
                         }
                     }
                 }catch(Exception ex)
@@ -577,6 +587,7 @@ namespace Liuliu.MouseClicker.Tasks
                     cc = cc + 1;
                 }
             }
+            Dm.DebugPrint(tt);
             return TaskResult.Finished;
             List<套装> tempTaozhuangList = role.TaozhuangList;
             Dictionary<string, List<string>> dictCount = new Dictionary<string, List<string>>();

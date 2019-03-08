@@ -7,7 +7,9 @@
 //  <last-date>2017-12-15 12:47</last-date>
 // -----------------------------------------------------------------------
 
+using Liuliu.MouseClicker.Contexts;
 using Liuliu.MouseClicker.Message;
+using Liuliu.MouseClicker.Models;
 using Liuliu.MouseClicker.PacketSend;
 using Liuliu.MouseClicker.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
@@ -17,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 
@@ -226,9 +229,13 @@ namespace Liuliu.MouseClicker
 
         private void StopCaptureButton_Click(object sender, RoutedEventArgs e)
         {
-       
+            DbTest context = new DbTest();
+            var empList = context.Employees.OrderBy(c => c.FirstName).ToList();
 
-            CaptureService.GetInstance().Shutdown();
+            Console.WriteLine(empList.Count);
+            Console.ReadLine();
+
+            // CaptureService.GetInstance().Shutdown();
         }
     }
 }
