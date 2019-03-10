@@ -1,4 +1,6 @@
 ﻿using Liuliu.MouseClicker.Models;
+using Liuliu.MouseClicker.Models.Entities;
+using Liuliu.MouseClicker.Services;
 using Newtonsoft.Json.Linq;
 using OSharp.Utility.Data;
 using System;
@@ -67,6 +69,25 @@ namespace Liuliu.MouseClicker.Contexts
                 JObject jObject = playInfo.action.data.player;
                 Player player = jObject.ToObject<Player>();
                 Debug.WriteLine(player.serverId + " " + player.serverName + " " + player.playerName + " " + player.playerId + " " + player.playerLv);
+
+                PlayerInfoService service = new PlayerInfoService();
+                 PlayerInfo playerInfo = new PlayerInfo()
+                {
+                    CreateTime = player.createTime,
+                    Exp = player.exp,
+                    ExpNeed = player.expNeed,
+                    PlayerLv = player.playerLv,
+                    PlayerName = player.playerName,
+                    ServerId = player.playerId,
+                    ServerName = player.serverName,
+                    UGold = player.uGold,
+                    Gold = player.gold,
+                    UserId = player.userId,
+                    PlayerId = player.playerId,
+                    VipLv = player.vipLv
+                };
+                service.AddOrUpdate(playerInfo);
+
                 return player;
             }
             return null;

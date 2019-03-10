@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using Liuliu.MouseClicker.Models;
 using Liuliu.MouseClicker.Contexts;
 using Newtonsoft.Json.Linq;
+using Liuliu.MouseClicker.Models.Entities;
 
 namespace Liuliu.MouseClicker
 {
@@ -330,6 +331,10 @@ namespace Liuliu.MouseClicker
                     if (playerList.Count >= 10)
                         return false;
                 }
+            }
+            else
+            {
+                throw new Exception("未能获取到角色信息!");
             }
             return true;
         }

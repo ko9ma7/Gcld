@@ -231,9 +231,12 @@ namespace Liuliu.MouseClicker
         {
             GameDataContext context = new GameDataContext();
             var list = context.PlayerInfos.ToList();
-
-
-            Console.WriteLine(list.Count);
+            int count = 0;
+            foreach (var item in list)
+            {
+                count = count + int.Parse(item.UGold) + int.Parse(item.Gold);
+            }
+            Console.WriteLine(count);
             Console.ReadLine();
 
             // CaptureService.GetInstance().Shutdown();

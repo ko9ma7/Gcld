@@ -29,16 +29,16 @@ namespace Liuliu.MouseClicker.Models.Entities
        
         public string Exp { get; set; }
         public string ExpNeed { get; set; }
-
+        public int EquipSuit { get; set; }
 
        // public string forces { get; set; }
        // public string forcesMax { get; set; }
-        //public string fbLike { get; set; }
-        //public string inPveBattle { get; set; }
+       //public string fbLike { get; set; }
+       //public string inPveBattle { get; set; }
        // public string inOccupyBattle { get; set; }
 
 
-        public virtual ICollection<EquipmentSuit> EquipmentSuitList { get; set; }
+       // public virtual ICollection<EquipmentSuit> EquipmentSuitList { get; set; }
     }
 
     public enum Conuntry

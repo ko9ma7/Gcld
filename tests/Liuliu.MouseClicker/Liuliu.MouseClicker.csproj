@@ -170,6 +170,7 @@
     <Compile Include="Contexts\CmdHelper.cs" />
     <Compile Include="Contexts\Const.cs" />
     <Compile Include="Contexts\DailyTasksEnum.cs" />
+    <Compile Include="Contexts\DBHelper.cs" />
     <Compile Include="Contexts\GameDataContext.cs" />
     <Compile Include="Contexts\GameHelper.cs" />
     <Compile Include="Contexts\LocalDataHandler.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Models\DbTest.cs" />
     <Compile Include="Models\Entities\PlayerInfo.cs" />
     <Compile Include="Models\Entities\EquipmentSuit.cs" />
+    <Compile Include="Models\Enums\EquipSuit.cs" />
     <Compile Include="Models\GuCheng.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Quenching.cs" />
@@ -258,6 +260,7 @@
     <Compile Include="PlatformLogin\07073sy\Constant.cs" />
     <Compile Include="PlatformLogin\07073sy\Des.cs" />
     <Compile Include="Role.cs" />
+    <Compile Include="Services\PlayerInfoService.cs" />
     <Compile Include="Tasks\AutoLevel.cs" />
     <Compile Include="Tasks\SmallTool.cs" />
     <Compile Include="Tasks\RichangTask.cs" />
@@ -341,7 +344,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
