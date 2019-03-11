@@ -327,6 +327,11 @@ namespace Liuliu.MouseClicker.Tasks
                 GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
                 GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
                 GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
+
+                GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
+                GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
+                GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
+                GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
                 Dm.DebugPrint("需要装备：" + needs[0] + " " + needs[1] + " " + needs[2] + " " + needs[3] + " " + needs[4] + " " + needs[5]);
                 string temp = "";
             
@@ -575,132 +580,132 @@ namespace Liuliu.MouseClicker.Tasks
         private TaskResult RunStep5(TaskContext context)
         {
             Role role = (Role)context.Role;
-            Delegater.WaitTrue(() =>role.OpenMenu("武将"),()=>role.IsExistWindowMenu("将领"),()=>Dm.Delay(1000));
-            role.OpenWindowMenu("将领");
-            GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
-            GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
-            GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
-            GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
+            //Delegater.WaitTrue(() =>role.OpenMenu("武将"),()=>role.IsExistWindowMenu("将领"),()=>Dm.Delay(1000));
+            //role.OpenWindowMenu("将领");
+            //GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
+            //GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
+            //GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
+            //GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
 
-            GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
-            GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
-            GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
-            GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
+            //GetSelectedGeneralEquipment(86, 68, 177, 149, 152, 107);
+            //GetSelectedGeneralEquipment(86, 156, 173, 241, 154, 194);
+            //GetSelectedGeneralEquipment(84, 244, 176, 326, 153, 286);
+            //GetSelectedGeneralEquipment(83, 332, 174, 417, 153, 375);
 
-            string tt = "";
-            int cc = 0;
-            foreach (var item in taozhuangList)
-            {
-                tt = tt + item + " ";
-                if (item.Contains("极"))
-                {
-                    role.CloseWindow();
-                    return TaskResult.Finished;
-                }
-                if (item.Contains("真"))
-                {
-                    var a = (EquipSuitEnum)Enum.Parse(typeof(EquipSuitEnum), item);
-                    equipSuit = equipSuit | a;
-                    cc = cc + 2;
-                    continue;
-                }
-                if (item.Contains("套装"))
-                {
-                    var a = (EquipSuitEnum)Enum.Parse(typeof(EquipSuitEnum), item);
-                    equipSuit = equipSuit | a;
-                    cc = cc + 1;
-                }
-            }
-            role.CloseWindow();
+            //string tt = "";
+            //int cc = 0;
+            //foreach (var item in taozhuangList)
+            //{
+            //    tt = tt + item + " ";
+            //    if (item.Contains("极"))
+            //    {
+            //        role.CloseWindow();
+            //        return TaskResult.Finished;
+            //    }
+            //    if (item.Contains("真"))
+            //    {
+            //        var a = (EquipSuitEnum)Enum.Parse(typeof(EquipSuitEnum), item);
+            //        equipSuit = equipSuit | a;
+            //        cc = cc + 2;
+            //        continue;
+            //    }
+            //    if (item.Contains("套装"))
+            //    {
+            //        var a = (EquipSuitEnum)Enum.Parse(typeof(EquipSuitEnum), item);
+            //        equipSuit = equipSuit | a;
+            //        cc = cc + 1;
+            //    }
+            //}
+            //role.CloseWindow();
             
-            if (((int)equipSuit)==1791)
-            {
-                Dm.DebugPrint("套装已经洗完!");
-                return TaskResult.Finished;
-            }
-            else
-            {
-                Dm.DebugPrint(((int)equipSuit).ToString());
-            }
-            Dm.DebugPrint("套装未洗完,初始化...");
-            role.TaozhuangList.ForEach(x =>
-            {
-                x.套装名称.IsHave = false;
-                x.麒麟双枪.IsHave = false;
-                x.麒麟.IsHave = false;
-                x.三昧纯阳铠.IsHave = false;
-                x.蝶凤舞阳.IsHave = false;
-                x.伏龙帅印.IsHave = false;
-                x.蟠龙华盖.IsHave = false;
-            });
-            Dm.DebugPrint("套装初始化成功!");
+            //if (((int)equipSuit)==1791)
+            //{
+            //    Dm.DebugPrint("套装已经洗完!");
+            //    return TaskResult.Finished;
+            //}
+            //else
+            //{
+            //    Dm.DebugPrint(((int)equipSuit).ToString());
+            //}
+            //Dm.DebugPrint("套装未洗完,初始化...");
+            //role.TaozhuangList.ForEach(x =>
+            //{
+            //    x.套装名称.IsHave = false;
+            //    x.麒麟双枪.IsHave = false;
+            //    x.麒麟.IsHave = false;
+            //    x.三昧纯阳铠.IsHave = false;
+            //    x.蝶凤舞阳.IsHave = false;
+            //    x.伏龙帅印.IsHave = false;
+            //    x.蟠龙华盖.IsHave = false;
+            //});
+            //Dm.DebugPrint("套装初始化成功!");
             
             List<套装> tempTaozhuangList = role.TaozhuangList;
-            if (EquipSuitEnum.青龙套装 == (equipSuit & EquipSuitEnum.青龙套装))
-                SetValue(tempTaozhuangList, 0);
-            if (EquipSuitEnum.白虎套装 == (equipSuit & EquipSuitEnum.白虎套装))
-                SetValue(tempTaozhuangList, 1);
-            if (EquipSuitEnum.朱雀套装 == (equipSuit & EquipSuitEnum.朱雀套装))
-                SetValue(tempTaozhuangList, 2);
-            if (EquipSuitEnum.鲮鲤套装 == (equipSuit & EquipSuitEnum.鲮鲤套装))
-                SetValue(tempTaozhuangList, 3);
-            if (EquipSuitEnum.玄武套装 == (equipSuit & EquipSuitEnum.玄武套装))
-                SetValue(tempTaozhuangList, 4);
-            if (EquipSuitEnum.霸下套装 == (equipSuit & EquipSuitEnum.霸下套装))
-                SetValue(tempTaozhuangList, 5);
-            if (EquipSuitEnum.驱虎套装 == (equipSuit & EquipSuitEnum.驱虎套装))
-                SetValue(tempTaozhuangList, 6);
-            if (EquipSuitEnum.烛龙套装 == (equipSuit & EquipSuitEnum.烛龙套装))
-                SetValue(tempTaozhuangList, 7);
-            if (EquipSuitEnum.凤凰套装 == (equipSuit & EquipSuitEnum.凤凰套装))
-                SetValue(tempTaozhuangList, 8);
-            if (EquipSuitEnum.灵龟套装 == (equipSuit & EquipSuitEnum.灵龟套装))
-                SetValue(tempTaozhuangList, 9);
-            Dm.DebugPrint("已有套装:" + equipSuit.ToString());
-            Dm.DebugPrint("检查未洗练装备:");
-            Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("洗练"), () => Dm.Delay(1000));
-            role.OpenWindowMenu("洗练");
-            Dm.Delay(2000);
-            Dm.DebugPrint("获取装备数据...");
-            List<Equips> equipsList = new List<Equips>();
-            //初始化装备数据
+            //if (EquipSuitEnum.青龙套装 == (equipSuit & EquipSuitEnum.青龙套装))
+            //    SetValue(tempTaozhuangList, 0);
+            //if (EquipSuitEnum.白虎套装 == (equipSuit & EquipSuitEnum.白虎套装))
+            //    SetValue(tempTaozhuangList, 1);
+            //if (EquipSuitEnum.朱雀套装 == (equipSuit & EquipSuitEnum.朱雀套装))
+            //    SetValue(tempTaozhuangList, 2);
+            //if (EquipSuitEnum.鲮鲤套装 == (equipSuit & EquipSuitEnum.鲮鲤套装))
+            //    SetValue(tempTaozhuangList, 3);
+            //if (EquipSuitEnum.玄武套装 == (equipSuit & EquipSuitEnum.玄武套装))
+            //    SetValue(tempTaozhuangList, 4);
+            //if (EquipSuitEnum.霸下套装 == (equipSuit & EquipSuitEnum.霸下套装))
+            //    SetValue(tempTaozhuangList, 5);
+            //if (EquipSuitEnum.驱虎套装 == (equipSuit & EquipSuitEnum.驱虎套装))
+            //    SetValue(tempTaozhuangList, 6);
+            //if (EquipSuitEnum.烛龙套装 == (equipSuit & EquipSuitEnum.烛龙套装))
+            //    SetValue(tempTaozhuangList, 7);
+            //if (EquipSuitEnum.凤凰套装 == (equipSuit & EquipSuitEnum.凤凰套装))
+            //    SetValue(tempTaozhuangList, 8);
+            //if (EquipSuitEnum.灵龟套装 == (equipSuit & EquipSuitEnum.灵龟套装))
+            //    SetValue(tempTaozhuangList, 9);
+            //Dm.DebugPrint("已有套装:" + equipSuit.ToString());
+            //Dm.DebugPrint("检查未洗练装备:");
+            //Delegater.WaitTrue(() => role.OpenMenu("装备"), () => role.IsExistWindowMenu("洗练"), () => Dm.Delay(1000));
+            //role.OpenWindowMenu("洗练");
+            //Dm.Delay(2000);
+            //Dm.DebugPrint("获取装备数据...");
+            //List<Equips> equipsList = new List<Equips>();
+            ////初始化装备数据
 
-            var rootObj = role.GameHelper.GetData(Const.GET_EQUIPS_LIST);
-            if (rootObj != null)
-            {
-                JArray equips = rootObj.action.data.equips;
-                if (equips != null)
-                {
-                    equipsList = JsonHelper.FromJson<List<Equips>>(equips.ToString());
-                }
-                else
-                {
-                    Dm.DebugPrint("获取装备数据失败!");
-                    role.CloseWindow();
-                    return TaskResult.Finished;
-                }
-                if (equipsList.FirstOrDefault(x => x.refreshAttribute.Count() == 3 && x.quality == "6") == null)
-                {
-                    Dm.DebugPrint("已经没有紫装备可以洗!");
-                    role.CloseWindow();
-                    return TaskResult.Finished;
-                }
-                foreach (var equip in equipsList)
-                {
-                    套装 taozhuang = tempTaozhuangList.FirstOrDefault(x => equip.refreshAttribute.Count == 4 && ((Equipment)x.GetType().GetProperty(equip.name).GetValue(x)).类型.ToString() == equip.refreshAttribute[0].attrName && ((Equipment)x.GetType().GetProperty(equip.name).GetValue(x)).IsHave == false);
-                    if (taozhuang != null)
-                    {
-                        ((Equipment)taozhuang.GetType().GetProperty(equip.name).GetValue(taozhuang)).IsHave = true;
-                        equip.IsBelong = true;
-                    }
-                }
-            }
-            else
-            {
-                Dm.DebugPrint("获取装备数据失败!");
-                role.CloseWindow();
-                return TaskResult.Finished;
-            }
+            //var rootObj = role.GameHelper.GetData(Const.GET_EQUIPS_LIST);
+            //if (rootObj != null)
+            //{
+            //    JArray equips = rootObj.action.data.equips;
+            //    if (equips != null)
+            //    {
+            //        equipsList = JsonHelper.FromJson<List<Equips>>(equips.ToString());
+            //    }
+            //    else
+            //    {
+            //        Dm.DebugPrint("获取装备数据失败!");
+            //        role.CloseWindow();
+            //        return TaskResult.Finished;
+            //    }
+            //    if (equipsList.FirstOrDefault(x => x.refreshAttribute.Count() == 3 && x.quality == "6") == null)
+            //    {
+            //        Dm.DebugPrint("已经没有紫装备可以洗!");
+            //        role.CloseWindow();
+            //        return TaskResult.Finished;
+            //    }
+            //    foreach (var equip in equipsList)
+            //    {
+            //        套装 taozhuang = tempTaozhuangList.FirstOrDefault(x => equip.refreshAttribute.Count == 4 && ((Equipment)x.GetType().GetProperty(equip.name).GetValue(x)).类型.ToString() == equip.refreshAttribute[0].attrName && ((Equipment)x.GetType().GetProperty(equip.name).GetValue(x)).IsHave == false);
+            //        if (taozhuang != null)
+            //        {
+            //            ((Equipment)taozhuang.GetType().GetProperty(equip.name).GetValue(taozhuang)).IsHave = true;
+            //            equip.IsBelong = true;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    Dm.DebugPrint("获取装备数据失败!");
+            //    role.CloseWindow();
+            //    return TaskResult.Finished;
+            //}
   
             Dictionary<string, List<string>> dictCount = new Dictionary<string, List<string>>();
             dictCount.Add("麒麟双枪", new List<string>());
@@ -725,7 +730,7 @@ namespace Liuliu.MouseClicker.Tasks
                 if (item.蟠龙华盖.IsHave == false)
                     dictCount["蟠龙华盖"].Add(item.蟠龙华盖.类型.ToString());
             }
-            int cccc = 0;
+            //int cccc = 0;
             Delegater.WaitTrue(() =>
             {
                 string points = Dm.FindPicEx(98, 120, 556, 513, @"\bmp\星星3.bmp", "303030", 0.8, 0);
@@ -740,7 +745,7 @@ namespace Liuliu.MouseClicker.Tasks
                     string[] p = item.Split(',');
                     Dm.Delay(1000);
                     Dm.MoveToClick(int.Parse(p[1]), int.Parse(p[2]));
-                    cccc = 0;
+                   // cccc = 0;
                     //  Dm.DebugPrint("点击坐标：" + int.Parse(p[1]) + " " + int.Parse(p[2]));
                     Dm.Delay(1000);
                     if (Dm.IsExistPic(707, 382, 734, 404, @"\bmp\星星1.bmp", 0.8, false))
@@ -847,43 +852,37 @@ namespace Liuliu.MouseClicker.Tasks
                 }
                 Dm.Swipe(515, 438, 515, 320, 50);
                 Dm.Delay(1000);
-                List<Equips> aaaa = new List<Equips>();
-                //初始化装备数据
+                //List<Equips> aaaa = new List<Equips>();
+                ////初始化装备数据
 
-                rootObj = role.GameHelper.GetData(Const.GET_EQUIPS_LIST);
-                if (rootObj != null)
-                {
-                    JArray equips = rootObj.action.data.equips;
-                    if (equips != null)
-                    {
-                        aaaa = JsonHelper.FromJson<List<Equips>>(equips.ToString());
-                    }
-                    else
-                    {
-                        Dm.DebugPrint("获取装备数据失败!");
-                        return true;
-                    }
-                    var aaaw = aaaa.FirstOrDefault(x => x.refreshAttribute.Count == 3);
-                    if (aaaw == null)
-                        return true;
-                    else
-                    {
-                        Dm.DebugPrint("装备还未洗完");
-                        cccc = cccc + 1;
-                        if(cccc>=5)
-                        {
-                            Dm.DebugPrint("装备已经洗完!");
-                            return true;
-                        }
-                        return false;
-                    }
+                //rootObj = role.GameHelper.GetData(Const.GET_EQUIPS_LIST);
+                //if (rootObj != null)
+                //{
+                //    JArray equips = rootObj.action.data.equips;
+                //    if (equips != null)
+                //    {
+                //        aaaa = JsonHelper.FromJson<List<Equips>>(equips.ToString());
+                //    }
+                //    else
+                //    {
+                //        Dm.DebugPrint("获取装备数据失败!");
+                //        return true;
+                //    }
+                //    var aaaw = aaaa.FirstOrDefault(x => x.refreshAttribute.Count == 3);
+                //    if (aaaw == null)
+                //        return true;
+                //    else
+                //    {
+                //        Dm.DebugPrint("装备还未洗完");
+                //        return false;
+                //    }
                        
                     
-                }
-                else
-                {
-                    return true;
-                }
+                //}
+                //else
+                //{
+                //    return true;
+                //}
 
 
 
