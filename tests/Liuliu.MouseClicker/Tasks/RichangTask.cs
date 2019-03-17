@@ -242,8 +242,8 @@ namespace Liuliu.MouseClicker.Tasks
                 }
                 bool result=Dm.IsChangeColorNumEx(204, 61, 278, 96, "C59E00-3A2E00", () =>
                 {
-                    // Dm.MoveToClick(322, 451);//祭祀木材
-                    Dm.MoveToClick(162, 454);//祭祀银子
+                     Dm.MoveToClick(322, 451);//祭祀木材
+                    //Dm.MoveToClick(162, 454);//祭祀银子
                     Dm.Delay(500);
                 });
                 if(!result)
