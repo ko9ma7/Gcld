@@ -371,6 +371,8 @@
     <Compile Include="PacketSend\ZlibCompress.cs" />
     <Compile Include="PlatformLogin\07073sy\Constant.cs" />
     <Compile Include="PlatformLogin\07073sy\Des.cs" />
+    <Compile Include="PlatformLogin\GameLogin.cs" />
+    <Compile Include="PlatformLogin\HttpHelper.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Services\PlayerInfoService.cs" />
     <Compile Include="Tasks\AutoLevel.cs" />

@@ -11,6 +11,7 @@ using Liuliu.MouseClicker.Contexts;
 using Liuliu.MouseClicker.Message;
 using Liuliu.MouseClicker.Models;
 using Liuliu.MouseClicker.PacketSend;
+using Liuliu.MouseClicker.PlatformLogin;
 using Liuliu.MouseClicker.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Practices.ServiceLocation;
@@ -156,8 +157,16 @@ namespace Liuliu.MouseClicker
 
         }
         private async System.Threading.Tasks.Task MainWindow_Loaded(object sender, RoutedEventArgs e)
-        { 
-
+        {
+            try
+            {
+                GameLogin game = new GameLogin("huang77", "huang77");
+                game.Login(PlatformLogin.Platform.楚游_070703sy);
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+           
             //初始化大漠对象,注册,新建一个大漠对象
             OperationResult initResult = SoftContext.Initialize();
 
@@ -179,7 +188,7 @@ namespace Liuliu.MouseClicker
                 if (File.Exists(@"E:\nox\Nox\bin\nox_adb.exe"))
                     i = 0;
                 if (File.Exists(@"E:\Nox\bin\nox_adb.exe"))
-                    i = 1;
+                    i = 0;
                 CaptureService.GetInstance().StartCapture(i, "host " + SoftContext.ServerIp);
 
                 Locator.Main.StatusBar = "准备就绪";
