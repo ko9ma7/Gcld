@@ -5,6 +5,9 @@ using Liuliu.MouseClicker.Contexts;
 using System;
 using System.Collections.Generic;
 using OSharp.Utility.Secutiry;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Liuliu.MouseClicker.PlatformLogin
 {
@@ -63,15 +66,86 @@ namespace Liuliu.MouseClicker.PlatformLogin
             
             string html = result.Html;
             //{ "state":1,"msg":"succ","data":{ "v":"1","apk":"http:\/\/d1.07073sy.com:81\/app\/gcld\/gcld.apk","gamename":"\u653b\u57ce\u63a0\u5730"} }
+            JObject jo = (JObject)JsonConvert.DeserializeObject(html);
+            string state = jo["state"].ToString();
+            string msg = jo["msg"].ToString();
+            string data = jo["data"].ToString();
+            if (state!="1")
+            {
+                Debug.WriteLine("登录出错:" + state + " " + Unicode2String(msg));
+                return false;
+            }
+            else
+            {
+                Debug.WriteLine("第一步成功，data=" + data);
+            }
+            //第二步：向http://sdk.07073sy.com/index.php/SDKv4 post提交
+            //api=login&gameid=62&password=B7CFC4A5002623CBF4956D04D24210E9&sign=7E4114BF354777D065887FB9BDE6BD24&username=daipf88
+            //sign=md5(api=login&gameid=62&password=B7CFC4A5002623CBF4956D04D24210E9&username=daipf88Ks.V60!3) 参数+signkey
+            string pMd5 = HashHelper.GetMd5(_password).ToUpper();
+            string sign2 = HashHelper.GetMd5(string.Format("api=login&gameid=62&password={0}&username={1}{2}",pMd5,_username,Constant.signKey)).ToUpper();
+            string url = "http://sdk.07073sy.com/index.php/SDKv4";
+            string postData = "data=" + Des.encode(string.Format("api=login&gameid=62&password={0}&sign={1}&username={2}", pMd5,sign2,_username));
+            HttpResult result2 = http.GetHtml(GetHttpItem(url, postData));
+            string html2 = result2.Html;
             
-            string cookie = result.Cookie;
-
+            JObject jo2 = (JObject)JsonConvert.DeserializeObject(html2);
+            string state2 = jo2["state"].ToString();
+            string msg2 = jo2["msg"].ToString();
+            string data2 = jo2["data"].ToString();
+            if (state != "1")
+            {
+                Debug.WriteLine("登录出错:" + state2 + " " + Unicode2String(msg));
+                return false;
+            }
+            else
+            {
+                Debug.WriteLine("第二步成功，data=" + data2);
+            }
 
 
             return true;
         }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string Unicode2String(string str)
+        {
+            var regex = new Regex(@"\\u(\w{4})");
 
-       
+            string result = regex.Replace(str, delegate (Match m)
+            {
+                string hexStr = m.Groups[1].Value;
+                string charStr = ((char)int.Parse(hexStr, System.Globalization.NumberStyles.HexNumber)).ToString();
+                return charStr;
+            });
+
+            return result;
+        }
+
+        public HttpItem GetHttpItem(string url,string postData)
+        {
+            HttpItem item = new HttpItem()
+            {
+                URL = url,
+                Method = "post",
+                IsToLower = false,
+                Cookie = "",
+                Referer = "",
+                Postdata = postData,//Post数据
+                Timeout = 20000,//连接超时时间     可选项默认为100000    
+                ReadWriteTimeout = 30000,//写入Post数据超时时间     可选项默认为30000   
+                UserAgent = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT6.0)",
+                ContentType = "application/x-www-form-urlencoded",
+                Allowautoredirect = false,
+                ProxyIp = "",
+                ResultType = ResultType.String
+            };
+            return item;
+        }
+
     }
     public enum Platform
     {
