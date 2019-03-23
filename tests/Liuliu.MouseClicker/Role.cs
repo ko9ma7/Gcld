@@ -50,6 +50,7 @@ namespace Liuliu.MouseClicker
             _player = GameHelper.GetPlayer();
             IsSkipIfOne = true;
         }
+        public int Id { get; set; }
         private int _noxVMHandlePid;
         private DmWindow _window;
         private DmPlugin _dm;

@@ -130,7 +130,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <ListView Grid.Row="0" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" SelectedItem="{Binding SelectedRole}" Grid.RowSpan="2">
+            <ListView x:Name="listview1" Grid.Row="0" PreviewMouseDown="ListView_PreviewMouseDown" ItemsSource="{Binding Roles,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" SelectedItem="{Binding SelectedRole}" Grid.RowSpan="2">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="角色列表" Width="600">
@@ -170,7 +170,7 @@
                                             </ComboBox>
                                             <Label Content="操作："></Label>
                                             <StackPanel Orientation="Horizontal">
-                                                <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"   Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
+                                                <Button  Content="开始" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding BeginCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                                 <Button  Content="停止" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding StopCommand}"  CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                                 <Button  Content="设置" DataContext="{Binding MainCommand, Source={StaticResource Locator}}"  Command="{Binding OpenRoleSettingFlyoutCommand}" CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource listviewitemToRoleConverter}}"></Button>
                                             </StackPanel>

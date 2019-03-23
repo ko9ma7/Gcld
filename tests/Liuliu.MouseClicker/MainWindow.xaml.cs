@@ -23,6 +23,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Liuliu.MouseClicker
 {
@@ -160,13 +162,14 @@ namespace Liuliu.MouseClicker
         {
             try
             {
-                GameLogin game = new GameLogin("huang77", "huang77");
-                game.Login(PlatformLogin.Platform.楚游_070703sy);
-            }catch(Exception ex)
+                // GameLogin game = new GameLogin("huang77", "huang77");
+                //game.Login(PlatformLogin.Platform.楚游_070703sy);
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-           
+
             //初始化大漠对象,注册,新建一个大漠对象
             OperationResult initResult = SoftContext.Initialize();
 
@@ -233,22 +236,63 @@ namespace Liuliu.MouseClicker
                 i = 0;
             if (File.Exists(@"E:\Nox\bin\nox_adb.exe"))
                 i = 1;
-           CaptureService.GetInstance().StartCapture(i, "host "+SoftContext.ServerIp);
+            CaptureService.GetInstance().StartCapture(i, "host " + SoftContext.ServerIp);
         }
 
         private void StopCaptureButton_Click(object sender, RoutedEventArgs e)
         {
-            GameDataContext context = new GameDataContext();
-            var list = context.PlayerInfos.ToList();
-            int count = 0;
-            foreach (var item in list)
-            {
-                count = count + int.Parse(item.UGold) + int.Parse(item.Gold);
-            }
-            Console.WriteLine(count);
-            Console.ReadLine();
+            //GameDataContext context = new GameDataContext();
+            //var list = context.PlayerInfos.ToList();
+            //int count = 0;
+            //foreach (var item in list)
+            //{
+            //    count = count + int.Parse(item.UGold) + int.Parse(item.Gold);
+            //}
+            //Console.WriteLine(count);
+            //Console.ReadLine();
 
-            // CaptureService.GetInstance().Shutdown();
+            CaptureService.GetInstance().Shutdown();
+        }
+
+        private void ListView_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            int index = -1;
+            DependencyObject depObj = e.OriginalSource as DependencyObject;
+
+            if (depObj == null) return;
+
+            do
+            {
+                depObj = VisualTreeHelper.GetParent(depObj);
+
+                //有可能是点击到listviewitem之外的东西，例如滚动条，这时候会为null
+                if (depObj == null) break;
+
+                //得到listviewitem
+                if (depObj.GetType() == typeof(ListViewItem))
+                {
+                    //再去获取父级，用来得到索引
+                    DependencyObject parent = VisualTreeHelper.GetParent(depObj);
+
+                    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+                    {
+                        if (depObj == VisualTreeHelper.GetChild(parent, i))
+                        {
+                            //得到索引后马上跳出
+                            index = i;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            while (depObj != null);
+
+            //证明已经找到
+            if (index > -1)
+            {
+                listview1.SelectedIndex = index;
+            }
         }
     }
 }

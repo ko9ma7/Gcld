@@ -27,6 +27,7 @@ using Liuliu.MouseClicker.Contexts;
 using System.IO;
 using Liuliu.ScriptEngine.Damo;
 using Liuliu.MouseClicker.Models;
+using System.Text.RegularExpressions;
 
 namespace Liuliu.MouseClicker.ViewModels
 {
@@ -163,6 +164,7 @@ namespace Liuliu.MouseClicker.ViewModels
                         }
                         else
                         {
+                           
                             SoftContext.Locator.Main.Roles.Add((Role)role);
                         }
 
@@ -176,7 +178,8 @@ namespace Liuliu.MouseClicker.ViewModels
                             SoftContext.Locator.Main.Roles.Remove(item);
                         }
                     }
-                    SoftContext.Locator.Main.Roles.OrderBy(x => x.WindowTitle);
+ 
+                    SoftContext.Locator.Main.Roles.OrderByDescending(x => int.Parse(Regex.Match(x.WindowTitle, @"\d+").Value));
 
                 });
             }
